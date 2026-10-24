@@ -3060,6 +3060,11 @@ document.addEventListener('change',function(e){var el=e.target;if(!D||!el.datase
 document.addEventListener('click',function(e){var b=e.target.closest&&e.target.closest('[data-dp]');if(!b)return;var a=b.dataset.dp;if(a==='org')open();else if(a==='close'){D=null;draw()}else if(a==='add'&&D)commit()});
 }catch(err){try{console.error('dump',err)}catch(_){}}})();
 </script>
+<style>@media (pointer:coarse){input:not([type=checkbox]):not([type=radio]):not([type=range]):not([type=color]),select,textarea{font-size:16px!important}}#onb .btn,#onb button{touch-action:manipulation}</style>
+<script>(function(){
+/* iPhone: tapping a button while the keyboard is open must work on the first tap (keep focus; the click still fires) */
+['mousedown','pointerdown'].forEach(function(ev){document.addEventListener(ev,function(e){var t=e.target;if(!t||!t.closest)return;var b=t.closest('#onb button,#say button,#hqdp button,#gate button');if(b&&document.activeElement&&/^(INPUT|TEXTAREA|SELECT)$/.test(document.activeElement.tagName)&&e.type==='mousedown')e.preventDefault()},true)});
+})();</script>
 <script>(function(){try{var H='9fd7d2c2499204c2a4998657b236d86c1ab1cc1644b9888f0728c3bee577b195',ent=null,i=TABS.findIndex(function(t){return t[0]==='studies'});if(i>-1)ent=TABS[i];var last='',on=false;
 function apply(ok){on=ok;window.__own=ok;var j=TABS.findIndex(function(t){return t[0]==='studies'});if(ok&&j<0&&ent)TABS.push(ent);if(!ok&&j>-1)TABS.splice(j,1);var k=QA_ALL.indexOf('studies');if(!ok&&k>-1)QA_ALL.splice(k,1);if(ok&&k<0)QA_ALL.push('studies');if(!ok&&tab==='studies')tab='today'}
 apply(false);
@@ -3085,6 +3090,6 @@ S.staples=[{id:'s1',title:'Toilet Paper',every:14,last:d(-6)},{id:'s2',title:'Di
 S.income=[{id:'i1',title:'Paycheck',amount:'2000',date:d(-4),status:'confirmed'},{id:'i2',title:'Paycheck',amount:'2000',date:d(10),status:'potential'},{id:'i3',title:'Side Project',amount:'300',date:d(5),status:'potential'}];
 S.emergency=[{id:'em1',title:'Poison Control',detail:'1-800-222-1222',note:''},{id:'em2',title:'Nearest Urgent Care',detail:'Sample Address',note:''}];
 S.dump='Ask Grandma about Sunday dinner\nIdea: repaint the nursery sage green';
-save();render()}catch(e){try{console.error('demo seed',e)}catch(_){}}})()</script><style>#hqdemo{display:flex;gap:10px;justify-content:center;align-items:center;height:30px;box-sizing:border-box;padding:0 12px;background:#3a2d27;color:#fbf3ec;font:600 12px Figtree,system-ui,sans-serif;text-align:center;position:relative;z-index:50;white-space:nowrap}#askbtn,#musicbtn,#morebtn,#srchbtn,#rtpill{margin-top:30px}.syncc{display:none!important}#hqdemo button{all:unset;cursor:pointer;text-decoration:underline;color:#f3d9c8}</style>
+save();try{var o=document.getElementById('onb');if(o)o.remove();var g=document.getElementById('gate');if(g)g.remove()}catch(e){}render();setTimeout(function(){try{ONB=null;var o=document.getElementById('onb');if(o)o.remove();onbCheck()}catch(e){}},300)}catch(e){try{console.error('demo seed',e)}catch(_){}}})()</script><style>#hqdemo{display:flex;gap:10px;justify-content:center;align-items:center;height:30px;box-sizing:border-box;padding:0 12px;background:#3a2d27;color:#fbf3ec;font:600 12px Figtree,system-ui,sans-serif;text-align:center;position:relative;z-index:50;white-space:nowrap}#askbtn,#musicbtn,#morebtn,#srchbtn,#rtpill{margin-top:30px}.syncc{display:none!important}#hqdemo button{all:unset;cursor:pointer;text-decoration:underline;color:#f3d9c8}</style>
 <script>(function(){var b=document.createElement('div');b.id='hqdemo';b.innerHTML='Sample Version · Made-Up Info <button type="button" id="hqdrs">Start Over</button>';document.body.insertBefore(b,document.body.firstChild);document.getElementById('hqdrs').onclick=function(){try{['homebinder.demo','hqd.guest','hqd.seen','hqd.hid','hqd.wx','hqd.sb','hqd.kidsdev'].forEach(function(k){localStorage.removeItem(k)})}catch(e){}location.reload()}})()</script></body>
 </html>
