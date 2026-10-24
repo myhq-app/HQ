@@ -3068,6 +3068,12 @@ document.addEventListener('click',function(e){var b=e.target.closest&&e.target.c
 })();</script>
 <style>.onbkr{display:flex;flex-direction:column;gap:6px;margin:0 0 12px;padding:10px;background:rgba(255,255,255,.55);border:1px solid #e8d8cc;border-radius:12px}.onbkr input{width:100%;box-sizing:border-box;padding:10px;border:1px solid #dcc8ba;border-radius:10px;background:#fff}.onbkb{display:flex;flex-direction:column;gap:4px;font-size:13px;color:#6b5a52;font-weight:600}.hq-addb{color:var(--a,#a8667a)!important;font-weight:600;text-decoration:underline}</style>
 <style>.onbb label.lb input{width:100%;box-sizing:border-box;padding:10px;border:1px solid #dcc8ba!important;border-radius:10px;background:#fff!important;margin-top:4px}.onbb .lb{font-size:13px;color:#6b5a52;font-weight:600;display:block;margin:8px 0 4px}</style>
+<style>
+.trip .bar{flex-wrap:wrap}.trip .btn[data-a=tripadd]{width:auto;flex:1 1 100%}.trip .btn{white-space:normal}
+.gbar{flex-wrap:wrap;gap:6px 8px}.gbar .gbr{display:flex;gap:6px;align-items:center;flex-wrap:nowrap;margin-left:auto}
+body.st-edi .btn{letter-spacing:.06em}body.st-edi .gbar .btn{padding:8px 10px}
+</style>
+<style>body:not(.home) #ttl{white-space:normal!important;text-overflow:clip!important;max-width:calc(100vw - 200px)!important;line-height:1.1!important;overflow:visible!important}.hq-rl>*:last-child{white-space:nowrap}</style>
 <script>(function(){try{var H='9fd7d2c2499204c2a4998657b236d86c1ab1cc1644b9888f0728c3bee577b195',ent=null,i=TABS.findIndex(function(t){return t[0]==='studies'});if(i>-1)ent=TABS[i];var last='',on=false;
 function apply(ok){on=ok;window.__own=ok;var j=TABS.findIndex(function(t){return t[0]==='studies'});if(ok&&j<0&&ent)TABS.push(ent);if(!ok&&j>-1)TABS.splice(j,1);var k=QA_ALL.indexOf('studies');if(!ok&&k>-1)QA_ALL.splice(k,1);if(ok&&k<0)QA_ALL.push('studies');if(!ok&&tab==='studies')tab='today'}
 apply(false);
@@ -3075,7 +3081,7 @@ async function chk(){try{var em=((SBS&&SBS.email)||'').toLowerCase();if(!em)retu
 var _r=render;render=function(){if(tab==='studies'&&!on)tab='today';var r=_r.apply(this,arguments);var em=(SBS&&SBS.email)||'';if(em!==last){last=em;chk().then(function(ok){if(ok!==on){apply(ok);_r()}})}return r};
 render()}catch(e){}})()</script><script>try{if(window.__nu&&!S.nuHid){S.nuHid=1;S.hidden=S.hidden||{};if(S.hidden.studies==null)S.hidden.studies=1;save();render()}}catch(e){}</script><script>try{if(window.__nu&&!S.nuLook&&!(S.look&&S.look.pal)){S.nuLook=1;save();applyLook();render()}}catch(e){}</script><script></script><script>(function(){try{
 if(S.demoSeeded)return;var t=today(),d=function(n){return addD(t,n)};
-S.demoSeeded=1;S.onb=1;S.gsd=1;S.seenVer=99;S.tour=1;ONB=null;window.__noonb=1;
+S.demoSeeded=1;S.nuLook=1;S.onb=1;S.gsd=1;S.seenVer=99;S.tour=1;ONB=null;window.__noonb=1;
 S.hidden=S.hidden||{};S.hidden.studies=1;
 S.kids=[{id:'k1',title:'Ava',born:'2018-03-02',doctor:'Dr. Rivera'},{id:'k2',title:'Noah',born:'2020-09-14'},{id:'k3',title:'Mia',born:'2026-02-10'}];
 S.bills=[{id:'b1',title:'Electric',kind:'Bill',amount:'120',due:d(-1),repeat:'Monthly'},{id:'b2',title:'Rent',kind:'Bill',amount:'1500',due:d(6),repeat:'Monthly'},{id:'b3',title:'Internet',kind:'Bill',amount:'60',due:d(3),repeat:'Monthly'},{id:'b4',title:'Water',kind:'Bill',amount:'40',due:d(11),repeat:'Monthly'},{id:'b5',title:'Streaming',kind:'Subscription',amount:'15',due:d(2),repeat:'Monthly'},{id:'b6',title:'Car Insurance',kind:'Bill',amount:'100',due:d(15),repeat:'Monthly'}];
