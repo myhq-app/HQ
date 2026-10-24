@@ -815,6 +815,7 @@ const dfield=(k,x,f,label)=>`<label class="lb">${label}<input type="date" data-a
 function autoItems(d){const o=[],y=+d.slice(0,4);
  S.kids.forEach(k=>{if(k.born&&k.born.slice(5)===d.slice(5)&&y>+k.born.slice(0,4))o.push({title:`${k.title}’s birthday (${y-+k.born.slice(0,4)})`,hol:1,cat:'Holidays'})});
  S.contacts.forEach(k=>{if(k.born&&k.born.slice(5)===d.slice(5)&&y>+k.born.slice(0,4))o.push({title:`${k.title}’s birthday`,hol:1,cat:'Holidays'})});
+ (S.blkids||[]).forEach(k=>{if(k.dob&&k.dob.slice(5)===d.slice(5)&&y>+k.dob.slice(0,4)&&!S.kids.some(z=>z.born===k.dob&&String(z.title).toLowerCase()===String(k.name).toLowerCase()))o.push({title:`${k.name}’s birthday (${y-+k.dob.slice(0,4)})`,hol:1,cat:'Holidays'})});
  S.docs.forEach(x=>{if(x.expires===d)o.push({title:'Renew: '+x.title,hol:1,cat:'Other'})});
  S.vehicles.forEach(x=>{if(x.service===d)o.push({title:x.title+': '+(x.what||'service due'),hol:1,cat:'Other'});if(x.reg===d)o.push({title:x.title+': registration expires',hol:1,cat:'Other'})});
  S.bills.forEach(x=>{if(!x.done&&x.due===d)o.push({title:'Due: '+x.title+(x.amount?' '+money(x.amount):''),hol:1,cat:'Bills'})});
