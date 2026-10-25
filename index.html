@@ -3427,7 +3427,7 @@ try{DEFG.family='family'}catch(_){}
 .byx .byb.fx-green{background:#e4f2e8;border-color:#7fb391}.byx .byb.fx-green b,.byx .byb.fx-green span{color:#2f7d4a}.byx .byb.fx-gold{background:#faf0d2;border-color:#d9b857}.byx .byb.fx-gold b{color:#7a5b10}
 .byx .byb .bye2{font-style:normal;font-size:18px;line-height:1;margin-bottom:2px}.byx .byb span.bydn{position:absolute;top:10px;right:12px;font-weight:700;font-size:17px;line-height:1;color:#2f7d4a}.byx .byb{position:relative}
 .byx .byc.fx-green{background:#e4f2e8;border-color:#7fb391}
-.byx .bypick{display:grid;grid-template-columns:repeat(var(--n,5),minmax(0,1fr));gap:8px;margin:12px 0 4px}.byx .bypick button{aspect-ratio:1;border-radius:50%;border:2px solid var(--line);background:var(--soft);font:700 20px/1 inherit;font-family:inherit;color:var(--ink);cursor:pointer;padding:0}.byx .bypick button.on{background:var(--accent,var(--a));border-color:var(--accent,var(--a));color:#fff}.byx .bypick button:active{transform:scale(.94)}.byx .bynum{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}.byx .bynum b{font-size:34px;line-height:1.1;font-weight:700}.byx .bynum span{color:var(--mut)}.byx .bynum.ok b{color:#2f7d4a}
+.byx .bylnk{display:block;margin:20px auto 6px;background:none;border:0;color:var(--mut);font:700 14px inherit;font-family:inherit;text-decoration:underline;text-underline-offset:3px;padding:10px 14px;cursor:pointer}.byx .byedt{margin-top:6px;padding-top:6px;border-top:1px dashed var(--line)}.byx .bypick{display:grid;grid-template-columns:repeat(var(--n,5),minmax(0,1fr));gap:8px;margin:12px 0 4px}.byx .bypick button{aspect-ratio:1;border-radius:50%;border:2px solid var(--line);background:var(--soft);font:700 20px/1 inherit;font-family:inherit;color:var(--ink);cursor:pointer;padding:0}.byx .bypick button.on{background:var(--accent,var(--a));border-color:var(--accent,var(--a));color:#fff}.byx .bypick button:active{transform:scale(.94)}.byx .bynum{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}.byx .bynum b{font-size:34px;line-height:1.1;font-weight:700}.byx .bynum span{color:var(--mut)}.byx .bynum.ok b{color:#2f7d4a}
 .byx .byspark{width:100%;height:64px;display:block}
 .byx .bystars{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin:10px 0}.byx .bystar{aspect-ratio:1;border-radius:14px;border:2px dashed var(--line);display:flex;align-items:center;justify-content:center;font-size:26px;background:transparent;color:var(--mut)}.byx .bystar.on{border:2px solid color-mix(in srgb,var(--accent,var(--a)) 45%,#fff);background:color-mix(in srgb,var(--accent,var(--a)) 12%,#fff);animation:bypop .25s ease-out}
 @keyframes bypop{from{transform:scale(.6)}to{transform:scale(1)}}@media (prefers-reduced-motion:reduce){.byx .bystar.on{animation:none}}
@@ -3567,7 +3567,12 @@ function vJobs(h,g){const c=CF(g);
  return o}
 const VIEWS={'by-jobs':vJobs,'by-log':vLog,'by-list':vList,'by-check':vCheck,'by-goal':vGoal,'by-num':vNum,'by-chart':vChart};
 const keyD=(html,id)=>html.replace(/<details class="byc bycust"([^>]*)><summary>([^<]*)<\/summary>/g,(m,a,n)=>{const k='by:'+id+':'+n;return '<details class="byc bycust" data-od="'+k+'"'+(WOPEN.has(k)||/open/.test(a)?' open':'')+'><summary>'+n+'</summary>'}).replace(/<details class="byrow" data-od="([^"]+)">/g,(m,k)=>'<details class="byrow" data-od="'+k+'"'+(WOPEN.has(k)?' open':'')+'>');
-const viewOf=(h,g)=>keyD(VIEWS[g.kind](h,g),g.id);
+const BYE=new Set();
+const viewOf=(h,g,look)=>{let html=keyD(VIEWS[g.kind](h,g),g.id);const ed=[];
+ html=html.replace(/<details class="byc bycust"[^>]*><summary>Customize[^<]*<\/summary>[\s\S]*?<\/details>/g,m=>{ed.push(m);return ''});
+ if(look)ed.push(byLook(h));
+ if(!ed.length)return html;const on=BYE.has(h.id);
+ return html+`<button type="button" class="bylnk" data-by="edtog" ${A(g,h)}>${on?'Done Editing':'Customize This Page'}</button>`+(on?`<div class="byedt">${ed.map(m=>m.replace(/<details class="byc bycust"/,'<details open class="byc bycust"')).join('')}</div>`:'')};
 /* ---------- Ideas ---------- */
 const mkL=(b)=>({kind:'by-log',cfg:{buttons:b.map(x=>({id:hid(),l:x[0],e:x[1]||0,gl:x[2]||undefined,fx:x[3]||undefined,i:x[4]||undefined}))}});
 const mkN=(l,u,goal,dir,sc)=>({kind:'by-num',cfg:{l,u,goal:goal==null?'':goal,dir:dir||'down',scale:sc||''}});
@@ -3625,8 +3630,8 @@ hubView=function(t){
  m0=/^c:([^:]+)(?::(.+))?$/.exec(t||'');
  if(m0){const hh=hubOf(m0[1]);if(!hh){tab='all';return null}const pg=hh.pages||[],g=pg.find(z=>z.id===m0[2])||pg[0];
   let o='<div class="byx" style="'+lookSt(hh)+'">';if(pg.length>1)o+='<div class="byseg">'+pg.map(z=>'<button type="button" class="'+(z===g?'on':'')+'" data-tab="c:'+hh.id+':'+z.id+'">'+esc(z.name)+'</button>').join('')+'</div>';
-  o+=g?(isBy(g.kind)?viewOf(hh,g):'<p class="bym">This part is a plain page. Open it from Add Or Remove Pages.</p>'):'<p class="bym">Nothing here yet. Use Look And Settings to add a page.</p>';
-  o+=byLook(hh)+'</div>';
+  o+=g?(isBy(g.kind)?viewOf(hh,g,1):'<p class="bym">This part is a plain page. Open it from Add Or Remove Pages.</p>'):'<p class="bym">Nothing here yet. Use Look And Settings to add a page.</p>';
+  o+=(g&&isBy(g.kind)?'':byLook(hh))+'</div>';
   return{title:hh.name,color:'#b5707c',parent:'all',html:o}}
  }
  let m=/^p:([^:]+):(.+)$/.exec(t||'');
@@ -3651,7 +3656,7 @@ function cpCard(h){const g=(h.pages||[]).find(z=>isBy(z.kind));if(!g)return '';C
  if(g.kind==='by-log')body=(q('.byg')||{outerHTML:''}).outerHTML;
  else if(g.kind==='by-goal')body=first();
  else if(g.kind==='by-chart')body=first()+((q('[data-by=sadd]')||q('[data-by=snew]')||{outerHTML:''}).outerHTML);
- else if(g.kind==='by-num')body=first()+((q('form.byf')||{outerHTML:''}).outerHTML);
+ else if(g.kind==='by-num')body=first()+((q('.bypick')?q('.bypick').parentElement:q('form.byf'))||{outerHTML:''}).outerHTML;
  else if(g.kind==='by-check')body=first();
  else body='<p class="bym">'+g.items.length+(g.items.length===1?' entry':' entries')+'</p>';
  return '<section class="tzc" data-tzp="'+h.id+'" style="'+lookSt(h)+'"><button type="button" class="tzch" data-tab="c:'+h.id+'"><span>'+esc(h.name)+'</span><i aria-hidden="true">›</i></button><div class="byx">'+body+'</div></section>'}
@@ -3688,6 +3693,7 @@ document.addEventListener('click',e=>{
  if(k==='gadd'){const go=c.goals.find(z=>z.id===b.dataset.gid);if(!go)return;let n=b.dataset.n;if(n==='')n=(document.getElementById('by-g-'+go.id)||{}).value;n=num(n);if(!n)return;g.items.push({id:hid(),g:go.id,n,at:Date.now()});rnd();return}
  if(k==='jgo'){try{window.open(jurl(b.dataset.s,c),'_blank','noopener')}catch(_){}return}
  if(k==='npick'){const v=+b.dataset.v,td=g.items.filter(x=>dk(x.at)===T());if(td.length){td[td.length-1].v=v;td[td.length-1].at=Date.now()}else g.items.push({id:hid(),at:Date.now(),v});save();render();return}
+ if(k==='edtog'){if(BYE.has(h.id))BYE.delete(h.id);else BYE.add(h.id);render();return}
  if(k==='sadd'){if(g.items.length<Math.max(1,Math.min(60,+c.target||10))){g.items.push({id:hid(),at:Date.now()});rnd()}return}
  if(k==='sundo'){g.items.pop();rnd();return}
  if(k==='snew'){c.done=(c.done||0)+1;g.items=[];rnd();return}
