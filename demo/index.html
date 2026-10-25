@@ -2010,7 +2010,7 @@ document.addEventListener('change',e=>{const el=e.target;if(!el||!el.dataset||el
 document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest('[data-bb="oz"]');if(!b)return;const i=document.getElementById('bb-amt');if(i){i.value=b.dataset.v;document.querySelectorAll('.bbz button').forEach(x=>x.classList.toggle('on',x===b))}});
 function bbBed(){return +((S.bbw||{}).bed)||19}
 function bbNight(d){const h=new Date(d).getHours();return h>=bbBed()||h<5}
-function bbNapState(end,ww){const now=new Date(),bed=new Date();bed.setHours(bbBed(),0,0,0);if(bbNight(now))return{k:'none'};const a=new Date(+end+ww[0]*6e4),start=Math.max(+a,+now),latest=+bed-ww[0]*6e4;if(start>latest)return{k:'bed',t:new Date(Math.min(Math.max(+a,+now),+bed+30*6e4))};return{k:'nap',a:a,due:+now>=+a}}
+function bbNapState(end,ww){const now=new Date(),bed=new Date();bed.setHours(bbBed(),0,0,0);if(bbNight(now)){const eh=new Date(end).getHours();if(eh>=bbBed()&&now-+end<8*36e5){const t=new Date(+end+ww[0]*6e4);return{k:'bed',t:t,due:+now>=+t}}return{k:'none'}}const a=new Date(+end+ww[0]*6e4),start=Math.max(+a,+now),latest=+bed-ww[0]*6e4;if(start>latest)return{k:'bed',t:new Date(Math.min(Math.max(+a,+now),+bed+30*6e4))};return{k:'nap',a:a,due:+now>=+a}}
 function bbSlLbl(open){return open?(bbNight(open.at)?'☀︎ Rise And Shine':'Wake Up'):(bbNight(new Date())?'☾ Sweet Dreams':'Fall Asleep')}
 function babyBox(){if(blOn()&&!BL.loaded)blLoad();const c=blChild();if(!c)return '';
  const rows=blRows().filter(r=>r.child===c.name),now=Date.now(),open=rows.find(r=>r.kind==='sleep'&&!r.end),ls=rows.find(r=>r.kind==='sleep'&&r.end),lf=rows.find(r=>r.kind==='bottle'||r.kind==='nurse'||r.kind==='solid');
@@ -2018,7 +2018,7 @@ function babyBox(){if(blOn()&&!BL.loaded)blLoad();const c=blChild();if(!c)return
  const gl=+((S.bbw||{}).g1)||27,ww=blWW(c.dob),fh=+((S.notif||{}).babyFeed)||3;
  let wk,wn='',wf='';
  if(open){wk=`<span>${bbNight(open.at)?'☾ Sleeping':'Asleep'}</span><b>${blDur(now-new Date(open.at))}</b><small>since ${blT(open.at)}</small>`;if(bbNight(open.at))wn='Sleeping through the night'}
- else if(ls){const e=new Date(ls.end),aw=now-+e;wk=`<span>Woke Up</span><b>${blT(e)}</b><small>${blAgo(aw)}</small>`;if(ww){const ns=bbNapState(e,ww);wn=ns.k==='none'?'':ns.k==='bed'?'Bedtime around '+blT(ns.t):(ns.due?'Nap time now':'Nap around '+blT(ns.a))}}
+ else if(ls){const e=new Date(ls.end),aw=now-+e;wk=`<span>Woke Up</span><b>${blT(e)}</b><small>${blAgo(aw)}</small>`;if(ww){const ns=bbNapState(e,ww);wn=ns.k==='none'?'':ns.k==='bed'?(ns.due?'Bedtime now':'Bedtime around '+blT(ns.t)):(ns.due?'Nap time now':'Nap around '+blT(ns.a))}}
  else wk='<span>Woke Up</span><b>—</b><small>Not logged yet</small>';
  let fd;if(lf){const d=new Date(lf.at);fd=`<span>Last Fed</span><b>${blT(d)}</b><small>${blAgo(now-+d)}</small>${oz?`<u class="bboz${oz>=gl?' ok':''}">${oz>=gl?'✓ ':''}${oz} oz</u>`:''}`;wf=(now-+d>=fh*36e5?'Feed time now':'Feed around '+blT(new Date(+d+fh*36e5)))}else fd=`<span>Last Fed</span><b>—</b><small>Not logged yet</small>${oz?`<u class="bboz${oz>=gl?' ok':''}">${oz>=gl?'✓ ':''}${oz} oz</u>`:''}`;
  const btn=BBTN.filter(x=>bbOn(x[0])&&['sleep','feed','diaper'].includes(x[0])).map(x=>x[0]==='sleep'?`<button data-bb="sleep" class="${open?'wake':'sleepb'}${bbNight(open?open.at:new Date())?' nt':''}">${bbSlLbl(open)}</button>`:`<button data-bb="open" data-k="${x[2]}" class="${x[3]}">${x[1]}</button>`).join('');
