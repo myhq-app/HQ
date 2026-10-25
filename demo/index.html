@@ -3535,6 +3535,13 @@ document.addEventListener('input',e=>{const t=e.target;if(!t||!t.dataset||t.data
 setInterval(()=>{const tm=S.scTimer;if(!tm)return;const left=tm.end-Date.now(),el=document.getElementById('sctime');if(left<=0){const h=hubOf(tm.hid);if(h){SC(h).sess.push({id:hid(),cls:tm.cls,min:tm.min,d:T()})}S.scTimer=null;save();try{navigator.vibrate&&navigator.vibrate([200,100,200])}catch(_){}render();setTimeout(()=>alert('Focus time finished. Nice work!'),50);return}if(el){const s=Math.ceil(left/1e3);el.textContent=Math.floor(s/60)+':'+String(s%60).padStart(2,'0')}},1000);
 window.schoolTodo=function(t){const o=[];(S.hubs||[]).forEach(h=>{if(!isSc(h))return;const sc=SC(h);sc.work.filter(x=>!x.done&&x.due&&x.due<=t).sort((a,b)=>a.due.localeCompare(b.due)).forEach(x=>{const late=x.due<t;o.push({o:true,h:`<div class="tk"><label class="tkl"><input type="checkbox" data-sc="tck" data-hid="${h.id}" data-i="${x.id}"> <span>${esc(x.t)}${cn(sc,x.cls)?' ('+esc(cn(sc,x.cls))+')':''}${late?' · Late':''}</span></label></div>`})})});return o};
 window.schoolAuto=function(d,o){(S.hubs||[]).forEach(h=>{if(!isSc(h))return;const sc=SC(h),cat=sc.mode==='home'?'Kids':'Me';sc.work.forEach(x=>{if(!x.done&&x.due===d)o.push({title:'Due: '+x.t+(cn(sc,x.cls)?' ('+cn(sc,x.cls)+')':''),hol:1,cat,sch:1})});sc.exams.forEach(x=>{if(x.date===d)o.push({title:L(sc.mode).t+': '+x.t+(x.time?' '+ft(x.time):''),hol:1,cat})})})};
+
+function mig(){(S.hubs||[]).forEach(h=>{if(!h||!h.pages||h.pages.some(p=>/^sc-/.test(p.kind)))return;const nm=h.pages.map(p=>p.name);if(!(nm.includes('Curriculum')&&nm.includes('Lesson Plans')))return;
+ const old=h.pages.filter(p=>(p.items&&p.items.length)||(p.text&&String(p.text).trim()));
+ const np=PG.home.map(y=>({id:hid(),name:y[0],kind:y[1],items:[],text:''}));
+ h.pages=np.concat(old);h.sc=null;try{SC(h)}catch(_){}});}
+var _r0=render;render=function(){try{mig()}catch(_){}return _r0.apply(this,arguments)};
+try{mig();save()}catch(_){}
 })();
 </script>
 
