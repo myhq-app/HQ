@@ -839,7 +839,7 @@ function autoItems(d){const o=[],y=+d.slice(0,4);
  S.vehicles.forEach(x=>{if(x.service===d)o.push({title:x.title+': '+(x.what||'service due'),hol:1,cat:'Other'});if(x.reg===d)o.push({title:x.title+': registration expires',hol:1,cat:'Other'})});
  S.bills.forEach(x=>{if(!x.done&&x.due===d)o.push({title:'Due: '+x.title+(x.amount?' '+money(x.amount):''),hol:1,cat:'Bills'})});
  S.maint.forEach(x=>{if(!x.done&&x.due===d)o.push({title:'Maintenance: '+x.title,hol:1,cat:'Other'})});
- try{schoolAuto(d,o)}catch(_){}
+ try{schoolAuto(d,o)}catch(_){}try{if(window.byAuto)byAuto(d,o)}catch(_){}
  return o}
 function vDocs(){const L=S.docs.slice().sort((a,b)=>(a.expires||'9').localeCompare(b.expires||'9'));
  const st=x=>{const n=dleft(x.expires);return n===null?'':n<0?'od':n<=30?'now':n<=90?'soon':''},tx=x=>{const n=dleft(x.expires);return n===null?'No Date':n<0?'Expired':n<=90?'In '+n+' Day'+(n===1?'':'s'):short(x.expires)+(x.expires.slice(0,4)!==today().slice(0,4)?', '+x.expires.slice(0,4):'')};
@@ -2058,6 +2058,7 @@ function mmItems(){const t=tab,I=[],ic={rearr:'<path d="M5 9l-3 3 3 3M19 9l3 3-3
  if(t==='baby'||(typeof babyTabOn==='function'&&babyTabOn()))I.push(['Baby Settings',ic.baby,()=>{WOPEN.add('bbset');render();setTimeout(()=>{const d=document.querySelector('.bbset');if(d)d.scrollIntoView({behavior:'smooth',block:'center'})},60)}]);
  if(m&&m[1]==='h'){const id=m[2];I.push(['Edit Hub',ic.edit,()=>mmFire({tab:'he:'+id})],['Add A Hub',ic.add,()=>mmFire({tab:'hubnew'})],['Arrange Hubs',ic.list,()=>mmFire({tab:'hubord'})],['Delete Hub',ic.del,()=>mmFire({h:'rmhub',hid:id}),1])}
  else{if(t==='today'||t.startsWith('g:')||TABS.some(z=>z[0]===t&&false))I.push(['Rearrange Boxes',ic.rearr,()=>mmFire({a:'arron'})]);
+  if(t==='today'&&typeof tzOK==='function'&&tzOK())I.push(['Resize Boxes',ic.rearr,()=>tzOn()]);
   I.push(['Customize',ic.cust,()=>{tab='today';mmFire({a:'tedit'})}]);if(typeof TIPS!=='undefined'&&TIPS[t])I.push(['How This Page Works',ic.guide,()=>{S.tips=S.tips||{};delete S.tips[t];save();render();window.scrollTo(0,0)}]);
   if(t==='today'){I.push(['Account And Sync',ic.acct,()=>{mmFire({a:'tedit'});cz='account';CZSEL=true;render()}],['Quick Tour',ic.tour,()=>mmFire({tour:'start'})],['Setup Guide',ic.guide,()=>mmFire({onb:'open'})])}}
  return I}
@@ -3347,6 +3348,424 @@ document.addEventListener('click',async e=>{
 V.family=view;
 if(!TABS.some(t=>t[0]==='family'))TABS.push(['family','Family Sharing','#a8895f']);
 try{DEFG.family='family'}catch(_){}
+})();
+</script>
+<style>
+.byx{display:flex;flex-direction:column;gap:14px}.alwrap{padding-bottom:70px}.byseg{display:flex;gap:6px;overflow-x:auto;padding-bottom:2px}.byseg button{flex:none;border:1px solid var(--line);background:var(--card,#fff);color:inherit;border-radius:999px;padding:8px 14px;font:inherit;font-size:14px}.byseg button.on{background:#5b4a40;color:#fff;border-color:#5b4a40}.byfoot{display:flex;gap:10px;margin-top:6px}.bys{flex:1;border:1px solid var(--line);background:transparent;color:inherit;border-radius:12px;padding:11px;font:inherit;font-size:14px}.bys.dng{color:#b4535b}
+.byx .byc{background:var(--card,#fff);border:1px solid var(--line);border-radius:16px;padding:12px 14px}
+.byx .byc h4{margin:0 0 8px;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--mut)}
+.byx .bym{font-size:13px;color:var(--mut);margin:0}
+.byx .byg{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.byx .byb{display:flex;flex-direction:column;align-items:flex-start;gap:2px;text-align:left;padding:14px;border-radius:16px;border:1px solid var(--line);background:var(--card,#fff);color:inherit;font:inherit;cursor:pointer;min-width:0}
+.byx .byb:active{transform:scale(.98)}
+.byx .byb b{font-size:17px;font-weight:600;overflow-wrap:anywhere}
+.byx .byb span{font-size:13px;color:var(--mut)}.byx .byb small{font-size:12px;color:var(--mut)}
+.byx .byb em{font-style:normal;font-size:12px;font-weight:600;margin-top:4px;color:var(--accent,var(--a,#8a6a5a))}
+.byx .byb em.due{color:#9b2f2f}
+.byx .byr{display:flex;gap:10px;align-items:center;padding:10px 0;border-top:1px solid var(--line);min-width:0}
+.byx .byr:first-of-type{border-top:0}
+.byx .byr .bt{flex:1;min-width:0}.byx .byr .bt b{display:block;font-weight:600;overflow-wrap:anywhere}.byx .byr .bt small{display:block;color:var(--mut);font-size:12.5px;margin-top:2px;overflow-wrap:anywhere}
+.byx .byr.done .bt b{text-decoration:line-through;opacity:.55}
+.byx .byx2{border:0;background:none;color:var(--mut);font-size:20px;cursor:pointer;padding:4px 8px}
+.byx form.byf,.byx .byf2{display:flex;flex-direction:column;gap:8px;margin:8px 0 2px}
+.byx label.byl{display:flex;flex-direction:column;gap:3px;font-size:12px;color:var(--mut);text-align:left}
+.byx label.byl.row{flex-direction:row;align-items:center;gap:8px;font-size:14px;color:inherit}
+.byx input:not([type=checkbox]),.byx select,.byx textarea{font:inherit;font-size:16px;padding:10px 12px;border-radius:12px;border:1px solid var(--line);background:var(--field,#fff);color:inherit;min-width:0;width:100%;box-sizing:border-box}
+.byx input[type=checkbox]{width:20px;height:20px;flex:none}
+.byx .byp{padding:12px 16px;border-radius:14px;border:0;background:var(--accent,var(--a,#8a6a5a));color:#fff;font:inherit;font-weight:600;cursor:pointer}
+.byx .byp.ghost{background:none;border:1px solid var(--line);color:inherit;font-weight:500}
+.byx .bybar{height:10px;border-radius:99px;background:rgba(0,0,0,.08);overflow:hidden;margin:8px 0 4px}.byx .bybar i{display:block;height:100%;background:var(--accent,var(--a,#8a6a5a));border-radius:99px}
+.byx .bybar.ok i{background:#6f9a72}
+.byx .byh{margin:6px 0 0;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--mut)}
+.byx details.bycust>summary{cursor:pointer;font-weight:600;list-style:none;padding:4px 0}
+.byx details.bycust>summary::-webkit-details-marker{display:none}
+.byx .bye{display:flex;gap:6px;align-items:center;margin:6px 0}.byx .bye>*{min-width:0}
+.byx .bye select{width:auto;flex:none}
+.byx .byq{border-radius:99px!important}
+.byx .bye .byp{flex:none;white-space:nowrap}.byx .bye input:not([type=checkbox]){flex:1}.byx .bye select{max-width:46%}
+.byw{display:flex;flex-direction:column;gap:10px}
+.byw .byi{display:flex;flex-direction:column;gap:2px;text-align:left;padding:14px 16px;border-radius:16px;border:1px solid var(--line);background:var(--card,#fff);color:inherit;font:inherit;cursor:pointer}
+.byw .byi b{font-size:16px;font-weight:600}.byw .byi span{font-size:13.5px;color:var(--mut)}.byw .byi small{font-size:12px;color:var(--mut);opacity:.85;margin-top:2px}
+.byw h3{margin:14px 0 2px;font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:var(--mut)}
+.byw .byhero{background:var(--card,#fff);border:1px solid var(--line);border-radius:16px;padding:14px 16px}
+.byw .byhero p{margin:6px 0 0;font-size:14px;color:var(--mut)}
+
+.byx .byg2{display:grid;grid-template-columns:1fr 1fr;gap:8px 10px;margin-top:8px}.byw .byk.on b:after{content:' ✓'}.byseg{margin-top:2px}
+.byx .bylook{display:flex;flex-wrap:wrap;gap:8px;margin:6px 0 10px}.byx .bysw{width:32px;height:32px;border-radius:50%;border:2px solid transparent;box-shadow:0 0 0 1px var(--line);cursor:pointer;padding:0}.byx .bysw.on{border-color:var(--ink,#333);box-shadow:0 0 0 2px #fff inset}
+.byx .byb.fx-green{background:#e4f2e8;border-color:#7fb391}.byx .byb.fx-green b,.byx .byb.fx-green span{color:#2f7d4a}.byx .byb.fx-gold{background:#faf0d2;border-color:#d9b857}.byx .byb.fx-gold b{color:#7a5b10}
+.byx .byb .bye2{font-style:normal;font-size:18px;line-height:1;margin-bottom:2px}.byx .byb span.bydn{position:absolute;top:10px;right:12px;font-weight:700;font-size:17px;line-height:1;color:#2f7d4a}.byx .byb{position:relative}
+.byx .byc.fx-green{background:#e4f2e8;border-color:#7fb391}
+.byx .bynum{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}.byx .bynum b{font-size:34px;line-height:1.1;font-weight:700}.byx .bynum span{color:var(--mut)}.byx .bynum.ok b{color:#2f7d4a}
+.byx .byspark{width:100%;height:64px;display:block}
+.byx .bystars{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin:10px 0}.byx .bystar{aspect-ratio:1;border-radius:14px;border:2px dashed var(--line);display:flex;align-items:center;justify-content:center;font-size:26px;background:transparent;color:var(--mut)}.byx .bystar.on{border:2px solid color-mix(in srgb,var(--accent,var(--a)) 45%,#fff);background:color-mix(in srgb,var(--accent,var(--a)) 12%,#fff);animation:bypop .25s ease-out}
+@keyframes bypop{from{transform:scale(.6)}to{transform:scale(1)}}@media (prefers-reduced-motion:reduce){.byx .bystar.on{animation:none}}
+.byx .byrw{text-align:center;padding:14px;border-radius:14px;background:#e4f2e8;color:#2f7d4a;font-weight:600}
+.byw .bysearch{margin:2px 0 4px}.byw .byk{display:flex;flex-direction:column;gap:2px;text-align:left;padding:14px 16px;border-radius:16px;border:1px solid var(--line);background:var(--card,#fff);color:inherit;font:inherit;cursor:pointer}.byw .byk b{font-size:16px;font-weight:600}.byw .byk span{font-size:13.5px;color:var(--mut)}.byw .byk.on{border-color:var(--ink,#444);box-shadow:0 0 0 1px var(--ink,#444) inset}
+.byw input.bysq{font:inherit;font-size:16px;padding:12px 14px;border-radius:14px;border:1px solid var(--line);background:var(--field,#fff);color:inherit;width:100%;box-sizing:border-box}
+.tzc{background:var(--card,#fff);border:1px solid var(--line);border-radius:18px;padding:12px 14px;box-sizing:border-box}.tzc .byx{gap:10px}.tzc .tzch{all:unset;display:flex;align-items:center;justify-content:space-between;width:100%;cursor:pointer;font-weight:700;font-size:16px}.tzc .tzch i{font-style:normal;color:var(--mut);font-size:20px}.tzc .bym{margin-top:2px}
+</style>
+<script>
+(function(){
+const ON=()=>typeof tzOK==='function'&&tzOK();
+const hid=()=>Math.random().toString(36).slice(2,9);
+const T=()=>today();
+const KB={'by-log':'Button Log','by-list':'Custom List','by-check':'Routine Checklist','by-goal':'Goals And Counters','by-num':'Number Tracker','by-chart':'Sticker Chart'};
+Object.keys(KB).forEach(k=>{HKIND[k]=KB[k]});
+ICO['k:by-log']='<circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3"/>';
+ICO['k:by-list']='<path d="M8 6h12M8 12h12M8 18h12"/><circle cx="4" cy="6" r="1"/><circle cx="4" cy="12" r="1"/><circle cx="4" cy="18" r="1"/>';
+ICO['k:by-check']='<rect x="3" y="3" width="18" height="18" rx="4"/><path d="M8 12l3 3 5-6"/>';
+ICO['k:by-num']='<path d="M4 19V5M4 19h16M7 15l4-4 3 3 5-7"/>';
+ICO['k:by-chart']='<path d="M12 3l2.6 5.6 6 .7-4.5 4.1 1.2 6L12 16.4 6.7 19.4l1.2-6L3.4 9.3l6-.7z"/>';
+ICO['k:by-goal']='<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/>';
+const DEF={'by-log':()=>({buttons:[{id:hid(),l:'Done',e:0}]}),'by-list':()=>({fields:[],sort:'new'}),'by-check':()=>({reset:'daily',last:''}),'by-goal':()=>({goals:[{id:hid(),l:'My Goal',t:1,u:'',p:'day'}]}),'by-num':()=>({l:'My Number',u:'',goal:'',dir:'down'}),'by-chart':()=>({l:'My Chart',target:10,reward:'',icon:'⭐',done:0})};
+const CF=g=>{if(!g.cfg)g.cfg=DEF[g.kind]();g.items=g.items||[];return g.cfg};
+const isBy=k=>/^by-/.test(k||'');
+const pad=n=>String(n).padStart(2,'0');
+const dk=ms=>{const d=new Date(ms);return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate())};
+const tm=ms=>new Date(ms).toLocaleTimeString([],{hour:'numeric',minute:'2-digit'});
+const dur=ms=>{const m=Math.max(0,Math.round(ms/6e4)),h=Math.floor(m/60);return h>=24?Math.floor(h/24)+'d '+(h%24)+'h':h?h+'h '+(m%60)+'m':m+'m'};
+const ago=ms=>ms<6e4?'just now':dur(ms)+' ago';
+const dayName=k=>{const t=T();if(k===t)return 'Today';const y=new Date(t+'T12:00');y.setDate(y.getDate()-1);if(k===dk(y))return 'Yesterday';return new Date(k+'T12:00').toLocaleDateString(undefined,{weekday:'long',month:'short',day:'numeric'})};
+const fd=d=>d?new Date(d+'T12:00').toLocaleDateString(undefined,{month:'short',day:'numeric'}):'';
+const num=v=>{const n=parseFloat(v);return isNaN(n)?0:n};
+const fmtN=n=>(Math.round(n*100)/100).toLocaleString();
+const monday=d=>{const x=new Date(d+'T12:00');x.setDate(x.getDate()-((x.getDay()+6)%7));return dk(x)};
+const A=(g,h)=>`data-hid="${h.id}" data-pid="${g.id}"`;
+const ST={};
+const COLORS=[['','Match Theme'],['#c07a85','Rose'],['#c9a24b','Gold'],['#6f9a72','Green'],['#5f86b5','Blue'],['#8a74b0','Purple'],['#a07a5a','Brown'],['#6f7c88','Slate']];
+const FONTS=[['','Match Theme'],['Cormorant Garamond','Classic'],['Jost','Modern'],['Quicksand','Round'],['Caveat','Handwritten'],['DM Serif Display','Bold Serif']];
+const FX=[['green','Turn green'],['gold','Turn gold'],['check','Just show a check']];
+const byFont=n=>{if(!n)return;const id='byf-'+n.replace(/\W/g,'');if(document.getElementById(id))return;try{const l=document.createElement('link');l.id=id;l.rel='stylesheet';l.href='https://fonts.googleapis.com/css2?family='+n.replace(/ /g,'+')+':wght@400;500;600;700&display=swap';document.head.appendChild(l)}catch(_){}};
+const lookSt=h=>{const k=h.look||{};if(k.f)byFont(k.f);return (k.c?'--accent:'+k.c+';':'')+(k.f?"font-family:'"+k.f+"',system-ui,sans-serif;":'')};
+const fxCls=(fx,hit)=>hit&&fx!=='check'?' fx-'+(fx||'green'):'';
+/* ---------- Button Log ---------- */
+function logGrid(h,g){const c=CF(g),it=g.items,t0=T();
+ const lastOf=b=>it.filter(x=>x.b===b).sort((a,z)=>z.at-a.at)[0];
+ const cntT=b=>it.filter(x=>x.b===b&&dk(x.at)===t0).length;
+ return '<div class="byg">'+c.buttons.map(b=>{const l=lastOf(b.id),cnt=cntT(b.id),gl=+b.gl||0,hit=gl&&cnt>=gl;let due='';if(+b.e>0&&l){const nx=l.at+b.e*36e5;due=nx<=Date.now()?'<em class="due">Due now</em>':'<em>Next in '+dur(nx-Date.now())+'</em>'}
+  const st=b.c&&!(hit&&b.fx!=='check')?` style="background:color-mix(in srgb,${b.c} 16%,#fff);border-color:color-mix(in srgb,${b.c} 50%,#fff)"`:'';
+  return `<button type="button" class="byb${fxCls(b.fx,hit)}" ${st} data-by="log" ${A(g,h)} data-b="${b.id}">${hit?'<span class="bydn" aria-hidden="true">✓</span>':''}${b.i?`<em class="bye2" aria-hidden="true">${esc(b.i)}</em>`:''}<b>${esc(b.l)}</b><span>${cnt}${gl?' of '+gl:''} today</span><small>${l?'Last '+ago(Date.now()-l.at):'Not yet'}</small>${due}</button>`}).join('')+'</div>'}
+function vLog(h,g){const c=CF(g),it=g.items,t0=T();
+ const lastOf=b=>it.filter(x=>x.b===b).sort((a,z)=>z.at-a.at)[0];
+ const cntT=b=>it.filter(x=>x.b===b&&dk(x.at)===t0).length;
+ const nm=id=>{const b=c.buttons.find(x=>x.id===id);return b?b.l:'(removed)'};
+ let o=logGrid(h,g);
+ if(!c.buttons.length)o='<div class="byc"><p class="bym">No buttons yet. Open Customize below to add one.</p></div>';
+ const days={};it.slice().sort((a,z)=>z.at-a.at).slice(0,200).forEach(x=>{(days[dk(x.at)]=days[dk(x.at)]||[]).push(x)});
+ const hist=Object.keys(days).sort().reverse().slice(0,10).map(k=>`<div class="byh">${esc(dayName(k))} · ${days[k].length}</div><div class="byc">${days[k].map(x=>`<div class="byr"><div class="bt"><b>${esc(nm(x.b))}</b><small>${tm(x.at)}${x.n?' · '+esc(x.n):''}</small></div><button type="button" class="byx2" data-by="ldel" ${A(g,h)} data-i="${x.id}" aria-label="Delete">×</button></div>`).join('')}</div>`).join('');
+ o+=hist||'<p class="bym" style="text-align:center">Tap a button to log it. The time is saved for you.</p>';
+ o+=`<details class="byc bycust"><summary>Log Something From Earlier</summary><div class="byf2"><label class="byl">What<select id="by-lb">${c.buttons.map(b=>`<option value="${b.id}">${esc(b.l)}</option>`).join('')}</select></label><label class="byl">When<input id="by-lw" type="datetime-local"></label><label class="byl">Note (optional)<input id="by-ln" maxlength="120"></label><button type="button" class="byp" data-by="learlier" ${A(g,h)}>Add</button></div></details>`;
+ o+=`<details class="byc bycust"><summary>Customize Buttons</summary>${c.buttons.map(b=>`<div class="byc" style="margin:8px 0;padding:10px 12px"><div class="bye"><input data-byf="bi" ${A(g,h)} data-b="${b.id}" value="${esc(b.i||'')}" placeholder="🙂" maxlength="4" style="flex:none;width:58px;text-align:center" aria-label="Emoji"><input data-byf="bl" ${A(g,h)} data-b="${b.id}" value="${esc(b.l)}" maxlength="24" aria-label="Button name"><button type="button" class="byx2" data-by="bdel" ${A(g,h)} data-b="${b.id}" aria-label="Remove button">×</button></div><div class="byg2"><label class="byl">Color<select data-byf="bc" ${A(g,h)} data-b="${b.id}">${COLORS.map(z=>`<option value="${z[0]}"${(b.c||'')===z[0]?' selected':''}>${z[0]?z[1]:'Theme'}</option>`).join('')}</select></label><label class="byl">Remind me<select data-byf="be" ${A(g,h)} data-b="${b.id}">${[[0,'No reminder'],[1,'Every 1h'],[2,'Every 2h'],[3,'Every 3h'],[4,'Every 4h'],[6,'Every 6h'],[8,'Every 8h'],[12,'Every 12h'],[24,'Every day'],[168,'Every week']].map(z=>`<option value="${z[0]}"${+b.e===z[0]?' selected':''}>${z[1]}</option>`).join('')}</select></label><label class="byl">Goal a day<input type="number" min="0" step="1" inputmode="numeric" data-byf="bg" ${A(g,h)} data-b="${b.id}" value="${b.gl?esc(b.gl):''}" placeholder="None"></label><label class="byl">When reached<select data-byf="bfx" ${A(g,h)} data-b="${b.id}">${FX.map(z=>`<option value="${z[0]}"${(b.fx||'green')===z[0]?' selected':''}>${z[1]}</option>`).join('')}</select></label></div></div>`).join('')}<div class="bye"><input id="by-nb" placeholder="New button name" maxlength="24"><button type="button" class="byp" data-by="badd" ${A(g,h)}>Add</button></div><p class="bym">Set a goal a day and the button shows progress like “3 of 8,” then changes when you reach it. “Every” shows a countdown so you know when it is due again.</p></details>`;
+ return o}
+/* ---------- Custom List ---------- */
+const FT=[['text','Text'],['number','Number'],['sum','Number (adds up)'],['date','Date'],['link','Link'],['choice','Choice'],['check','Checkbox']];
+const fin=(f,v,at)=>{const id=`${at||''}`;const base=`data-byf="${at?'iv':'nv'}" data-fid="${f.id}"`;
+ if(f.t==='check')return `<label class="byl row"><input type="checkbox" ${base}${v?' checked':''}> ${esc(f.l)}</label>`;
+ if(f.t==='choice')return `<label class="byl">${esc(f.l)}<select ${base}><option value="">—</option>${(f.o||[]).map(o=>`<option${v===o?' selected':''}>${esc(o)}</option>`).join('')}</select></label>`;
+ const ty=f.t==='number'||f.t==='sum'?'number':f.t==='date'?'date':f.t==='link'?'url':'text';
+ return `<label class="byl">${esc(f.l)}<input type="${ty}" ${ty==='number'?'step="any" inputmode="decimal"':''} ${base} value="${esc(v==null?'':v)}" maxlength="300"></label>`};
+const sumLine=(c,it,f)=>{const v=it.v&&it.v[f.id];if(v===''||v==null||v===false)return '';if(f.t==='check')return v?'✓ '+f.l:'';if(f.t==='date')return f.l+' '+fd(v);if(f.t==='link'){try{return new URL(v).hostname.replace(/^www\./,'')}catch(_){return v}}if(f.t==='sum'||f.t==='number')return f.l+' '+fmtN(num(v));return v};
+function vList(h,g){const c=CF(g),it=g.items;c.fields=c.fields||[];
+ const dateF=c.fields.find(f=>f.t==='date');const so=c.sort||'new';
+ let L=it.slice();if(so==='az')L.sort((a,b)=>String(a.t).localeCompare(String(b.t)));else if(so==='old')L.sort((a,b)=>a.at-b.at);else if(so==='date'&&dateF)L.sort((a,b)=>String((a.v||{})[dateF.id]||'9').localeCompare(String((b.v||{})[dateF.id]||'9')));else L.sort((a,b)=>b.at-a.at);
+ const ck=c.fields.find(f=>f.t==='check');
+ let o=`<details class="byc bycust" ${it.length?'':'open'}><summary>+ Add</summary><form class="byf" data-bysub="add" ${A(g,h)}><label class="byl">${esc(c.tl||'Name')}<input name="t" required maxlength="120" autocomplete="off"></label>${c.fields.map(f=>fin(f,'')).join('')}<button class="byp">Add</button></form></details>`;
+ if(it.length>6)o+=`<input type="search" class="byq" data-byf="q" placeholder="Search" aria-label="Search">`;
+ const sums=c.fields.filter(f=>f.t==='sum');if(sums.length&&it.length)o+=`<div class="byc">${sums.map(f=>`<div class="byr"><div class="bt"><b>Total ${esc(f.l)}</b></div><b>${fmtN(it.reduce((a,x)=>a+num((x.v||{})[f.id]),0))}</b></div>`).join('')}</div>`;
+ if(it.length)o+=`<div class="bye"><span class="bym">Sort</span><select data-byf="sort" ${A(g,h)}>${[['new','Newest'],['old','Oldest'],['az','A to Z']].concat(dateF?[['date',dateF.l]]:[]).map(z=>`<option value="${z[0]}"${so===z[0]?' selected':''}>${z[1]}</option>`).join('')}</select></div>`;
+ o+=`<div class="byc" id="by-rows">`+(L.map(x=>{const parts=c.fields.map(f=>sumLine(c,x,f)).filter(Boolean);
+  return `<details class="byrow" data-od="by:${x.id}"><summary class="byr">${ck?`<input type="checkbox" data-by="tick" ${A(g,h)} data-i="${x.id}" ${(x.v||{})[ck.id]?'checked':''} aria-label="${esc(ck.l)}">`:''}<div class="bt"><b>${esc(x.t)}</b>${parts.length?`<small>${parts.map(esc).join(' · ')}</small>`:''}</div></summary><div class="byf2"><label class="byl">${esc(c.tl||'Name')}<input data-byf="it" ${A(g,h)} data-i="${x.id}" value="${esc(x.t)}" maxlength="120"></label>${c.fields.map(f=>fin(f,(x.v||{})[f.id],x.id).replace('data-byf="iv"',`data-byf="iv" ${A(g,h)} data-i="${x.id}"`)).join('')}<button type="button" class="byp ghost" data-by="idel" ${A(g,h)} data-i="${x.id}">Delete</button></div></details>`}).join('')||'<p class="bym" style="text-align:center;padding:8px 0">Nothing here yet. Tap Add.</p>')+'</div>';
+ o+=`<details class="byc bycust"><summary>Customize Fields</summary><p class="bym">Each entry has a name${c.fields.length?' and these fields':''}. Add whatever you want to keep track of.</p><div class="bye"><input data-byf="tl" ${A(g,h)} value="${esc(c.tl||'Name')}" maxlength="20" aria-label="Name of the main field"></div>${c.fields.map(f=>`<div class="bye"><input data-byf="fl" ${A(g,h)} data-f="${f.id}" value="${esc(f.l)}" maxlength="24"><select data-byf="ft" ${A(g,h)} data-f="${f.id}">${FT.map(z=>`<option value="${z[0]}"${f.t===z[0]?' selected':''}>${z[1]}</option>`).join('')}</select><button type="button" class="byx2" data-by="fdel" ${A(g,h)} data-f="${f.id}" aria-label="Remove field">×</button></div>${f.t==='choice'?`<div class="bye"><input data-byf="fo" ${A(g,h)} data-f="${f.id}" value="${esc((f.o||[]).join(', '))}" placeholder="Choices, separated by commas"></div>`:''}${f.t==='date'?`<label class="byl row"><input type="checkbox" data-byf="fc" ${A(g,h)} data-f="${f.id}"${f.cal?' checked':''}> Show on my calendar</label>`:''}`).join('')}<div class="bye"><input id="by-nf" placeholder="New field (like Price)" maxlength="24"><select id="by-nt">${FT.map(z=>`<option value="${z[0]}">${z[1]}</option>`).join('')}</select><button type="button" class="byp" data-by="fadd" ${A(g,h)}>Add</button></div></details>`;
+ return o}
+/* ---------- Routine Checklist ---------- */
+function chkReset(g){const c=CF(g);const t=T();let key=c.reset==='daily'?t:c.reset==='weekly'?monday(t):'';if(key&&c.last!==key){if(c.last)g.items.forEach(x=>{x.done=false});c.last=key}}
+function vCheck(h,g){const c=CF(g);chkReset(g);const it=g.items,dn=it.filter(x=>x.done).length;
+ let o=`<div class="byc"><b>${dn} of ${it.length} done</b><div class="bybar${it.length&&dn===it.length?' ok':''}"><i style="width:${it.length?Math.round(dn/it.length*100):0}%"></i></div><p class="bym">${c.reset==='daily'?'Resets every morning.':c.reset==='weekly'?'Resets every Monday.':'Stays checked until you uncheck it.'}</p></div>`;
+ o+=`<form class="byf" data-bysub="citem" ${A(g,h)}><div class="bye"><input name="t" required placeholder="Add a step" maxlength="120" autocomplete="off"><button class="byp">Add</button></div></form>`;
+ o+=`<div class="byc">`+(it.map(x=>`<div class="byr ${x.done?'done':''}"><input type="checkbox" data-by="ctick" ${A(g,h)} data-i="${x.id}"${x.done?' checked':''} aria-label="Done"><div class="bt"><b>${esc(x.t)}</b></div><button type="button" class="byx2" data-by="idel" ${A(g,h)} data-i="${x.id}" aria-label="Delete">×</button></div>`).join('')||'<p class="bym" style="text-align:center">Add the steps of your routine.</p>')+'</div>';
+ o+=`<details class="byc bycust"><summary>Customize</summary><label class="byl">Start fresh<select data-byf="reset" ${A(g,h)}>${[['daily','Every morning'],['weekly','Every Monday'],['none','Never']].map(z=>`<option value="${z[0]}"${c.reset===z[0]?' selected':''}>${z[1]}</option>`).join('')}</select></label>${dn?`<button type="button" class="byp ghost" style="margin-top:8px" data-by="cclear" ${A(g,h)}>Uncheck All</button>`:''}</details>`;
+ return o}
+/* ---------- Goals And Counters ---------- */
+const inPer=(p,at)=>{const k=dk(at),t=T();if(p==='day')return k===t;if(p==='week')return k>=monday(t)&&k<=t;if(p==='month')return k.slice(0,7)===t.slice(0,7);return true};
+const perN={day:'today',week:'this week',month:'this month',total:'total'};
+function streak(g,go){let n=0,d=new Date(T()+'T12:00');const met=k=>g.items.filter(x=>x.g===go.id&&dk(x.at)===k).reduce((a,x)=>a+x.n,0)>=num(go.t);if(!met(dk(d)))d.setDate(d.getDate()-1);while(met(dk(d))&&n<999){n++;d.setDate(d.getDate()-1)}return n}
+function vGoal(h,g){const c=CF(g),it=g.items;
+ let o=c.goals.map(go=>{const s=it.filter(x=>x.g===go.id&&inPer(go.p,x.at)).reduce((a,x)=>a+x.n,0),t=num(go.t)||1,pct=Math.min(100,Math.round(s/t*100)),sk=go.p==='day'?streak(g,go):0;
+  return `<div class="byc${pct>=100&&(go.fx||'green')!=='check'?' fx-green':''}"><div style="display:flex;justify-content:space-between;gap:8px"><b>${pct>=100?'✓ ':''}${esc(go.l)}</b><span class="bym">${fmtN(s)} of ${fmtN(t)}${go.u?' '+esc(go.u):''} ${perN[go.p]||''}</span></div><div class="bybar${pct>=100?' ok':''}"><i style="width:${pct}%"></i></div>${sk>1?`<p class="bym">${sk}-day streak</p>`:''}<div class="bye"><button type="button" class="byp" data-by="gadd" ${A(g,h)} data-gid="${go.id}" data-n="1">+1</button><input type="number" step="any" inputmode="decimal" placeholder="Amount" id="by-g-${go.id}"><button type="button" class="byp ghost" data-by="gadd" ${A(g,h)} data-gid="${go.id}" data-n="">Add</button></div></div>`}).join('')||'<div class="byc"><p class="bym">No goals yet. Open Customize to add one.</p></div>';
+ const recent=it.slice().sort((a,z)=>z.at-a.at).slice(0,8);
+ if(recent.length)o+=`<div class="byh">Recent</div><div class="byc">${recent.map(x=>{const go=c.goals.find(z=>z.id===x.g);return `<div class="byr"><div class="bt"><b>+${fmtN(x.n)}${go&&go.u?' '+esc(go.u):''} · ${esc(go?go.l:'(removed)')}</b><small>${esc(dayName(dk(x.at)))} ${tm(x.at)}</small></div><button type="button" class="byx2" data-by="ldel" ${A(g,h)} data-i="${x.id}" aria-label="Delete">×</button></div>`}).join('')}</div>`;
+ o+=`<details class="byc bycust"><summary>Customize Goals</summary>${c.goals.map(go=>`<div class="bye"><input data-byf="gl" ${A(g,h)} data-gid="${go.id}" value="${esc(go.l)}" maxlength="28" aria-label="Goal"><button type="button" class="byx2" data-by="gdel" ${A(g,h)} data-gid="${go.id}" aria-label="Remove goal">×</button></div><div class="bye"><input type="number" step="any" data-byf="gt" ${A(g,h)} data-gid="${go.id}" value="${esc(go.t)}" aria-label="Target"><input data-byf="gu" ${A(g,h)} data-gid="${go.id}" value="${esc(go.u||'')}" placeholder="Unit (like glasses)" maxlength="14"><select data-byf="gp" ${A(g,h)} data-gid="${go.id}">${[['day','Per day'],['week','Per week'],['month','Per month'],['total','In total']].map(z=>`<option value="${z[0]}"${go.p===z[0]?' selected':''}>${z[1]}</option>`).join('')}</select></div><div class="bye"><span class="bym" style="flex:none">When reached</span><select data-byf="gfx" ${A(g,h)} data-gid="${go.id}">${[['green','Turn green and show a check'],['check','Just show a check']].map(z=>`<option value="${z[0]}"${(go.fx||'green')===z[0]?' selected':''}>${z[1]}</option>`).join('')}</select></div>`).join('')}<div class="bye"><input id="by-ng" placeholder="New goal (like Read)" maxlength="28"><button type="button" class="byp" data-by="gnew" ${A(g,h)}>Add</button></div></details>`;
+ return o}
+/* ---------- Number Tracker ---------- */
+function spark(a){if(a.length<2)return '';const w=300,hh=64,p=6,mn=Math.min(...a),mx=Math.max(...a),r=mx-mn||1;const pts=a.map((v,i)=>[p+i*(w-2*p)/(a.length-1),hh-p-(v-mn)/r*(hh-2*p)]);
+ return `<svg class="byspark" viewBox="0 0 ${w} ${hh}" preserveAspectRatio="none" aria-hidden="true"><polyline fill="none" stroke="var(--accent,var(--a))" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" points="${pts.map(q=>q[0].toFixed(1)+','+q[1].toFixed(1)).join(' ')}"/><circle cx="${pts[pts.length-1][0].toFixed(1)}" cy="${pts[pts.length-1][1].toFixed(1)}" r="4" fill="var(--accent,var(--a))"/></svg>`}
+function numInfo(g){const c=CF(g),it=g.items.slice().sort((a,z)=>a.at-z.at),last=it[it.length-1],prev=it[it.length-2],goal=c.goal===''||c.goal==null?null:num(c.goal);const hit=goal!=null&&last&&(c.dir==='up'?last.v>=goal:last.v<=goal);return{it,last,prev,goal,hit}}
+function vNum(h,g){const c=CF(g),{it,last,prev,goal,hit}=numInfo(g);
+ const d=last&&prev?Math.round((last.v-prev.v)*100)/100:null;
+ let o=`<div class="byc${hit?' fx-green':''}"><div class="byh" style="margin:0 0 4px">${esc(c.l)}</div><div class="bynum${hit?' ok':''}">${last?`<b>${hit?'✓ ':''}${fmtN(last.v)}</b><span>${esc(c.u||'')}</span>`:'<span>Nothing logged yet</span>'}</div>${d!=null?`<p class="bym">${d===0?'No change':(d>0?'Up ':'Down ')+fmtN(Math.abs(d))+(c.u?' '+esc(c.u):'')} since the last entry</p>`:''}${goal!=null?`<p class="bym">Goal: ${c.dir==='up'?'at least':'at or below'} ${fmtN(goal)}${c.u?' '+esc(c.u):''}</p>`:''}${spark(it.slice(-30).map(x=>x.v))}</div>`;
+ o+=`<form class="byf" data-bysub="nadd" ${A(g,h)}><div class="bye"><input name="t" type="number" step="any" inputmode="decimal" required placeholder="Today’s ${esc(c.l.toLowerCase())}" aria-label="Value"><button class="byp">Add</button></div></form>`;
+ const rec=it.slice().reverse().slice(0,10);
+ if(rec.length)o+=`<div class="byh">Recent</div><div class="byc">${rec.map(x=>`<div class="byr"><div class="bt"><b>${fmtN(x.v)}${c.u?' '+esc(c.u):''}</b><small>${esc(dayName(dk(x.at)))} ${tm(x.at)}</small></div><button type="button" class="byx2" data-by="ldel" ${A(g,h)} data-i="${x.id}" aria-label="Delete">×</button></div>`).join('')}</div>`;
+ o+=`<details class="byc bycust"><summary>Customize</summary><label class="byl">What are you tracking<input data-byf="nl" ${A(g,h)} value="${esc(c.l)}" maxlength="24"></label><div class="bye"><input data-byf="nu" ${A(g,h)} value="${esc(c.u||'')}" placeholder="Unit (like lb)" maxlength="10"><input type="number" step="any" inputmode="decimal" data-byf="ng" ${A(g,h)} value="${esc(c.goal===''||c.goal==null?'':c.goal)}" placeholder="Goal (optional)"></div><label class="byl">Goal means<select data-byf="nd" ${A(g,h)}><option value="down"${c.dir!=='up'?' selected':''}>Get to this or lower</option><option value="up"${c.dir==='up'?' selected':''}>Get to this or higher</option></select></label><p class="bym">When your latest entry reaches the goal the number turns green.</p></details>`;
+ return o}
+/* ---------- Sticker Chart ---------- */
+function vChart(h,g){const c=CF(g),n=g.items.length,tg=Math.max(1,Math.min(60,+c.target||10)),full=n>=tg;
+ let o=`<div class="byc"><div style="display:flex;justify-content:space-between;gap:8px;align-items:baseline"><b>${esc(c.l)}</b><span class="bym">${Math.min(n,tg)} of ${tg}</span></div>${c.reward?`<p class="bym">Reward: ${esc(c.reward)}</p>`:''}<div class="bystars">${Array.from({length:tg},(_,i)=>`<div class="bystar${i<n?' on':''}">${i<n?esc(c.icon||'⭐'):''}</div>`).join('')}</div>${c.done?`<p class="bym">Charts finished: ${c.done}</p>`:''}</div>`;
+ if(full)o+=`<div class="byrw">${esc(c.icon||'⭐')} ${c.reward?'Reward time: '+esc(c.reward):'Chart complete!'}</div><button type="button" class="byp" data-by="snew" ${A(g,h)}>Start A New Chart</button>`;
+ else o+=`<button type="button" class="byp" data-by="sadd" ${A(g,h)}>Add A ${esc(c.icon==='❤️'?'Heart':c.icon==='🐾'?'Paw':c.icon==='🌈'?'Rainbow':'Star')}</button>`;
+ if(n&&!full)o+=`<button type="button" class="byp ghost" data-by="sundo" ${A(g,h)}>Undo Last</button>`;
+ o+=`<details class="byc bycust"><summary>Customize</summary><label class="byl">Chart name<input data-byf="cl" ${A(g,h)} value="${esc(c.l)}" maxlength="24"></label><div class="bye"><label class="byl" style="flex:1">Stars needed<input type="number" min="1" max="60" inputmode="numeric" data-byf="ct" ${A(g,h)} value="${esc(c.target)}"></label><label class="byl" style="flex:1">Symbol<select data-byf="ci" ${A(g,h)}>${['⭐','❤️','🌟','🐾','🌈'].map(s=>`<option${(c.icon||'⭐')===s?' selected':''}>${s}</option>`).join('')}</select></label></div><label class="byl">Reward at the end<input data-byf="cr" ${A(g,h)} value="${esc(c.reward||'')}" placeholder="Like: Ice cream trip" maxlength="40"></label></details>`;
+ return o}
+const VIEWS={'by-log':vLog,'by-list':vList,'by-check':vCheck,'by-goal':vGoal,'by-num':vNum,'by-chart':vChart};
+const keyD=(html,id)=>html.replace(/<details class="byc bycust"([^>]*)><summary>([^<]*)<\/summary>/g,(m,a,n)=>{const k='by:'+id+':'+n;return '<details class="byc bycust" data-od="'+k+'"'+(WOPEN.has(k)||/open/.test(a)?' open':'')+'><summary>'+n+'</summary>'}).replace(/<details class="byrow" data-od="([^"]+)">/g,(m,k)=>'<details class="byrow" data-od="'+k+'"'+(WOPEN.has(k)?' open':'')+'>');
+const viewOf=(h,g)=>keyD(VIEWS[g.kind](h,g),g.id);
+/* ---------- Ideas ---------- */
+const mkL=(b)=>({kind:'by-log',cfg:{buttons:b.map(x=>({id:hid(),l:x[0],e:x[1]||0,gl:x[2]||undefined,fx:x[3]||undefined,i:x[4]||undefined}))}});
+const mkN=(l,u,goal,dir)=>({kind:'by-num',cfg:{l,u,goal:goal==null?'':goal,dir:dir||'down'}});
+const mkS=(l,target,reward,icon)=>({kind:'by-chart',cfg:{l,target,reward:reward||'',icon:icon||'⭐',done:0}});
+const mkF=(a)=>a.map(x=>({id:hid(),l:x[0],t:x[1],o:x[2]||undefined,cal:x[3]||undefined}));
+const mkI=(tl,f,sort)=>({kind:'by-list',cfg:{tl,fields:mkF(f),sort:sort||'new'}});
+const mkC=(reset,items)=>({kind:'by-check',cfg:{reset,last:''},items:(items||[]).map(t=>({id:hid(),t,done:false}))});
+const mkG=(a)=>({kind:'by-goal',cfg:{goals:a.map(x=>({id:hid(),l:x[0],t:x[1],u:x[2]||'',p:x[3]||'day'}))}});
+const note=(n)=>({kind:'notes',name:n});
+const IDEAS=[
+ ['Health','Medicine Tracker','Log every dose with the time, and see when the next one is due.',()=>[['Doses',mkL([['Took It',12]])],['Notes',note('Notes')]]],
+ ['Health','Water And Habits','Daily goals with progress bars and streaks.',()=>[['Today',mkG([['Water',8,'glasses'],['Walk',30,'minutes'],['Stretch',1,'time']])]]],
+ ['Health','Symptom Journal','Tap to log headaches, sleep, mood or anything you want to spot patterns in.',()=>[['Log',mkL([['Headache'],['Nausea'],['Tired'],['Slept Badly']])],['Journal',note('Journal')]]],
+ ['Pets','Pet Care','Feeding, walks and meds with times, plus vet and vaccine dates.',()=>[['Daily Care',mkL([['Fed',8],['Walked',6],['Medicine',24],['Treat']])],['Vet And Vaccines',mkI('Item',[['Date','date',null,1],['Notes','text']],'date')],['Notes',note('Notes')]]],
+ ['Home','Plant Care','Every plant, where it lives and when to water it.',()=>[['Plants',mkI('Plant',[['Where','text'],['Last watered','date'],['Water next','date',null,1],['Notes','text']],'date')]]],
+ ['Home','Home Projects','Ideas to finished, with budgets that add up and due dates.',()=>[['Projects',mkI('Project',[['Status','choice',['Idea','Planned','Doing','Done']],['Budget','sum'],['Due','date',null,1],['Notes','text']])],['Shopping List',mkC('none',[])]]],
+ ['Home','Cleaning Rotation','A weekly reset checklist, plus a deep clean list.',()=>[['This Week',mkC('weekly',['Bathrooms','Floors','Dust','Laundry','Kitchen deep clean'])],['Deep Clean',mkC('none',['Oven','Fridge','Windows','Baseboards'])]]],
+ ['Home','Freezer And Pantry','What you have, how much, and when to use it by.',()=>[['Inventory',mkI('Item',[['Amount','number'],['Made','date'],['Use by','date',null,1]],'date')]]],
+ ['Home','Car Care','Service history, costs, mileage and the next due date.',()=>[['Service Records',mkI('Service',[['Date','date'],['Miles','number'],['Cost','sum'],['Next due','date',null,1]])],['Fuel',mkL([['Filled Up']])]]],
+ ['Family','Morning And Evening Routines','Two checklists that reset by themselves.',()=>[['Morning',mkC('daily',['Wake up','Get dressed','Breakfast','Teeth','Pack bags'])],['Evening',mkC('daily',['Dinner cleanup','Bath','Pajamas','Teeth','Read together','Lights out'])]]],
+ ['Family','Gift Ideas','Who, what, price, and whether it is bought.',()=>[['Gifts',mkI('Idea',[['For','text'],['Price','sum'],['Link','link'],['Occasion date','date',null,1],['Bought','check']])]]],
+ ['Fun','Reading And Watchlist','Books, shows and movies with status and rating.',()=>[['List',mkI('Title',[['Type','choice',['Book','Movie','Show']],['Status','choice',['Want to','In progress','Done']],['Rating','choice',['1','2','3','4','5']],['Notes','text']])],['Notes',note('Notes')]]],
+ ['Fun','Trip Planner','Packing list, plans by day, and a budget that adds up.',()=>[['Packing',mkC('none',['Passports or IDs','Chargers','Medicine','Clothes','Snacks'])],['Plans',mkI('Plan',[['Date','date',null,1],['Booked','check'],['Notes','text']],'date')],['Budget',mkI('Expense',[['Cost','sum'],['Paid','check']])],['Notes',note('Notes')]]],
+ ['Money','Savings Goals','Watch your progress toward the things you are saving for.',()=>[['Goals',mkG([['Emergency fund',1000,'$','total'],['Vacation',500,'$','total']])]]],
+ ['Work','Side Business','Income and expenses that add up, plus a monthly goal.',()=>[['Income',mkI('Client or job',[['Amount','sum'],['Date','date'],['Paid','check']])],['Expenses',mkI('Expense',[['Cost','sum'],['Date','date']])],['Monthly Goal',mkG([['Income this month',1000,'$','month']])]]],
+ ['Kids','Reading Log','Minutes read each day with a streak.',()=>[['Reading',mkG([['Reading',20,'minutes']])],['Books',mkI('Book',[['Finished','date'],['Rating','choice',['1','2','3','4','5']]])]]],
+];
+IDEAS.push(
+ ['Kids','Potty Chart','Add a star for every success. A reward waits at the end.',()=>[['Stars',mkS('Potty Chart',10,'A special treat','⭐')]]],
+ ['Kids','Kid Reward Chart','Stars for good days, helping out or trying hard.',()=>[['Stars',mkS('My Stars',15,'Pick a family activity','🌟')],['Notes',note('Notes')]]],
+ ['Health','Water Tracker','Tap each time you finish a glass. It turns green at your goal.',()=>[['Water',mkL([['Glass of Water',0,8,'green','💧']])]]],
+ ['Health','Weight Tracker','Log your weight and watch the line over time.',()=>[['Weight',mkN('Weight','lb',null,'down')]]],
+ ['Health','Mood Tracker','Rate your day from 1 to 5 and spot patterns.',()=>[['Mood',mkN('Mood','of 5',null,'up')],['Notes',note('Journal')]]],
+ ['Health','Medications','Every medicine with the dose, times and refill date, plus a button to log when you take it.',()=>[['Medicines',mkI('Medicine',[['Dose','text'],['Times','text'],['Refill date','date',null,1],['Notes','text']])],['Taken',mkL([['Took It',0,null,null,'💊']])]]],
+ ['Health','Sleep Log','Tap when you go to bed and when you wake up.',()=>[['Sleep',mkL([['Went To Bed',0,null,null,'🌙'],['Woke Up',0,null,null,'☀️']])]]],
+ ['Health','Workout Log','Log workouts and see how many you did this week.',()=>[['Workouts',mkL([['Workout',0,null,null,'💪'],['Walk',0,null,null,'🚶'],['Stretch',0,null,null,'🧘']])],['Weekly Goal',mkG([['Workouts',3,'workouts','week']])]]]
+);
+const KWM={'Medicine Tracker':'medication pills prescription dose','Water And Habits':'habits water drink walk','Symptom Journal':'symptoms headache migraine pain mood','Pet Care':'dog cat pets feeding walks vet','Plant Care':'plants watering garden houseplants','Home Projects':'diy remodel renovation projects budget','Cleaning Rotation':'cleaning chores housework weekly','Freezer And Pantry':'food freezer pantry inventory meals','Car Care':'car vehicle oil mileage service maintenance','Morning And Evening Routines':'routine kids morning bedtime checklist','Gift Ideas':'gifts presents christmas birthday','Reading And Watchlist':'books movies shows tv watchlist reading','Trip Planner':'travel vacation trip packing plans','Savings Goals':'savings money goal fund save','Side Business':'business income expenses clients work','Reading Log':'reading books minutes kids','Potty Chart':'potty training toilet toddler stars sticker reward chart','Kid Reward Chart':'sticker chart reward stars kids behavior','Water Tracker':'water hydration drink glasses','Weight Tracker':'weight scale lose gain pounds','Mood Tracker':'mood feelings emotions journal','Medications':'medicine prescriptions pills refill dose times','Sleep Log':'sleep bedtime wake naps','Workout Log':'workout exercise gym walk run fitness'};
+const CAT=['Kids','Health','Pets','Home','Family','Fun','Money','Work'];
+const PGK=[['by-log','Tap To Log','Tap a button each time something happens, like water, medicine or a walk. The time is saved.'],['by-goal','Count Toward A Goal','Progress bar and streak for things like glasses of water or minutes read.'],['by-list','Keep A List','Medications, gifts, plants. You choose the details for each item.'],['by-check','Daily Checklist','Steps that start fresh every morning or every week.'],['by-num','Track A Number','Weight, mood, hours slept. See it over time.'],['by-chart','Sticker Chart','Earn a star each time, with a reward at the end.'],['notes','A Page To Write On','Notes, journal, anything.']];
+function makeHub(name,pages){const h={id:hUid(),own:1,name:name,pages:pages.map(p=>{const o={id:hUid(),name:p[0],kind:p[1].kind,items:p[1].items||[],text:''};if(p[1].cfg)o.cfg=p[1].cfg;return o})};hubs().push(h);save();return h}
+function byoHome(){let o=`<div class="byw"><div class="byhero"><b>What do you want help with?</b><p>Search, or pick an idea. It is set up in a second, and you can change anything afterward.</p></div><input class="bysq" id="byo-q" type="search" placeholder="Try potty, water, medicine, pets…" autocomplete="off" aria-label="Search ideas"><p class="bym" id="byo-none" style="display:none">Nothing matches that. Use Start From Scratch below to build it yourself.</p>`;
+ CAT.forEach(c=>{const L=IDEAS.map((x,i)=>[x,i]).filter(z=>z[0][0]===c);if(!L.length)return;o+=`<h3 data-cat="${c}">${c}</h3>`+L.map(z=>`<button type="button" class="byi" data-byo="idea" data-i="${z[1]}" data-kw="${esc((z[0][1]+' '+z[0][2]+' '+(KWM[z[0][1]]||'')).toLowerCase())}" data-c="${c}"><b>${esc(z[0][1])}</b><span>${esc(z[0][2])}</span></button>`).join('')});
+ o+=`<h3 data-cat="x">Something Else</h3><button type="button" class="byi" data-tab="byos" data-c="x"><b>Start From Scratch</b><span>Pick what you want to do, name it, and shape it yourself.</span></button></div>`;return o}
+function byoIdea(i){const x=IDEAS[+i];if(!x)return '';const pg=x[3]();return `<div class="byw"><div class="byhero"><b>${esc(x[1])}</b><p>${esc(x[2])}</p><p style="margin-top:8px">Includes: ${pg.map(p=>esc(p[0])).join(', ')}</p></div><div class="byx"><div class="byc"><label class="byl">Name<input id="byo-name" value="${esc(x[1])}" maxlength="24"></label></div><button type="button" class="byp" data-byo="make" data-i="${i}">Create This</button></div></div>`}
+function byoScratch(){return `<div class="byw"><div class="byhero"><b>What do you want to do?</b><p>Pick one or more. Each becomes a part of your page.</p></div><div class="byx"><div class="byc"><label class="byl">Name<input id="byo-name" placeholder="What is it for?" maxlength="24"></label></div>${PGK.map(p=>`<button type="button" class="byk" data-byo="pk" data-k="${p[0]}" aria-pressed="false"><b>${p[1]}</b><span>${p[2]}</span></button>`).join('')}<button type="button" class="byp" data-byo="scratch">Create</button></div></div>`}
+/* ---------- wiring ---------- */
+const _hv=hubView;
+hubView=function(t){
+ if(ON()){
+ if(t==='byo')return{title:'Build Your Own',color:'#b5707c',parent:'all',html:byoHome()};
+ if(t==='byos')return{title:'Start From Scratch',color:'#b5707c',parent:'byo',html:byoScratch()};
+ let m0=/^byo:(\d+)$/.exec(t||'');if(m0)return{title:(IDEAS[+m0[1]]||[0,'Idea'])[1],color:'#b5707c',parent:'byo',html:byoIdea(m0[1])};
+ m0=/^c:([^:]+)(?::(.+))?$/.exec(t||'');
+ if(m0){const hh=hubOf(m0[1]);if(!hh){tab='all';return null}const pg=hh.pages||[],g=pg.find(z=>z.id===m0[2])||pg[0];
+  let o='<div class="byx" style="'+lookSt(hh)+'">';if(pg.length>1)o+='<div class="byseg">'+pg.map(z=>'<button type="button" class="'+(z===g?'on':'')+'" data-tab="c:'+hh.id+':'+z.id+'">'+esc(z.name)+'</button>').join('')+'</div>';
+  o+=g?(isBy(g.kind)?viewOf(hh,g):'<p class="bym">This part is a plain page. Open it from Add Or Remove Pages.</p>'):'<p class="bym">Nothing here yet. Use Look And Settings to add a page.</p>';
+  o+=byLook(hh)+'</div>';
+  return{title:hh.name,color:'#b5707c',parent:'all',html:o}}
+ }
+ let m=/^p:([^:]+):(.+)$/.exec(t||'');
+ if(m){const hh=hubOf(m[1]);const g=hh&&(hh.pages||[]).find(z=>z.id===m[2]);if(g&&isBy(g.kind)){return{title:g.name,color:'#b5707c',parent:'h:'+hh.id,html:'<div class="byx">'+viewOf(hh,g)+'</div>'}}}
+ const r=_hv(t);
+ if(ON()&&/^he:/.test(t||'')&&r){const hh=hubOf(t.slice(3));if(hh&&hh.own)r.parent='c:'+hh.id}
+ if(ON()&&/^he:/.test(t||'')&&r&&r.html){const hh=hubOf(t.slice(3));if(hh&&hh.own)r.html=r.html.replace('Hub Name','Page Name').replace('Delete This Hub','Delete This Page')}
+ if(ON()&&/^he:/.test(t||'')&&r&&r.html)r.html=r.html.replace('<option value="notes">Notes</option></select>','<option value="notes">Notes</option>'+Object.keys(KB).map(k=>`<option value="${k}">${KB[k]}</option>`).join('')+'</select>');
+ return r};
+function byLook(h){const k=h.look||{};
+ return `<details class="byc bycust" data-od="by:${h.id}:look"${WOPEN.has('by:'+h.id+':look')?' open':''}><summary>Look And Settings</summary><label class="byl">Name<input data-bys="name" data-id="${h.id}" value="${esc(h.name)}" maxlength="24"></label><div class="byl" style="margin-top:8px">Color</div><div class="bylook">${COLORS.map(z=>`<button type="button" class="bysw${(k.c||'')===z[0]?' on':''}" data-bys="sw" data-id="${h.id}" data-c="${z[0]}" style="background:${z[0]||'var(--a)'}" aria-label="${z[1]}"></button>`).join('')}</div><label class="byl">Font<select data-bys="font" data-id="${h.id}">${FONTS.map(z=>`<option value="${z[0]}"${(k.f||'')===z[0]?' selected':''}>${z[1]}</option>`).join('')}</select></label><label class="byl row" style="margin-top:8px"><input type="checkbox" data-bys="show" data-id="${h.id}"${h.show?' checked':''}> Show on my Today page</label><div class="byfoot"><button type="button" class="bys" data-tab="he:${h.id}">Add Or Remove Pages</button><button type="button" class="bys dng" data-byo="del" data-id="${h.id}">Delete</button></div></details>`}
+try{let ch=0;if(ON())(S.hubs||[]).forEach(x=>{if(!x.own&&x.pages&&x.pages.length&&x.pages.every(g=>isBy(g.kind))){x.own=1;ch=1}});if(ch)save()}catch(_){}
+const _hl=hubList;hubList=function(){return _hl().filter(x=>{const hh=x.id==='today'?null:hubOf(x.id);return !(hh&&hh.own)})};
+const _va=V.all;V.all=function(){let o=_va();if(!ON())return o;const mine=hubs().filter(x=>x.own);
+ const add='<button type="button" class="arow" data-tab="byo"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg><span>Build Your Own</span><i aria-hidden="true">›</i></button>';
+ const rows=mine.map(x=>'<button type="button" class="arow" data-tab="c:'+x.id+'"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/></svg><span>'+esc(x.name)+'</span><i aria-hidden="true">›</i></button>').join('');
+ return o.replace(/<\/div>$/,'<div class="alh">'+(mine.length?'My Pages':'Make Your Own')+'</div><div class="alist">'+rows+add+'</div></div>')};
+/* hub tab subtitles for the new kinds */
+const _r0=render;render=function(){const r=_r0.apply(this,arguments);try{byTiles()}catch(_){}try{byToday()}catch(_){}return r};
+function cpCard(h){const g=(h.pages||[]).find(z=>isBy(z.kind));if(!g)return '';CF(g);const t=document.createElement('div');t.innerHTML=viewOf(h,g);let body='';
+ const q=s=>t.querySelector(s),first=()=>{const e=q('.byc');return e?e.outerHTML:''};
+ if(g.kind==='by-log')body=(q('.byg')||{outerHTML:''}).outerHTML;
+ else if(g.kind==='by-goal')body=first();
+ else if(g.kind==='by-chart')body=first()+((q('[data-by=sadd]')||q('[data-by=snew]')||{outerHTML:''}).outerHTML);
+ else if(g.kind==='by-num')body=first()+((q('form.byf')||{outerHTML:''}).outerHTML);
+ else if(g.kind==='by-check')body=first();
+ else body='<p class="bym">'+g.items.length+(g.items.length===1?' entry':' entries')+'</p>';
+ return '<section class="tzc" data-tzp="'+h.id+'" style="'+lookSt(h)+'"><button type="button" class="tzch" data-tab="c:'+h.id+'"><span>'+esc(h.name)+'</span><i aria-hidden="true">›</i></button><div class="byx">'+body+'</div></section>'}
+function byToday(){if(!ON()||tab!=='today')return;const v=document.getElementById('view');if(!v)return;v.querySelectorAll(':scope>.tzc').forEach(x=>x.remove());const L=hubs().filter(x=>x.own&&x.show);if(!L.length)return;const t=document.createElement('div');t.innerHTML=L.map(cpCard).join('');const fr=document.createDocumentFragment();[...t.children].forEach(c=>fr.appendChild(c));const an=v.querySelector(':scope>.hq-qa')||v.querySelector(':scope>.tiles');if(an)an.after(fr);else v.appendChild(fr)}
+document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest('[data-bys=sw]');if(!b)return;const hh=hubOf(b.dataset.id);if(!hh)return;hh.look=hh.look||{};hh.look.c=b.dataset.c||undefined;save();render()});
+document.addEventListener('change',e=>{const t=e.target;if(!t||!t.dataset||!t.dataset.bys)return;const hh=hubOf(t.dataset.id);if(!hh)return;
+ if(t.dataset.bys==='font'){hh.look=hh.look||{};hh.look.f=t.value||undefined;save();render()}
+ if(t.dataset.bys==='show'){hh.show=t.checked||undefined;save();render()}});
+document.addEventListener('input',e=>{const t=e.target;if(!t||!t.dataset||t.dataset.bys!=='name')return;const hh=hubOf(t.dataset.id);if(hh){hh.name=t.value||'My Page';save()}});
+function byTiles(){const m=/^h:([^:]+)$/.exec(tab||'');if(!m)return;const h=hubOf(m[1]);if(!h)return;(h.pages||[]).forEach(g=>{if(!isBy(g.kind))return;const b=document.querySelector('.tile[data-tab="p:'+h.id+':'+g.id+'"] span');if(!b)return;CF(g);let s='';if(g.kind==='by-log'){const l=g.items.slice().sort((a,z)=>z.at-a.at)[0];s=l?'Last '+ago(Date.now()-l.at):'Tap to log'}else if(g.kind==='by-list')s=g.items.length+(g.items.length===1?' entry':' entries');else if(g.kind==='by-check'){chkReset(g);s=g.items.filter(x=>!x.done).length+' to do'}else{const go=g.cfg.goals[0];if(go){const v=g.items.filter(x=>x.g===go.id&&inPer(go.p,x.at)).reduce((a,x)=>a+x.n,0);s=fmtN(v)+' of '+fmtN(num(go.t))+(go.u?' '+go.u:'')}}b.textContent=s})}
+const pgOf=el=>{const h=hubOf(el.dataset.hid);const g=h&&(h.pages||[]).find(p=>p.id===el.dataset.pid);return g?[h,g]:null};
+document.addEventListener('click',e=>{
+ const bo=e.target.closest&&e.target.closest('[data-byo]');
+ if(bo){const k=bo.dataset.byo;
+  if(k==='idea'){tab='byo:'+bo.dataset.i;render();window.scrollTo(0,0);return}
+  if(k==='del'){const hh=hubOf(bo.dataset.id);if(!hh||!confirm('Delete "'+hh.name+'" and everything in it? This cannot be undone.'))return;S.hubs=hubs().filter(z=>z!==hh);save();tab='all';try{location.hash=''}catch(_){}render();return}
+  if(k==='make'){const x=IDEAS[+bo.dataset.i];const nm=((document.getElementById('byo-name')||{}).value||'').trim()||x[1];const h=makeHub(nm,x[3]());tab='c:'+h.id;try{location.hash=''}catch(_){}render();return}
+  if(k==='pk'){const on=!bo.classList.contains('on');bo.classList.toggle('on',on);bo.setAttribute('aria-pressed',on?'true':'false');return}
+  if(k==='scratch'){const nm=((document.getElementById('byo-name')||{}).value||'').trim()||'My Page';const ks=[...document.querySelectorAll('[data-byo=pk].on')].map(z=>z.dataset.k);if(!ks.length){bo.textContent='Pick at least one above';setTimeout(()=>{bo.textContent='Create'},1800);return}const names={'by-log':'Log','by-list':'List','by-check':'Checklist','by-goal':'Goals','by-num':'Numbers','by-chart':'Chart',notes:'Notes'};const pages=ks.map(k=>[names[k]||'Page',{kind:k,cfg:isBy(k)?DEF[k]():undefined}]);const h=makeHub(nm,pages);tab='c:'+h.id;try{location.hash=''}catch(_){}render();return}
+  return}
+ const b=e.target.closest&&e.target.closest('[data-by]');if(!b)return;const k=b.dataset.by;const hp=pgOf(b);if(!hp)return;const [h,g]=hp;const c=CF(g);
+ const rnd=()=>{save();render()};
+ if(k==='log'){g.items.push({id:hid(),b:b.dataset.b,at:Date.now()});rnd();return}
+ if(k==='ldel'){g.items=g.items.filter(x=>x.id!==b.dataset.i);rnd();return}
+ if(k==='learlier'){const bb=(document.getElementById('by-lb')||{}).value,w=(document.getElementById('by-lw')||{}).value,n=((document.getElementById('by-ln')||{}).value||'').trim();if(!bb)return;const at=w?new Date(w).getTime():Date.now();if(isNaN(at))return;g.items.push({id:hid(),b:bb,at,n:n||undefined});rnd();return}
+ if(k==='badd'){const v=((document.getElementById('by-nb')||{}).value||'').trim();if(!v)return;c.buttons.push({id:hid(),l:v,e:0});rnd();return}
+ if(k==='bdel'){if(!confirm('Remove this button? Past entries stay in your history.'))return;c.buttons=c.buttons.filter(x=>x.id!==b.dataset.b);rnd();return}
+ if(k==='tick'){const ck=c.fields.find(f=>f.t==='check');const x=g.items.find(z=>z.id===b.dataset.i);if(x&&ck){x.v=x.v||{};x.v[ck.id]=b.checked;save();render()}return}
+ if(k==='idel'){g.items=g.items.filter(x=>x.id!==b.dataset.i);rnd();return}
+ if(k==='fadd'){const v=((document.getElementById('by-nf')||{}).value||'').trim(),t=(document.getElementById('by-nt')||{}).value||'text';if(!v)return;c.fields.push({id:hid(),l:v,t,o:t==='choice'?[]:undefined});rnd();return}
+ if(k==='fdel'){if(!confirm('Remove this field? Its saved values will no longer show.'))return;c.fields=c.fields.filter(f=>f.id!==b.dataset.f);rnd();return}
+ if(k==='ctick'){const x=g.items.find(z=>z.id===b.dataset.i);if(x){x.done=b.checked;rnd()}return}
+ if(k==='cclear'){g.items.forEach(x=>{x.done=false});rnd();return}
+ if(k==='gadd'){const go=c.goals.find(z=>z.id===b.dataset.gid);if(!go)return;let n=b.dataset.n;if(n==='')n=(document.getElementById('by-g-'+go.id)||{}).value;n=num(n);if(!n)return;g.items.push({id:hid(),g:go.id,n,at:Date.now()});rnd();return}
+ if(k==='sadd'){if(g.items.length<Math.max(1,Math.min(60,+c.target||10))){g.items.push({id:hid(),at:Date.now()});rnd()}return}
+ if(k==='sundo'){g.items.pop();rnd();return}
+ if(k==='snew'){c.done=(c.done||0)+1;g.items=[];rnd();return}
+ if(k==='gnew'){const v=((document.getElementById('by-ng')||{}).value||'').trim();if(!v)return;c.goals.push({id:hid(),l:v,t:1,u:'',p:'day'});rnd();return}
+ if(k==='gdel'){if(!confirm('Remove this goal and its history?'))return;c.goals=c.goals.filter(z=>z.id!==b.dataset.gid);g.items=g.items.filter(x=>x.g!==b.dataset.gid);rnd();return}
+});
+document.addEventListener('change',e=>{const t=e.target;if(!t||!t.dataset||!t.dataset.byf)return;const f=t.dataset.byf;
+ if(f==='q')return;
+ const hp=pgOf(t);if(!hp)return;const [h,g]=hp;const c=CF(g);const save2=(r)=>{save();if(r)render()};
+ if(f==='be'){const b=c.buttons.find(x=>x.id===t.dataset.b);if(b){b.e=+t.value;save2(1)}return}
+ if(f==='sort'){c.sort=t.value;save2(1);return}
+ if(f==='ft'){const x=c.fields.find(z=>z.id===t.dataset.f);if(x){x.t=t.value;if(x.t==='choice'&&!x.o)x.o=[];save2(1)}return}
+ if(f==='fc'){const x=c.fields.find(z=>z.id===t.dataset.f);if(x){x.cal=t.checked||undefined;save2(0)}return}
+ if(f==='reset'){c.reset=t.value;c.last='';save2(1);return}
+ if(f==='bc'){const b=c.buttons.find(x=>x.id===t.dataset.b);if(b){b.c=t.value||undefined;save2(1)}return}
+ if(f==='bfx'){const b=c.buttons.find(x=>x.id===t.dataset.b);if(b){b.fx=t.value;save2(1)}return}
+ if(f==='gfx'){const x=c.goals.find(z=>z.id===t.dataset.gid);if(x){x.fx=t.value;save2(1)}return}
+ if(f==='nd'){c.dir=t.value;save2(1);return}
+ if(f==='ci'){c.icon=t.value;save2(1);return}
+ if(f==='gp'){const x=c.goals.find(z=>z.id===t.dataset.gid);if(x){x.p=t.value;save2(1)}return}
+ if(f==='iv'){const x=g.items.find(z=>z.id===t.dataset.i);if(x){x.v=x.v||{};x.v[t.dataset.fid]=t.type==='checkbox'?t.checked:t.value;save2(0)}return}
+});
+document.addEventListener('input',e=>{const qi=e.target;if(qi&&qi.id==='byo-q'){const q=qi.value.trim().toLowerCase().split(/\s+/).filter(Boolean);let n=0;document.querySelectorAll('.byw .byi[data-kw]').forEach(b=>{const hit=!q.length||q.every(w=>b.dataset.kw.split(/\W+/).some(k=>k.indexOf(w)===0));b.style.display=hit?'':'none';if(hit)n++});document.querySelectorAll('.byw h3[data-cat]').forEach(x=>{const c=x.dataset.cat;x.style.display=[...document.querySelectorAll('.byw .byi[data-c="'+c+'"]')].some(b=>b.style.display!=='none')?'':'none'});const nn=document.getElementById('byo-none');if(nn)nn.style.display=(q.length&&!n)?'':'none';return}
+ const t=e.target;if(!t||!t.dataset||!t.dataset.byf)return;const f=t.dataset.byf;
+ if(f==='q'){const q=t.value.trim().toLowerCase();document.querySelectorAll('#by-rows .byrow').forEach(r=>{r.style.display=!q||r.textContent.toLowerCase().includes(q)?'':'none'});return}
+ const hp=pgOf(t);if(!hp)return;const [h,g]=hp;const c=CF(g);
+ if(f==='bi'){const b=c.buttons.find(x=>x.id===t.dataset.b);if(b){b.i=t.value.trim()||undefined;save()}return}
+ if(f==='bg'){const b=c.buttons.find(x=>x.id===t.dataset.b);if(b){const n=Math.max(0,Math.floor(num(t.value)));b.gl=n||undefined;save()}return}
+ if(f==='nl'){c.l=t.value;save();return}
+ if(f==='nu'){c.u=t.value;save();return}
+ if(f==='ng'){c.goal=t.value;save();return}
+ if(f==='cl'){c.l=t.value;save();return}
+ if(f==='ct'){c.target=Math.max(1,Math.min(60,Math.floor(num(t.value))||10));save();return}
+ if(f==='cr'){c.reward=t.value;save();return}
+ if(f==='bl'){const b=c.buttons.find(x=>x.id===t.dataset.b);if(b){b.l=t.value;save()}return}
+ if(f==='tl'){c.tl=t.value;save();return}
+ if(f==='fl'){const x=c.fields.find(z=>z.id===t.dataset.f);if(x){x.l=t.value;save()}return}
+ if(f==='fo'){const x=c.fields.find(z=>z.id===t.dataset.f);if(x){x.o=t.value.split(',').map(s=>s.trim()).filter(Boolean);save()}return}
+ if(f==='it'){const x=g.items.find(z=>z.id===t.dataset.i);if(x){x.t=t.value;save()}return}
+ if(f==='iv'&&t.type!=='checkbox'&&t.tagName!=='SELECT'){const x=g.items.find(z=>z.id===t.dataset.i);if(x){x.v=x.v||{};x.v[t.dataset.fid]=t.value;save()}return}
+ const goal=()=>c.goals.find(z=>z.id===t.dataset.gid);
+ if(f==='gl'){const x=goal();if(x){x.l=t.value;save()}return}
+ if(f==='gt'){const x=goal();if(x){x.t=t.value;save()}return}
+ if(f==='gu'){const x=goal();if(x){x.u=t.value;save()}return}
+});
+document.addEventListener('submit',e=>{const f=e.target.closest&&e.target.closest('[data-bysub]');if(!f)return;e.preventDefault();const hp=pgOf(f);if(!hp)return;const [h,g]=hp;const c=CF(g);const k=f.dataset.bysub;const fd0=new FormData(f);const t=String(fd0.get('t')||'').trim();if(!t)return;
+ if(k==='nadd'){const v=parseFloat(t);if(isNaN(v))return;g.items.push({id:hid(),at:Date.now(),v});save();render();return}
+ if(k==='citem'){g.items.push({id:hid(),t,done:false});save();render();return}
+ if(k==='add'){const v={};(c.fields||[]).forEach(fl=>{const el=f.querySelector('[data-fid="'+fl.id+'"]');if(!el)return;const val=el.type==='checkbox'?el.checked:el.value;if(val!==''&&val!==false)v[fl.id]=val});g.items.push({id:hid(),t,v,at:Date.now()});save();render()}
+},true);
+/* show list dates on the calendar */
+window.byAuto=function(d,o){(S.hubs||[]).forEach(h=>(h.pages||[]).forEach(g=>{if(g.kind!=='by-list'||!g.cfg)return;(g.cfg.fields||[]).filter(f=>f.t==='date'&&f.cal).forEach(f=>{g.items.forEach(x=>{if(x.v&&x.v[f.id]===d&&!(g.cfg.fields.some(z=>z.t==='check'&&x.v[z.id])))o.push({title:x.t+(f.l?' · '+f.l:''),hol:1,cat:'Me'})})})}))};
+})();
+</script>
+<style>
+.tzg{display:grid!important;grid-template-columns:repeat(6,minmax(0,1fr));gap:14px 12px;align-items:start}
+.tzg>*{grid-column:1/-1;margin-top:0!important;margin-bottom:0!important;min-width:0;box-sizing:border-box}
+.tzg>.hq-qa{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px 12px}
+.tzg>.hq-qa>.hq-qah{grid-column:1/-1;margin-bottom:0}
+.tzg>.hq-qa>.hq-qag{display:contents}
+.tzg .hq-qat{grid-column:span 3;min-width:0}
+.tzg .hq-qat .hq-qax{min-width:0}.tzg .hq-qat .hq-qax b,.tzg .hq-qat .hq-qax small{overflow-wrap:anywhere}
+.tzg>.tiles{display:contents}.tzg>.tiles>*{grid-column:1/-1;margin:0!important;min-width:0;box-sizing:border-box}.tzg>.tiles>.tile{grid-column:span 3}.tzg{grid-auto-flow:row dense}
+.tzh,.tzm{zoom:calc(1/var(--zk,1))}
+body.tzedit #view.tzg{padding-bottom:140px}
+body.tzedit .tzg [data-tz]{outline:2px dashed rgba(120,90,70,.45);outline-offset:2px;position:relative}
+body.tzedit .tzg [data-tz]>*:not(.tzh):not(.tzm){pointer-events:none}
+body.tzedit .tzg>.hq-qa>.hq-qah{pointer-events:none}body.tzedit .tzg .hq-qah .lnk{visibility:hidden}body.tzedit .tzg>.hq-qa[data-tz]{outline-color:rgba(120,90,70,.2)}body.tzedit .tzg>.hq-qa>.tzh{display:none}
+.tzh,.tzm,.tzm span{pointer-events:auto!important}.tzh{position:absolute;right:-3px;bottom:-3px;width:30px;height:30px;border-radius:50%;background:#5b4a40;border:2px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,.3);touch-action:none;cursor:nwse-resize;z-index:5}
+.tzh:after{content:"";position:absolute;left:8px;top:8px;width:9px;height:9px;border-right:2px solid #fff;border-bottom:2px solid #fff}
+.tzm{position:absolute;right:8px;top:-11px;display:flex;gap:4px;z-index:5}
+.tzm span{width:24px;height:24px;border-radius:50%;background:rgba(255,255,255,.95);color:#4a3a30;border:1px solid rgba(90,70,60,.3);display:flex;align-items:center;justify-content:center;font:700 14px/1 system-ui,sans-serif;box-shadow:0 1px 4px rgba(0,0,0,.2);cursor:pointer}
+.tzbar{position:sticky;top:0;z-index:30;display:flex;align-items:center;gap:8px;background:#5b4a40;color:#fff;border-radius:14px;padding:9px 10px 9px 14px;box-shadow:0 4px 14px rgba(0,0,0,.25);font-size:13.5px}
+.tzbar span{flex:1;line-height:1.3}.tzbar button{border:0;border-radius:999px;padding:8px 14px;font:inherit;font-weight:700;background:#fff;color:#4a3a30;cursor:pointer}.tzbar button.g{background:transparent;color:#fff;border:1px solid rgba(255,255,255,.5)}
+</style>
+<script>
+/* Today boxes you can resize. Only for the owner's account while it is being tried out. */
+(function(){
+var TZ={edit:false,D:null};
+window.tzOK=function(){try{return !!window.__labs||!!(SBS&&SBS.id==='79e4bda4-5056-49ef-801b-3f52e0f986e2')}catch(e){return false}};
+window.tzOn=function(){TZ.edit=true;render();try{window.scrollTo(0,0)}catch(e){}};
+var COLS=6,DEF=function(id){return (id.indexOf('qa:')===0||id.indexOf('tl:')===0)?3:6},MIN=function(id){return id==='qa'?6:(id.indexOf('qa:')===0||id.indexOf('tl:')===0)?2:4};
+var kFor=function(w,id){var r=w/DEF(id);if(r===1)return 1;return Math.max(.9,Math.min(1.35,Math.pow(r,.6)))};
+function blocks(v){
+ var o=[];[].slice.call(v.children).forEach(function(c){
+  var id=c.classList.contains('todayh')?'greet':c.classList.contains('wnew')?'wn':c.classList.contains('gscard')?'gs':c.classList.contains('bcard')?'baby':c.classList.contains('hq-qa')?'qa':c.classList.contains('tzc')?'cp:'+(c.getAttribute('data-tzp')||''):'';
+  if(id)o.push([c,id])});
+ [].slice.call(v.querySelectorAll('.hq-qat')).forEach(function(c){o.push([c,'qa:'+c.getAttribute('data-tab')])});
+ [].slice.call(v.querySelectorAll(':scope>.tiles>*')).forEach(function(c){var t=c.classList.contains('bbox')?'baby':c.classList.contains('tile')&&c.getAttribute('data-tab')?'tl:'+c.getAttribute('data-tab'):'';if(t)o.push([c,t])});
+ return o}
+function seq(list,saved){var ids=list.map(function(x){return x[1]}),s=(saved||[]).filter(function(i){return ids.indexOf(i)>-1});ids.forEach(function(i){if(s.indexOf(i)<0)s.push(i)});return s}
+window.tzApply=function(){
+ var v=document.getElementById('view');if(!v)return;
+ v.classList.remove('tzg');document.body.classList.remove('tzedit');
+ if(typeof tab==='undefined'||tab!=='today'||!tzOK()){TZ.edit=false;return}
+ if((typeof ARR!=='undefined'&&ARR)||(typeof tedit!=='undefined'&&tedit))return;
+ var Z=S.tsz||{},hasZ=Object.keys(Z).length||(S.tord&&((S.tord.top||[]).length||(S.tord.qa||[]).length));
+ if(!TZ.edit&&!hasZ)return;
+ v.classList.add('tzg');if(TZ.edit)document.body.classList.add('tzedit');
+ var B=blocks(v),top=B.filter(function(x){return x[1].indexOf('qa:')!==0}),qa=B.filter(function(x){return x[1].indexOf('qa:')===0});
+ var isQ=function(i){return i.indexOf('qa:')===0};
+ var so=S.tord||{},st=seq(top,so.top),sq=seq(qa,so.qa);
+ B.forEach(function(x){var el=x[0],id=x[1],z=Z[id];el.setAttribute('data-tz',id);
+  el.style.order=String((isQ(id)?sq:st).indexOf(id));
+  if(z){el.style.gridColumn='span '+z.w;var k=kFor(z.w,id);if(k!==1){el.style.zoom=String(k);el.style.setProperty('--zk',String(k))}if(z.h)el.style.minHeight=Math.round(z.h/k)+'px'}
+  if(TZ.edit){if(id!=='qa'){var h=document.createElement('span');h.className='tzh';h.setAttribute('data-tzh',id);h.setAttribute('role','button');h.setAttribute('aria-label','Drag to resize');el.appendChild(h)}
+   var m=document.createElement('span');m.className='tzm';m.innerHTML='<span data-tzm="up" role="button" aria-label="Move earlier">↑</span><span data-tzm="dn" role="button" aria-label="Move later">↓</span>';el.appendChild(m)}});
+ if(TZ.edit){var bar=document.createElement('div');bar.className='tzbar';bar.style.order='-1';bar.innerHTML='<span>Drag the corner dot to resize. Use the arrows to move.</span><button type="button" class="g" data-tz2="reset">Reset</button><button type="button" data-tz2="done">Done</button>';v.insertBefore(bar,v.firstChild)}
+};
+var _r=render;render=function(){if(TZ.D)return;var r=_r.apply(this,arguments);try{tzApply()}catch(e){}return r};
+document.addEventListener('click',function(e){var t=e.target.closest&&e.target.closest('[data-tz2],[data-tzm]');if(!t)return;
+ e.preventDefault();e.stopPropagation();
+ var a=t.getAttribute('data-tz2');
+ if(a==='done'){TZ.edit=false;render();return}
+ if(a==='reset'){if(!confirm('Put every box back to its original size and place?'))return;delete S.tsz;delete S.tord;save();render();return}
+ var dir=t.getAttribute('data-tzm'),id=t.parentElement.parentElement.getAttribute('data-tz');if(!id)return;
+ var v=document.getElementById('view'),B=blocks(v),isq=id.indexOf('qa:')===0,L=B.filter(function(x){return (x[1].indexOf('qa:')===0)===isq}),s=seq(L,(S.tord||{})[isq?'qa':'top']),i=s.indexOf(id),j=dir==='up'?i-1:i+1;
+ if(j<0||j>=s.length)return;var q=s[i];s[i]=s[j];s[j]=q;S.tord=S.tord||{};S.tord[isq?'qa':'top']=s;save();render()},true);
+document.addEventListener('pointerdown',function(e){var h=e.target.closest&&e.target.closest('[data-tzh]');if(!h)return;e.preventDefault();
+ var el=h.parentElement,r=el.getBoundingClientRect(),g=document.getElementById('view'),gap=12,col=(g.clientWidth-5*gap)/6+gap,id=h.getAttribute('data-tzh'),z=(S.tsz||{})[id];
+ var nat=(function(){var m=el.style.minHeight;el.style.minHeight='0px';var n=el.getBoundingClientRect().height;el.style.minHeight=m;return n})();
+ TZ.D={el:el,id:id,x:e.clientX,y:e.clientY,w:r.width,h:r.height,col:col,gap:gap,nat:nat,cur:z?{w:z.w,h:z.h||0}:{w:DEF(id),h:0}};
+ try{h.setPointerCapture(e.pointerId)}catch(_){}},true);
+document.addEventListener('pointermove',function(e){var D=TZ.D;if(!D)return;e.preventDefault();
+ var w=Math.max(MIN(D.id),Math.min(6,Math.round((D.w+(e.clientX-D.x)+D.gap)/D.col))),hh=Math.max(48,Math.round((D.h+(e.clientY-D.y))/8)*8),k=kFor(w,D.id);
+ D.cur={w:w,h:hh};D.el.style.gridColumn='span '+w;D.el.style.zoom=k===1?'':String(k);D.el.style.setProperty('--zk',String(k));D.el.style.minHeight=Math.round(hh/k)+'px'},{passive:false,capture:true});
+function fin(){var D=TZ.D;if(!D)return;TZ.D=null;var c=D.cur,Z=S.tsz=S.tsz||{},keepH=c.h>D.nat+6;
+ if(c.w===DEF(D.id)&&!keepH)delete Z[D.id];else Z[D.id]={w:c.w,h:keepH?c.h:0};
+ if(!Object.keys(Z).length)delete S.tsz;save();render()}
+document.addEventListener('pointerup',fin,true);document.addEventListener('pointercancel',fin,true);
 })();
 </script>
 <style>
