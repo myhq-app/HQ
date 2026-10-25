@@ -504,7 +504,7 @@ function formHTML0(k){
   if(f[1]==='select')return `<label class="lb">${{area:'Area',repeat:'Repeats',place:'Where',kind:'Type',meal:'Meal Type',every:'Repeats'}[f[0]]||cap(f[0])}<select name="${f[0]}" aria-label="${f[0]}">${f[2].map(o=>`<option>${esc(o)}</option>`).join('')}</select></label>`;
   if(f[0]==='who'&&f[1]==='text'){const fam=famNames();return `<label class="lb">${esc(f[2]||'Who?').replace(/\?$/,'')}?<select name="who" aria-label="${esc(f[2]||'Who')}"><option value="">Anyone</option>${fam.map(o=>`<option>${esc(o)}</option>`).join('')}<option>Everyone</option></select></label>`}
   return `<input${c} name="${f[0]}" type="${f[1]}"${f[1]==='number'?' step="any"':''} placeholder="${esc(f[2]||'')}" aria-label="${esc(f[2]||f[0])}"${i===0?' required':''}>`}).join('')
-  +`<button class="btn">Add ${cap(NOUN[k])}</button></form></details>`;
+  +(k==='tasks'&&window.famAddCtl?famAddCtl():'')+`<button class="btn">Add ${cap(NOUN[k])}</button></form></details>`;
 }
 const del=(k,id)=>`<button class="x" data-a="del" data-k="${k}" data-i="${id}" aria-label="Delete">×</button>`;
 const panel=(h,body)=>`<section class="panel">${body}</section>`;
@@ -516,7 +516,7 @@ function vTasks(){
  const t=today(),L=S.tasks.slice().sort((a,b)=>(a.done-b.done)||(a.due||'9').localeCompare(b.due||'9'));
  const rowF=x=>{const late=!x.done&&x.due&&x.due<t;
   const tf=(f,l)=>tin('tasks',x,f,l),sl=(f,l,o)=>`<label class="lb">${l}<select data-a="fld" data-k="tasks" data-i="${x.id}" data-f="${f}">${o.map(v=>`<option${(x[f]||o[0])===v?' selected':''}>${v}</option>`).join('')}</select></label>`;
-  return `<div class="row ${x.done?'done':''}"><input type="checkbox" ${x.done?'checked':''} data-a="tt" data-i="${x.id}" aria-label="Complete"><details class="strow tdet" data-od="tk:${x.id}"${WOPEN.has('tk:'+x.id)?' open':''}><summary><div class="t">${esc(x.title)}<div class="m ${late?'late':''}">${esc(x.area)}${x.due?' · '+(late?'Overdue, ':'')+fmt(x.due):''}${x.repeat!=='Once'?' · '+x.repeat.toLowerCase():''}</div></div></summary><div class="grid" style="margin:4px 0 12px"><label class="lb" style="grid-column:1/-1">Task<input data-a="fld" data-k="tasks" data-i="${x.id}" data-f="title" value="${esc(x.title)}"></label>${sl('area','Area',AREAS)}${sl('repeat','Repeats',REPEAT)}<label class="lb" style="grid-column:1/-1">Due<input type="date" data-a="fld" data-k="tasks" data-i="${x.id}" data-f="due" value="${esc(x.due||'')}"></label></div></details>${del('tasks',x.id)}</div>`};const rows=L.filter(x=>!x.done).map(rowF).join(''),doneL=L.filter(x=>x.done),doneH=doneL.length?`<details class="addf q gshd" data-od="tdone"${WOPEN.has('tdone')?' open':''}><summary>Completed (${doneL.length})</summary>${doneL.map(rowF).join('')}<div class="bar"><button class="btn ghost" data-a="cleardone">Clear Completed</button></div></details>`:'';
+  return `<div class="row ${x.done?'done':''}"><input type="checkbox" ${x.done?'checked':''} data-a="tt" data-i="${x.id}" aria-label="Complete"><details class="strow tdet" data-od="tk:${x.id}"${WOPEN.has('tk:'+x.id)?' open':''}><summary><div class="t">${esc(x.title)}<div class="m ${late?'late':''}">${esc(x.area)}${x.due?' · '+(late?'Overdue, ':'')+fmt(x.due):''}${x.repeat!=='Once'?' · '+x.repeat.toLowerCase():''}${window.famTag?famTag(x):''}</div></div></summary><div class="grid" style="margin:4px 0 12px"><label class="lb" style="grid-column:1/-1">Task<input data-a="fld" data-k="tasks" data-i="${x.id}" data-f="title" value="${esc(x.title)}"></label>${sl('area','Area',AREAS)}${sl('repeat','Repeats',REPEAT)}<label class="lb" style="grid-column:1/-1">Due<input type="date" data-a="fld" data-k="tasks" data-i="${x.id}" data-f="due" value="${esc(x.due||'')}"></label>${window.famTaskCtl?famTaskCtl(x):''}</div></details>${del('tasks',x.id)}</div>`};const rows=L.filter(x=>!x.done).map(rowF).join(''),doneL=L.filter(x=>x.done),doneH=doneL.length?`<details class="addf q gshd" data-od="tdone"${WOPEN.has('tdone')?' open':''}><summary>Completed (${doneL.length})</summary>${doneL.map(rowF).join('')}<div class="bar"><button class="btn ghost" data-a="cleardone">Clear Completed</button></div></details>`:'';
  const ed=evDue(),eh=ed.length?'<h3>Due Now From Your Calendar</h3>'+ed.map(({x,d})=>`<div class="row"><input type="checkbox" data-a="evt" data-i="${x.id}" data-d="${d}" aria-label="Complete"><div class="t">${esc(x.title)}<div class="m ${d<t?'late':''}">${d<t?'Overdue, ':''}${fmt(d)}${x.note?' · '+esc(x.note):''}</div></div></div>`).join('')+'<h3>Your Tasks</h3>':'';
  return panel('Tasks',formHTML('tasks')+eh+(rows||(doneL.length?'<p class="empty">All done. Nice work.</p>':'<p class="empty">Nothing here yet. Add a chore, repair or errand above.</p>'))+doneH);
 }
@@ -801,7 +801,7 @@ document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest
 function catRename(old,nw){const c=CATS.find(c=>c[0]===old);if(!c)return false;c[0]=nw;S.events.forEach(x=>{if(x.cat===old)x.cat=nw});if(S.colors&&S.colors[old]!==undefined){S.colors[nw]=S.colors[old];delete S.colors[old]}catsSave();return true}
 const legend=()=>`<div class="leg">${CATS.map(c=>`<label><input type="color" class="cp" data-a="ccolor" data-n="${c[0]}" value="${ccol(c[0])}" aria-label="Change ${c[0]} color">${c[0]}</label>`).join('')}</div><p class="m" style="margin:4px 0 0">Tap a category to change its color.</p>`;
 const evForm=s=>{const e=eid?S.events.find(x=>x.id===eid):null,v=e||{},cur=catOf(v),more=!!(e&&(v.end||+v.rep||v.note||v.task));
- return `<form class="edit evf${e?' sheetx':''}" data-k="calev" data-d="${s}">${e?'<h3 class="first">Edit Event</h3>':''}<input class="first" name="title" placeholder="Add Title" aria-label="Event" value="${esc(v.title||'')}" required autocomplete="off"><label class="lb">Date<input name="date" type="date" data-dc="0" value="${v.date||s}" required></label><label class="lb">Time (Optional)<input name="time" type="time" value="${v.time||''}"></label><div class="evcats" style="grid-column:1/-1"><input type="hidden" name="cat" value="${esc(cur)}">${CATS.map(c=>`<button type="button" class="cc${c[0]===cur?' on':''}" data-cp="${esc(c[0])}"><i style="background:${ccol(c[0])}"></i>${esc(c[0])}</button>`).join('')}</div><button class="btn" style="grid-column:1/-1">${e?'Save Changes':'Add Event'}</button><details class="evmore" style="grid-column:1/-1"${more?' open':''}><summary>More Options</summary><div class="evm"><div class="tch ce" style="grid-column:1/-1"><button type="button" data-ce="d" data-v="0">Today</button><button type="button" data-ce="d" data-v="1">Tomorrow</button><button type="button" data-ce="d" data-v="we">This Weekend</button></div><div class="tch ce" style="grid-column:1/-1"><button type="button" data-ce="t" data-v="09:00">Morning</button><button type="button" data-ce="t" data-v="12:00">Noon</button><button type="button" data-ce="t" data-v="15:00">Afternoon</button><button type="button" data-ce="t" data-v="18:00">Evening</button></div><label class="lb">Ends (optional)<input name="end" type="date" data-dc="0" value="${v.end||''}"></label><label class="lb">Repeats<select name="rep">${REPS.map(r=>`<option value="${r[0]}"${+(v.rep||0)===r[0]?' selected':''}>${r[1]}</option>`).join('')}</select></label><input class="first" name="note" placeholder="Note (Optional)" aria-label="Note" value="${esc(v.note||'')}" style="grid-column:1/-1"><label class="lb" style="flex-direction:row;gap:8px;align-items:center;grid-column:1/-1"><input type="checkbox" name="task"${v.task?' checked':''} style="width:20px;height:20px"> Also Show In Tasks When Due</label></div></details>${e?'<button type="button" class="btn ghost" style="grid-column:1/-1" data-a="ecancel">Cancel</button>':''}</form>`};
+ return `<form class="edit evf${e?' sheetx':''}" data-k="calev" data-d="${s}">${e?'<h3 class="first">Edit Event</h3>':''}<input class="first" name="title" placeholder="Add Title" aria-label="Event" value="${esc(v.title||'')}" required autocomplete="off"><label class="lb">Date<input name="date" type="date" data-dc="0" value="${v.date||s}" required></label><label class="lb">Time (Optional)<input name="time" type="time" value="${v.time||''}"></label><div class="evcats" style="grid-column:1/-1"><input type="hidden" name="cat" value="${esc(cur)}">${CATS.map(c=>`<button type="button" class="cc${c[0]===cur?' on':''}" data-cp="${esc(c[0])}"><i style="background:${ccol(c[0])}"></i>${esc(c[0])}</button>`).join('')}</div>${window.famEvCtl?famEvCtl(v):''}<button class="btn" style="grid-column:1/-1">${e?'Save Changes':'Add Event'}</button><details class="evmore" style="grid-column:1/-1"${more?' open':''}><summary>More Options</summary><div class="evm"><div class="tch ce" style="grid-column:1/-1"><button type="button" data-ce="d" data-v="0">Today</button><button type="button" data-ce="d" data-v="1">Tomorrow</button><button type="button" data-ce="d" data-v="we">This Weekend</button></div><div class="tch ce" style="grid-column:1/-1"><button type="button" data-ce="t" data-v="09:00">Morning</button><button type="button" data-ce="t" data-v="12:00">Noon</button><button type="button" data-ce="t" data-v="15:00">Afternoon</button><button type="button" data-ce="t" data-v="18:00">Evening</button></div><label class="lb">Ends (optional)<input name="end" type="date" data-dc="0" value="${v.end||''}"></label><label class="lb">Repeats<select name="rep">${REPS.map(r=>`<option value="${r[0]}"${+(v.rep||0)===r[0]?' selected':''}>${r[1]}</option>`).join('')}</select></label><input class="first" name="note" placeholder="Note (Optional)" aria-label="Note" value="${esc(v.note||'')}" style="grid-column:1/-1"><label class="lb" style="flex-direction:row;gap:8px;align-items:center;grid-column:1/-1"><input type="checkbox" name="task"${v.task?' checked':''} style="width:20px;height:20px"> Also Show In Tasks When Due</label></div></details>${e?'<button type="button" class="btn ghost" style="grid-column:1/-1" data-a="ecancel">Cancel</button>':''}</form>`};
 var CF='';
 var CDO=null;
 function vEvents(){
@@ -1575,7 +1575,7 @@ document.addEventListener('input',e=>{
 document.addEventListener('submit',e=>{
  e.preventDefault();const k=e.target.dataset.k;if(!k)return;
  const o=Object.fromEntries(new FormData(e.target));o.id=uid();CAPF.forEach(f=>{if(typeof o[f]==='string')o[f]=cap(o[f].trim())});
- if(k==='calev'){if(!o.title||!o.date)return;const rec={title:o.title,date:o.date,end:o.end&&o.end>o.date?o.end:'',time:o.time||'',note:o.note||'',rep:+o.rep||0,task:o.task==='on',cat:catOf({cat:o.cat,title:o.title})};const x=eid?find('events',eid):null;if(x)Object.assign(x,rec);else S.events.push(Object.assign({id:o.id},rec));eid='';cd=o.date;save();render();return}
+ if(k==='calev'){if(!o.title||!o.date)return;const rec={title:o.title,date:o.date,end:o.end&&o.end>o.date?o.end:'',time:o.time||'',note:o.note||'',rep:+o.rep||0,task:o.task==='on',sh:o.fsh==='on'?1:0,cat:catOf({cat:o.cat,title:o.title})};const x=eid?find('events',eid):null;if(x)Object.assign(x,rec);else S.events.push(Object.assign({id:o.id},rec));eid='';cd=o.date;save();render();return}
  if(k==='recquick'){const nb0=S.recipes.length,n=quickRecipe(o);if(n){msg='';mtab='rec';S.recipes.slice(nb0).forEach(x=>recImport(x))}radd=false;save();render();return}
  if(k==='reward'){if(!o.title||!+o.cost)return;S.rewards=S.rewards||[];S.rewards.push({id:o.id,title:cap(o.title.trim()),cost:Math.max(1,+o.cost)});WOPEN.add('rewards');save();render();return}
  if(k==='staple'){if(!o.title)return;S.staples=S.staples||[];S.staples.push({id:o.id,title:cap(o.title.trim()),every:+o.every||14,last:o.last||today()});save();render();return}
@@ -2035,7 +2035,7 @@ function babyBox(){if(blOn()&&!BL.loaded)blLoad();const c=blChild();if(!c)return
  let fd;if(lf){const d=new Date(lf.at);fd=`<span>Last Fed</span><b>${blT(d)}</b><small>${blAgo(now-+d)}</small>${oz?`<u class="bboz${oz>=gl?' ok':''}">${oz>=gl?'✓ ':''}${oz} oz</u>`:''}`;wf=(now-+d>=fh*36e5?'Feed time now':'Feed around '+blT(new Date(+d+fh*36e5)))}else fd=`<span>Last Fed</span><b>—</b><small>Not logged yet</small>${oz?`<u class="bboz${oz>=gl?' ok':''}">${oz>=gl?'✓ ':''}${oz} oz</u>`:''}`;
  const btn=BBTN.filter(x=>bbOn(x[0])&&['sleep','feed','diaper'].includes(x[0])).map(x=>x[0]==='sleep'?`<button data-bb="sleep" class="${open?'wake':'sleepb'}${bbNight(open?open.at:new Date())?' nt':''}">${bbSlLbl(open)}</button>`:`<button data-bb="open" data-k="${x[2]}" class="${x[3]}">${x[1]}</button>`).join('');
  return `<section class="bbox"><button class="bbn" data-tab="baby" aria-label="Open ${esc(c.name)}"><b>${esc(c.name)}</b>${c.dob?`<span>${blAgeTxt(c.dob)}</span>`:''}<i aria-hidden="true">›</i></button><div class="bbst"><div>${wk}${wn?`<em>${wn}</em>`:''}</div><div>${fd}${wf?`<em>${wf}</em>`:''}</div></div><div class="bbq3" style="grid-template-columns:repeat(${Math.max(1,BBTN.filter(x=>bbOn(x[0])&&['sleep','feed','diaper'].includes(x[0])).length)},1fr)">${btn}</div>${blSheet(c)}</section>`}
-var APPVER=16,WNEW=['New hub type: School, for homeschool, high school or college. Add one from the hub menu at the top.','Signing out now lets you clear this phone, handy on a shared device.'];
+var APPVER=17,WNEW=['New: Family Sharing. Share groceries, tasks and events with your partner. You choose what is shared. Find it under All, Family.'];
 function wnCard(){try{if(S.seenVer==null){S.seenVer=APPVER;save();return ''}if(S.seenVer>=APPVER)return '';return '<div class="wnew"><b>What\'s New</b><ul>'+WNEW.map(x=>'<li>'+esc(x)+'</li>').join('')+'</ul><button class="btn" data-wn="x">Got It</button></div>'}catch(e){return ''}}
 document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest('[data-wn]');if(!b)return;S.seenVer=APPVER;save();render()});
 // ---------- Header menu ----------
@@ -3209,6 +3209,132 @@ const f=V.income;V.income=function(){const s=f();const k='<details class="strow"
 document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest('[data-bk]');if(!b)return;S.banks=S.banks||[];if(b.dataset.bk==='del'){S.banks=S.banks.filter(x=>x.id!==b.dataset.i);save();render();return}
  const v=((document.getElementById('bk-in')||{}).value||'').trim();if(!v)return;const k=BK.find(x=>x[0].toLowerCase()===v.toLowerCase());let nm,url;if(k){nm=k[0];url=k[1]}else{url=norm(v);if(!url){alert('Pick a bank from the list, or paste its website.');return}nm=new URL(url).hostname.replace(/^www\./,'')}
  if(S.banks.some(x=>x.url===url))return;S.banks.push({id:Math.random().toString(36).slice(2,9),name:nm,url});save();render()});
+})();
+</script>
+<script>
+/* Family sharing: only items you switch on leave your binder */
+(function(){
+const KM={task:'tasks',grocery:'groceries',event:'events'};
+const META=['id','sid','shH','fsh','ccat','sh'];
+const F=()=>(S.fam=S.fam||{});
+const on=()=>!!(S.hh&&S.hh.id&&SBS);
+const FM={members:[],loaded:0,msg:'',busy:0,sync:0,at:0};
+const sortO=o=>{const r={};Object.keys(o||{}).sort().forEach(k=>{r[k]=o[k]});return r};
+const dat=x=>{const o={};Object.keys(x).forEach(k=>{if(META.indexOf(k)<0)o[k]=x[k]});return sortO(o)};
+const hs=x=>JSON.stringify(dat(x));
+const nm=()=>String(((S.me||{}).call||(S.me||{}).first||'')).trim()||'Me';
+let busy=0,tm=0;
+async function sync(){
+ if(!on()||busy)return;busy=1;FM.sync=1;let ch=0;
+ try{
+  const f=F(),hid=S.hh.id;
+  const rows=(await sbTbl('GET','shared_items?household_id=eq.'+hid+'&select=id,kind,data,updated_at&limit=3000'))||[];
+  const rm={};rows.forEach(r=>{rm[r.id]=r});
+  const known=new Set(f.known||[]),local=new Set(),dels=new Set();
+  for(const kind of Object.keys(KM)){
+   if(kind==='grocery'&&!f.gro)continue;
+   const arr=S[KM[kind]];
+   for(const x of arr.slice()){
+    if(x.ext)continue;
+    if(x.fsh){if(x.fsh==='on')x.sh=1;delete x.fsh}
+    if(kind==='grocery'&&!x.sh&&!x.sid)x.sh=1;
+    if(x.sid&&!x.sh){if(rm[x.sid])dels.add(x.sid);delete x.sid;delete x.shH;ch=1;continue}
+    if(!x.sh)continue;
+    if(x.sid&&!rm[x.sid]){
+     if(known.has(x.sid)){arr.splice(arr.indexOf(x),1);ch=1;continue}
+     delete x.sid
+    }
+    if(!x.sid){
+     const r=await sbTbl('POST','shared_items',{household_id:hid,kind,data:dat(x),by_name:nm()},{Prefer:'return=representation'});
+     if(r&&r[0]){x.sid=r[0].id;x.shH=hs(x);local.add(x.sid);ch=1}
+     continue
+    }
+    local.add(x.sid);
+    const h=hs(x);
+    if(h!==x.shH){
+     await sbTbl('PATCH','shared_items?id=eq.'+x.sid,{data:dat(x),updated_at:new Date().toISOString(),by_name:nm()},{Prefer:'return=minimal'});
+     x.shH=h;ch=1
+    }else{
+     const rh=JSON.stringify(sortO(rm[x.sid].data));
+     if(rh!==x.shH){
+      const o=rm[x.sid].data||{};
+      Object.keys(x).forEach(k=>{if(META.indexOf(k)<0&&!(k in o))delete x[k]});
+      Object.assign(x,o);x.shH=hs(x);ch=1
+     }
+    }
+   }
+  }
+  rows.forEach(r=>{
+   if(local.has(r.id))return;
+   const kind=r.kind;if(!KM[kind]||(kind==='grocery'&&!f.gro))return;
+   if(known.has(r.id)){dels.add(r.id);return}
+   const o=Object.assign({id:uid()},r.data||{},{sh:1,sid:r.id});o.shH=hs(o);
+   S[KM[kind]].push(o);local.add(r.id);ch=1
+  });
+  if(dels.size>8&&local.size===0)dels.clear();
+  if(dels.size)await sbTbl('DELETE','shared_items?id=in.('+Array.from(dels).join(',')+')',null,{Prefer:'return=minimal'});
+  const nk=[];Object.keys(KM).forEach(kind=>{S[KM[kind]].forEach(x=>{if(x.sid&&x.sh)nk.push(x.sid)})});
+  if(JSON.stringify(nk)!==JSON.stringify(f.known||[])){f.known=nk;ch=1}
+  FM.msg='';FM.at=Date.now();
+  if(ch){save();const ae=document.activeElement;if(!(ae&&/^(INPUT|TEXTAREA|SELECT)$/.test(ae.tagName)))render()}
+ }catch(e){FM.msg='Could not sync just now. It will try again.'}
+ busy=0;FM.sync=0
+}
+const later=()=>{if(!on())return;clearTimeout(tm);tm=setTimeout(()=>{sync()},1800)};
+['click','change','submit'].forEach(t=>document.addEventListener(t,later));
+setInterval(()=>{if(!document.hidden&&on())sync()},20000);
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')later()});
+setTimeout(()=>{sync()},3500);
+async function members(){if(!on())return;try{const r=await sbTbl('GET','household_members?household_id=eq.'+S.hh.id+'&select=name');FM.members=(r||[]).map(x=>x.name).filter(Boolean);FM.loaded=1;if(tab==='family')render()}catch(_){}}
+/* controls injected into existing forms */
+window.famAddCtl=()=>on()?'<label class="lb" style="flex-direction:row;gap:8px;align-items:center;grid-column:1/-1"><input type="checkbox" name="fsh" style="width:20px;height:20px"> Share with family</label>':'';
+window.famEvCtl=v=>on()?`<label class="lb" style="flex-direction:row;gap:8px;align-items:center;grid-column:1/-1"><input type="checkbox" name="fsh"${v&&v.sh?' checked':''} style="width:20px;height:20px"> Share with family</label>`:'';
+window.famTaskCtl=x=>{if(!on())return'';if(!FM.loaded)members();const m=FM.members.filter(n=>n);return `<label class="lb" style="grid-column:1/-1;flex-direction:row;gap:8px;align-items:center"><input type="checkbox" data-fshk="${esc(x.id)}"${x.sh?' checked':''} style="width:20px;height:20px"> Share with family</label>`+(x.sh?`<label class="lb" style="grid-column:1/-1">Assigned to<select data-fto="${esc(x.id)}"><option value="">Anyone</option>${m.map(n=>`<option${x.to===n?' selected':''}>${esc(n)}</option>`).join('')}</select></label>`:'')};
+window.famTag=x=>x&&x.sh?' · Shared'+(x.to?' · '+esc(x.to):''):'';
+document.addEventListener('change',e=>{
+ const t=e.target;if(!t||!t.dataset)return;
+ if(t.dataset.fshk){const x=S.tasks.find(z=>String(z.id)===t.dataset.fshk);if(x){x.sh=t.checked?1:0;if(!t.checked)delete x.to;save();WOPEN.add('tk:'+x.id);render()}return}
+ if(t.dataset.fto){const x=S.tasks.find(z=>String(z.id)===t.dataset.fto);if(x){x.to=t.value;save()}return}
+ if(t.dataset.fam==='gro'){const f=F();if(t.checked){f.gro=1}else{f.gro=0;S.groceries.forEach(x=>{if(x.sid||x.sh){delete x.sid;delete x.sh;delete x.shH}});f.known=(f.known||[]).filter(id=>S.tasks.concat(S.events).some(x=>x.sid===id))}save();render()}
+});
+/* Family page */
+const code=()=>esc((S.hh&&S.hh.code)||'');
+const cnt=k=>S[k].filter(x=>x.sh).length;
+function view(){
+ let b='<p class="czn" style="margin:0 0 12px">Share only what you choose with your partner or family. Everything else stays private on your phone.</p>';
+ if(!SBS)return panel('Family Sharing',b+'<div class="czc"><b>Sign in first</b><p class="czn" style="margin:6px 0 0">Use the Sign In To Sync link on the Today page, then come back here.</p></div>');
+ if(!on()){
+  b+=`<div class="czc" style="margin-bottom:12px"><b>Start a family</b><p class="czn" style="margin:6px 0 10px">Creates a private code. Your partner joins with it on their phone. You can leave anytime.</p><button class="pill dark" data-fam="create">Create Our Family</button></div>
+  <div class="czc"><b>Join a family</b><p class="czn" style="margin:6px 0 10px">Enter the code your partner or family member gave you.</p><div style="display:flex;gap:8px"><input id="fam-code" placeholder="Family code" autocomplete="off" autocapitalize="characters" style="flex:1;min-width:0;font:inherit;font-size:16px;padding:10px 12px;border-radius:12px;border:1px solid var(--line);text-transform:uppercase;letter-spacing:.12em"><button class="pill dark" data-fam="join">Join</button></div></div>`;
+  if(FM.msg)b+=`<p class="czn" style="margin-top:10px;color:var(--bad,#a33)">${esc(FM.msg)}</p>`;
+  return panel('Family Sharing',b)
+ }
+ if(!FM.loaded)members();
+ const f=F();
+ b+=`<div class="czc" style="margin-bottom:12px"><div class="czn" style="margin:0 0 4px">Your family code</div><div style="font-size:26px;font-weight:700;letter-spacing:.2em">${code()}</div><p class="czn" style="margin:6px 0 0">Give this code to the people you want to share with. They enter it under Family Sharing.</p>${FM.members.length?`<p style="margin:10px 0 0"><b>In this family:</b> ${FM.members.map(esc).join(', ')}</p>`:''}</div>`;
+ b+=`<div class="czc" style="margin-bottom:12px"><b>What gets shared</b>
+  <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:10px"><div><b style="font-weight:600">Groceries</b><div class="czn">One shared list you both add to and check off in the store.</div></div><label class="sw"><input type="checkbox" data-fam="gro"${f.gro?' checked':''}><i></i></label></div>
+  <div style="margin-top:12px"><b style="font-weight:600">Tasks</b><div class="czn">Open any task and turn on Share with family. You can also assign it to someone. ${cnt('tasks')} shared now.</div></div>
+  <div style="margin-top:12px"><b style="font-weight:600">Calendar events</b><div class="czn">Turn on Share with family when you add or edit an event. ${cnt('events')} shared now.</div></div></div>`;
+ b+=`<div class="czc" style="margin-bottom:12px"><b>Good to know</b><p class="czn" style="margin:6px 0 0">Shared items update for everyone, including edits, checking off and deleting. Turning sharing off for an item removes it from their phones and keeps it on yours. Leaving keeps your copies as private items.</p></div>`;
+ b+=`<div class="bar" style="margin:0"><button class="btn" data-fam="sync">${FM.sync?'Syncing…':'Sync Now'}</button><button class="btn ghost" data-fam="leave">Leave Family</button></div>`;
+ if(FM.msg)b+=`<p class="czn" style="margin-top:10px">${esc(FM.msg)}</p>`;
+ return panel('Family Sharing',b)
+}
+document.addEventListener('click',async e=>{
+ const b=e.target.closest&&e.target.closest('button[data-fam]');if(!b)return;const a=b.dataset.fam;
+ if(a==='sync'){sync().then(()=>{render()});return}
+ if(a==='create'){if(!SBS)return;b.disabled=true;try{const r=await sbTbl('POST','rpc/create_household',{p_name:nm(),p_kids:(typeof blKids==='function'?blKids():[])||[]});S.hh={id:r.id,code:r.code};FM.loaded=0;FM.msg='';save();await sync()}catch(_){FM.msg='Could not create the family. Try again.'}render();return}
+ if(a==='join'){const c=((document.getElementById('fam-code')||{}).value||'').trim();if(c.length<4)return;b.disabled=true;try{const r=await sbTbl('POST','rpc/join_household',{p_code:c,p_name:nm()});S.hh={id:r.id,code:r.code};FM.loaded=0;FM.msg='';save();await sync()}catch(_){FM.msg='That code was not found. Check it and try again.'}render();return}
+ if(a==='leave'){if(!confirm('Leave this family? Your shared items stay on your phone as private copies. This also stops the shared baby log on this phone.'))return;
+  if(typeof BL!=='undefined'&&BL.rows){try{S.blog=BL.rows.slice();S.blkids=(BL.kids||[]).slice()}catch(_){}}
+  try{await sbTbl('DELETE','household_members?household_id=eq.'+S.hh.id+'&user_id=eq.'+SBS.id)}catch(_){}
+  Object.keys(KM).forEach(k=>S[KM[k]].forEach(x=>{delete x.sid;delete x.sh;delete x.shH;delete x.to}));
+  S.hh=null;S.fam={};FM.members=[];FM.loaded=0;save();render()}
+});
+V.family=view;
+if(!TABS.some(t=>t[0]==='family'))TABS.push(['family','Family Sharing','#a8895f']);
+try{DEFG.family='family'}catch(_){}
 })();
 </script>
 <style>
