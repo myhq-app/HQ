@@ -3437,6 +3437,7 @@ try{DEFG.family='family'}catch(_){}
 .byw input.bysq{font:inherit;font-size:16px;padding:12px 14px;border-radius:14px;border:1px solid var(--line);background:var(--field,#fff);color:inherit;width:100%;box-sizing:border-box}
 .tzc{background:var(--card,#fff);border:1px solid var(--line);border-radius:18px;padding:12px 14px;box-sizing:border-box}.tzc .byx{gap:10px}.tzc .tzch{all:unset;display:flex;align-items:center;justify-content:space-between;width:100%;cursor:pointer;font-weight:700;font-size:16px}.tzc .tzch i{font-style:normal;color:var(--mut);font-size:20px}.tzc .bym{margin-top:2px}
 .bywish{margin-top:14px;display:flex;flex-direction:column;gap:8px}.bywish textarea{font:inherit;font-size:16px;padding:12px 14px;border-radius:14px;border:1px solid var(--line);background:var(--field,#fff);color:inherit;width:100%;box-sizing:border-box;resize:vertical}
+.byck{display:flex;align-items:center;gap:8px}.byck input{width:20px;height:20px}
 </style>
 <script>
 (function(){
@@ -3564,6 +3565,7 @@ const jurl=(s,c)=>{const kw=encodeURIComponent((c.kw||'').trim()),loc=encodeURIC
 function vJobs(h,g){const c=CF(g);
  const sel=(f,v,L)=>`<select data-byf="${f}" ${A(g,h)}>${L.map(z=>`<option value="${z[0]}"${v===z[0]?' selected':''}>${z[1]}</option>`).join('')}</select>`;
  let o=`<div class="byc"><b>What are you looking for?</b><p class="bym">Fill this in once. The buttons below open each job site with your search already entered.</p><label class="byl">Job title or keywords<input data-byf="jk" ${A(g,h)} value="${esc(c.kw||'')}" maxlength="60" placeholder="Like: medical assistant" autocomplete="off"></label><label class="byl">City or zip code<input data-byf="jl" ${A(g,h)} value="${esc(c.loc||'')}" maxlength="40" placeholder="Like: Manhattan, KS" autocomplete="off"></label><div class="byg2"><label class="byl">Work type${sel('jm',c.mode||'any',[['any','Any'],['remote','Remote'],['hybrid','Hybrid'],['onsite','On-site']])}</label><label class="byl">Posted within${sel('jd',c.days||'7',[['any','Any time'],['1','24 hours'],['3','3 days'],['7','7 days'],['14','14 days']])}</label></div><div class="byg2"><label class="byl">Pay I need<input data-byf="jp" ${A(g,h)} value="${esc(c.pay||'')}" maxlength="30" placeholder="Like: $20/hr" autocomplete="off"></label><label class="byl">Hours I can work<input data-byf="jh" ${A(g,h)} value="${esc(c.hrs||'')}" maxlength="40" placeholder="Like: 9 to 2" autocomplete="off"></label></div></div>`;
+ o+=`<div class="byc"><label class="byck"><input type="checkbox" data-byf="ja" ${A(g,h)}${c.alert?' checked':''}> <b>Alert me about new matches</b></label><p class="bym">Checks remote job boards every few hours and sends a notification when something new fits your title or keywords. Local on-site listings come later.</p><div id="by-jm" aria-live="polite"></div></div>`;setTimeout(jmLoad,60);
  o+=`<div class="byh">Search</div>`+JSITES.map(z=>`<button type="button" class="byp${z[0]==='indeed'?'':' ghost'}" style="margin-bottom:8px" data-by="jgo" ${A(g,h)} data-s="${z[0]}">Search ${z[1]}</button>`).join('');
  o+=`<div class="byc"><p class="bym">Pay and hours are here to remind you. Job sites cannot filter on them, so check each listing. When you find one you like, add it to your Jobs list. Most sites also have a Get Alerts button on their results page, so they can email you when something new matches.</p></div>`;
  return o}
@@ -3715,6 +3717,7 @@ document.addEventListener('change',e=>{const t=e.target;if(!t||!t.dataset||!t.da
  if(f==='gfx'){const x=c.goals.find(z=>z.id===t.dataset.gid);if(x){x.fx=t.value;save2(1)}return}
  if(f==='nd'){c.dir=t.value;save2(1);return}
  if(f==='nsc'){c.scale=t.value;save2(1);return}
+ if(f==='ja'){c.alert=!!t.checked;save2(0);return}
  if(f==='jm'){c.mode=t.value;save2(0);return}
  if(f==='jd'){c.days=t.value;save2(0);return}
  if(f==='ci'){c.icon=t.value;save2(1);return}
@@ -3762,6 +3765,11 @@ document.addEventListener('click',async e=>{const b=e.target.closest&&e.target.c
  try{if(typeof SBS==='undefined'||!SBS)throw new Error('out');const r=await fetch(SBU+'/rest/v1/wishes',{method:'POST',headers:{apikey:SBK,Authorization:'Bearer '+await sbTok(),'Content-Type':'application/json',Prefer:'return=minimal'},body:JSON.stringify([v].concat(JSON.parse(localStorage.getItem('hqd.wishq')||'[]')).map(x=>({text:x})))});if(!r.ok)throw new Error('http');t.value='';try{localStorage.removeItem('hqd.wishq')}catch(_){}m.textContent='Sent. Thank you!'}
  catch(_){try{const q=JSON.parse(localStorage.getItem('hqd.wishq')||'[]');q.push(v);localStorage.setItem('hqd.wishq',JSON.stringify(q));t.value='';m.textContent='Saved on this device. Sign in and send again to share it.'}catch(__){m.textContent='Could not send. Try again.'}}
  b.disabled=false});
+
+async function jmLoad(){const box=document.getElementById('by-jm');if(!box||typeof SBS==='undefined'||!SBS)return;
+ try{const r=await fetch(SBU+'/rest/v1/job_matches?select=id,title,company,location,url,source&order=created_at.desc&limit=15',{headers:{apikey:SBK,Authorization:'Bearer '+await sbTok()}});if(!r.ok)return;const L=await r.json();
+  box.innerHTML=L.length?'<div class="byh">New matches</div>'+L.map(x=>'<div class="byrow"><a class="bylnk" href="'+esc(x.url)+'" target="_blank" rel="noopener"><b>'+esc(x.title||'')+'</b><br><span class="bym">'+esc([x.company,x.location,x.source].filter(Boolean).join(' · '))+'</span></a><button type="button" class="bylnk" data-jmx="'+x.id+'" aria-label="Dismiss">✕</button></div>').join(''):''}catch(_){}}
+document.addEventListener('click',async e=>{const b=e.target.closest&&e.target.closest('[data-jmx]');if(!b)return;b.disabled=true;try{await fetch(SBU+'/rest/v1/job_matches?id=eq.'+encodeURIComponent(b.dataset.jmx),{method:'DELETE',headers:{apikey:SBK,Authorization:'Bearer '+await sbTok()}});const row=b.closest('.byrow');if(row)row.remove()}catch(_){b.disabled=false}});
 </script>
 <style>
 .tzg{display:grid!important;grid-template-columns:repeat(6,minmax(0,1fr));gap:14px 12px;align-items:start}
