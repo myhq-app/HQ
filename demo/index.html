@@ -3427,7 +3427,7 @@ try{DEFG.family='family'}catch(_){}
 .byx .byb.fx-green{background:#e4f2e8;border-color:#7fb391}.byx .byb.fx-green b,.byx .byb.fx-green span{color:#2f7d4a}.byx .byb.fx-gold{background:#faf0d2;border-color:#d9b857}.byx .byb.fx-gold b{color:#7a5b10}
 .byx .byb .bye2{font-style:normal;font-size:18px;line-height:1;margin-bottom:2px}.byx .byb span.bydn{position:absolute;top:10px;right:12px;font-weight:700;font-size:17px;line-height:1;color:#2f7d4a}.byx .byb{position:relative}
 .byx .byc.fx-green{background:#e4f2e8;border-color:#7fb391}
-.byx .bynum{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}.byx .bynum b{font-size:34px;line-height:1.1;font-weight:700}.byx .bynum span{color:var(--mut)}.byx .bynum.ok b{color:#2f7d4a}
+.byx .bypick{display:grid;grid-template-columns:repeat(var(--n,5),minmax(0,1fr));gap:8px;margin:12px 0 4px}.byx .bypick button{aspect-ratio:1;border-radius:50%;border:2px solid var(--line);background:var(--soft);font:700 20px/1 inherit;font-family:inherit;color:var(--ink);cursor:pointer;padding:0}.byx .bypick button.on{background:var(--accent,var(--a));border-color:var(--accent,var(--a));color:#fff}.byx .bypick button:active{transform:scale(.94)}.byx .bynum{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}.byx .bynum b{font-size:34px;line-height:1.1;font-weight:700}.byx .bynum span{color:var(--mut)}.byx .bynum.ok b{color:#2f7d4a}
 .byx .byspark{width:100%;height:64px;display:block}
 .byx .bystars{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin:10px 0}.byx .bystar{aspect-ratio:1;border-radius:14px;border:2px dashed var(--line);display:flex;align-items:center;justify-content:center;font-size:26px;background:transparent;color:var(--mut)}.byx .bystar.on{border:2px solid color-mix(in srgb,var(--accent,var(--a)) 45%,#fff);background:color-mix(in srgb,var(--accent,var(--a)) 12%,#fff);animation:bypop .25s ease-out}
 @keyframes bypop{from{transform:scale(.6)}to{transform:scale(1)}}@media (prefers-reduced-motion:reduce){.byx .bystar.on{animation:none}}
@@ -3533,13 +3533,16 @@ function vGoal(h,g){const c=CF(g),it=g.items;
 function spark(a){if(a.length<2)return '';const w=300,hh=64,p=6,mn=Math.min(...a),mx=Math.max(...a),r=mx-mn||1;const pts=a.map((v,i)=>[p+i*(w-2*p)/(a.length-1),hh-p-(v-mn)/r*(hh-2*p)]);
  return `<svg class="byspark" viewBox="0 0 ${w} ${hh}" preserveAspectRatio="none" aria-hidden="true"><polyline fill="none" stroke="var(--accent,var(--a))" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" points="${pts.map(q=>q[0].toFixed(1)+','+q[1].toFixed(1)).join(' ')}"/><circle cx="${pts[pts.length-1][0].toFixed(1)}" cy="${pts[pts.length-1][1].toFixed(1)}" r="4" fill="var(--accent,var(--a))"/></svg>`}
 function numInfo(g){const c=CF(g),it=g.items.slice().sort((a,z)=>a.at-z.at),last=it[it.length-1],prev=it[it.length-2],goal=c.goal===''||c.goal==null?null:num(c.goal);const hit=goal!=null&&last&&(c.dir==='up'?last.v>=goal:last.v<=goal);return{it,last,prev,goal,hit}}
+const numScale=c=>{const s=c.scale!==undefined&&c.scale!==''?+c.scale:(c.l==='Mood'&&c.u==='of 5'&&c.scale===undefined?5:0);return s>=2&&s<=10?Math.floor(s):0};
 function vNum(h,g){const c=CF(g),{it,last,prev,goal,hit}=numInfo(g);
  const d=last&&prev?Math.round((last.v-prev.v)*100)/100:null;
  let o=`<div class="byc${hit?' fx-green':''}"><div class="byh" style="margin:0 0 4px">${esc(c.l)}</div><div class="bynum${hit?' ok':''}">${last?`<b>${hit?'✓ ':''}${fmtN(last.v)}</b><span>${esc(c.u||'')}</span>`:'<span>Nothing logged yet</span>'}</div>${d!=null?`<p class="bym">${d===0?'No change':(d>0?'Up ':'Down ')+fmtN(Math.abs(d))+(c.u?' '+esc(c.u):'')} since the last entry</p>`:''}${goal!=null?`<p class="bym">Goal: ${c.dir==='up'?'at least':'at or below'} ${fmtN(goal)}${c.u?' '+esc(c.u):''}</p>`:''}${spark(it.slice(-30).map(x=>x.v))}</div>`;
- o+=`<form class="byf" data-bysub="nadd" ${A(g,h)}><div class="bye"><input name="t" type="number" step="any" inputmode="decimal" required placeholder="Today’s ${esc(c.l.toLowerCase())}" aria-label="Value"><button class="byp">Add</button></div></form>`;
+ const sc=numScale(c);
+ if(sc){const td=it.filter(x=>dk(x.at)===T()),cur=td.length?td[td.length-1].v:null;o+=`<div class="byc"><b>${cur==null?'How is it today?':'Today'}</b><div class="bypick" style="--n:${sc}">${Array.from({length:sc},(_,i)=>`<button type="button" data-by="npick" ${A(g,h)} data-v="${i+1}" class="${cur===i+1?'on':''}" aria-label="${i+1} of ${sc}" aria-pressed="${cur===i+1}">${i+1}</button>`).join('')}</div><p class="bym">${cur==null?'Tap a number.':'Tap a different number to change it.'}</p></div>`}
+ else o+=`<form class="byf" data-bysub="nadd" ${A(g,h)}><div class="bye"><input name="t" type="number" step="any" inputmode="decimal" required placeholder="Today’s ${esc(c.l.toLowerCase())}" aria-label="Value"><button class="byp">Add</button></div></form>`;
  const rec=it.slice().reverse().slice(0,10);
  if(rec.length)o+=`<div class="byh">Recent</div><div class="byc">${rec.map(x=>`<div class="byr"><div class="bt"><b>${fmtN(x.v)}${c.u?' '+esc(c.u):''}</b><small>${esc(dayName(dk(x.at)))} ${tm(x.at)}</small></div><button type="button" class="byx2" data-by="ldel" ${A(g,h)} data-i="${x.id}" aria-label="Delete">×</button></div>`).join('')}</div>`;
- o+=`<details class="byc bycust"><summary>Customize</summary><label class="byl">What are you tracking<input data-byf="nl" ${A(g,h)} value="${esc(c.l)}" maxlength="24"></label><div class="bye"><input data-byf="nu" ${A(g,h)} value="${esc(c.u||'')}" placeholder="Unit (like lb)" maxlength="10"><input type="number" step="any" inputmode="decimal" data-byf="ng" ${A(g,h)} value="${esc(c.goal===''||c.goal==null?'':c.goal)}" placeholder="Goal (optional)"></div><label class="byl">Goal means<select data-byf="nd" ${A(g,h)}><option value="down"${c.dir!=='up'?' selected':''}>Get to this or lower</option><option value="up"${c.dir==='up'?' selected':''}>Get to this or higher</option></select></label><p class="bym">When your latest entry reaches the goal the number turns green.</p></details>`;
+ o+=`<details class="byc bycust"><summary>Customize</summary><label class="byl">What are you tracking<input data-byf="nl" ${A(g,h)} value="${esc(c.l)}" maxlength="24"></label><div class="bye"><input data-byf="nu" ${A(g,h)} value="${esc(c.u||'')}" placeholder="Unit (like lb)" maxlength="10"><input type="number" step="any" inputmode="decimal" data-byf="ng" ${A(g,h)} value="${esc(c.goal===''||c.goal==null?'':c.goal)}" placeholder="Goal (optional)"></div><label class="byl">Entering a number<select data-byf="nsc" ${A(g,h)}>${[['','Type it in'],['3','Pick 1 to 3'],['4','Pick 1 to 4'],['5','Pick 1 to 5'],['7','Pick 1 to 7'],['10','Pick 1 to 10']].map(z=>`<option value="${z[0]}"${String(numScale(c)||'')===z[0]?' selected':''}>${z[1]}</option>`).join('')}</select></label><label class="byl">Goal means<select data-byf="nd" ${A(g,h)}><option value="down"${c.dir!=='up'?' selected':''}>Get to this or lower</option><option value="up"${c.dir==='up'?' selected':''}>Get to this or higher</option></select></label><p class="bym">When your latest entry reaches the goal the number turns green.</p></details>`;
  return o}
 /* ---------- Sticker Chart ---------- */
 function vChart(h,g){const c=CF(g),n=g.items.length,tg=Math.max(1,Math.min(60,+c.target||10)),full=n>=tg;
@@ -3567,7 +3570,7 @@ const keyD=(html,id)=>html.replace(/<details class="byc bycust"([^>]*)><summary>
 const viewOf=(h,g)=>keyD(VIEWS[g.kind](h,g),g.id);
 /* ---------- Ideas ---------- */
 const mkL=(b)=>({kind:'by-log',cfg:{buttons:b.map(x=>({id:hid(),l:x[0],e:x[1]||0,gl:x[2]||undefined,fx:x[3]||undefined,i:x[4]||undefined}))}});
-const mkN=(l,u,goal,dir)=>({kind:'by-num',cfg:{l,u,goal:goal==null?'':goal,dir:dir||'down'}});
+const mkN=(l,u,goal,dir,sc)=>({kind:'by-num',cfg:{l,u,goal:goal==null?'':goal,dir:dir||'down',scale:sc||''}});
 const mkS=(l,target,reward,icon)=>({kind:'by-chart',cfg:{l,target,reward:reward||'',icon:icon||'⭐',done:0}});
 const mkF=(a)=>a.map(x=>({id:hid(),l:x[0],t:x[1],o:x[2]||undefined,cal:x[3]||undefined}));
 const mkI=(tl,f,sort)=>({kind:'by-list',cfg:{tl,fields:mkF(f),sort:sort||'new'}});
@@ -3598,7 +3601,7 @@ IDEAS.push(
  ['Kids','Kid Reward Chart','Stars for good days, helping out or trying hard.',()=>[['Stars',mkS('My Stars',15,'Pick a family activity','🌟')],['Notes',note('Notes')]]],
  ['Health','Water Tracker','Tap each time you finish a glass. It turns green at your goal.',()=>[['Water',mkL([['Glass of Water',0,8,'green','💧']])]]],
  ['Health','Weight Tracker','Log your weight and watch the line over time.',()=>[['Weight',mkN('Weight','lb',null,'down')]]],
- ['Health','Mood Tracker','Rate your day from 1 to 5 and spot patterns.',()=>[['Mood',mkN('Mood','of 5',null,'up')],['Notes',note('Journal')]]],
+ ['Health','Mood Tracker','Rate your day from 1 to 5 and spot patterns.',()=>[['Mood',mkN('Mood','of 5',null,'up',5)],['Notes',note('Journal')]]],
  ['Health','Medications','Every medicine with the dose, times and refill date, plus a button to log when you take it.',()=>[['Medicines',mkI('Medicine',[['Dose','text'],['Times','text'],['Refill date','date',null,1],['Notes','text']])],['Taken',mkL([['Took It',0,null,null,'💊']])]]],
  ['Health','Sleep Log','Tap when you go to bed and when you wake up.',()=>[['Sleep',mkL([['Went To Bed',0,null,null,'🌙'],['Woke Up',0,null,null,'☀️']])]]],
  ['Health','Workout Log','Log workouts and see how many you did this week.',()=>[['Workouts',mkL([['Workout',0,null,null,'💪'],['Walk',0,null,null,'🚶'],['Stretch',0,null,null,'🧘']])],['Weekly Goal',mkG([['Workouts',3,'workouts','week']])]]]
@@ -3684,6 +3687,7 @@ document.addEventListener('click',e=>{
  if(k==='cclear'){g.items.forEach(x=>{x.done=false});rnd();return}
  if(k==='gadd'){const go=c.goals.find(z=>z.id===b.dataset.gid);if(!go)return;let n=b.dataset.n;if(n==='')n=(document.getElementById('by-g-'+go.id)||{}).value;n=num(n);if(!n)return;g.items.push({id:hid(),g:go.id,n,at:Date.now()});rnd();return}
  if(k==='jgo'){try{window.open(jurl(b.dataset.s,c),'_blank','noopener')}catch(_){}return}
+ if(k==='npick'){const v=+b.dataset.v,td=g.items.filter(x=>dk(x.at)===T());if(td.length){td[td.length-1].v=v;td[td.length-1].at=Date.now()}else g.items.push({id:hid(),at:Date.now(),v});save();render();return}
  if(k==='sadd'){if(g.items.length<Math.max(1,Math.min(60,+c.target||10))){g.items.push({id:hid(),at:Date.now()});rnd()}return}
  if(k==='sundo'){g.items.pop();rnd();return}
  if(k==='snew'){c.done=(c.done||0)+1;g.items=[];rnd();return}
@@ -3702,6 +3706,7 @@ document.addEventListener('change',e=>{const t=e.target;if(!t||!t.dataset||!t.da
  if(f==='bfx'){const b=c.buttons.find(x=>x.id===t.dataset.b);if(b){b.fx=t.value;save2(1)}return}
  if(f==='gfx'){const x=c.goals.find(z=>z.id===t.dataset.gid);if(x){x.fx=t.value;save2(1)}return}
  if(f==='nd'){c.dir=t.value;save2(1);return}
+ if(f==='nsc'){c.scale=t.value;save2(1);return}
  if(f==='jm'){c.mode=t.value;save2(0);return}
  if(f==='jd'){c.days=t.value;save2(0);return}
  if(f==='ci'){c.icon=t.value;save2(1);return}
