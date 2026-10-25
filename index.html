@@ -3349,7 +3349,7 @@ try{DEFG.family='family'}catch(_){}
 })();
 </script>
 <style>
-.byx{display:flex;flex-direction:column;gap:14px}.alwrap{padding-bottom:70px}.byseg{display:flex;gap:6px;overflow-x:auto;padding-bottom:2px}.byseg button{flex:none;border:1px solid var(--line);background:var(--card,#fff);color:inherit;border-radius:999px;padding:8px 14px;font:inherit;font-size:14px}.byseg button.on{background:#5b4a40;color:#fff;border-color:#5b4a40}.byfoot{display:flex;gap:10px;margin-top:6px}.bys{flex:1;border:1px solid var(--line);background:transparent;color:inherit;border-radius:12px;padding:11px;font:inherit;font-size:14px}.bys.dng{color:#b4535b}
+.byx{display:flex;flex-direction:column;gap:14px}
 .byx .byc{background:var(--card,#fff);border:1px solid var(--line);border-radius:16px;padding:12px 14px}
 .byx .byc h4{margin:0 0 8px;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--mut)}
 .byx .bym{font-size:13px;color:var(--mut);margin:0}
@@ -3494,7 +3494,7 @@ const IDEAS=[
 ];
 const CAT=['Health','Pets','Home','Family','Fun','Money','Work','Kids'];
 const PGK=[['by-log','Button Log','Tap a button to log it with the time. Good for feeding, medicine, workouts.'],['by-list','Custom List','A list where you choose the fields. Good for almost anything.'],['by-check','Routine Checklist','Steps that reset every day or week.'],['by-goal','Goals And Counters','Progress bars and streaks.'],['notes','Notes','A page to write on.'],['list','Simple List','A plain list of entries.']];
-function makeHub(name,pages){const h={id:hUid(),own:1,name:name,pages:pages.map(p=>{const o={id:hUid(),name:p[0],kind:p[1].kind,items:p[1].items||[],text:''};if(p[1].cfg)o.cfg=p[1].cfg;return o})};hubs().push(h);save();return h}
+function makeHub(name,pages){const h={id:hUid(),name:name,pages:pages.map(p=>{const o={id:hUid(),name:p[0],kind:p[1].kind,items:p[1].items||[],text:''};if(p[1].cfg)o.cfg=p[1].cfg;return o})};hubs().push(h);save();return h}
 function byoHome(){let o=`<div class="byw"><div class="byhero"><b>What do you want help with?</b><p>Pick an idea and it is set up for you in a second. Everything can be renamed and changed afterward. Or build your own from scratch.</p></div>`;
  CAT.forEach(c=>{const L=IDEAS.map((x,i)=>[x,i]).filter(z=>z[0][0]===c);if(!L.length)return;o+=`<h3>${c}</h3>`+L.map(z=>`<button type="button" class="byi" data-byo="idea" data-i="${z[1]}"><b>${esc(z[0][1])}</b><span>${esc(z[0][2])}</span></button>`).join('')});
  o+=`<h3>Something Else</h3><button type="button" class="byi" data-tab="byos"><b>Start From Scratch</b><span>Name it, choose the kinds of pages you want, and shape them yourself.</span></button></div>`;return o}
@@ -3503,27 +3503,15 @@ function byoScratch(){return `<div class="byw"><div class="byx"><div class="byc"
 /* ---------- wiring ---------- */
 const _hv=hubView;
 hubView=function(t){
- if(t==='byo')return{title:'Build Your Own',color:'#b5707c',parent:'all',html:byoHome()};
+ if(t==='byo')return{title:'Build Your Own',color:'#b5707c',parent:'hubnew',html:byoHome()};
  if(t==='byos')return{title:'Start From Scratch',color:'#b5707c',parent:'byo',html:byoScratch()};
  let m=/^byo:(\d+)$/.exec(t||'');if(m)return{title:(IDEAS[+m[1]]||[0,'Idea'])[1],color:'#b5707c',parent:'byo',html:byoIdea(m[1])};
  m=/^p:([^:]+):(.+)$/.exec(t||'');
  if(m){const h=hubOf(m[1]);const g=h&&(h.pages||[]).find(z=>z.id===m[2]);if(g&&isBy(g.kind)){return{title:g.name,color:'#b5707c',parent:'h:'+h.id,html:'<div class="byx">'+VIEWS[g.kind](h,g)+'</div>'}}}
- m=/^c:([^:]+)(?::(.+))?$/.exec(t||'');
- if(m){const h=hubOf(m[1]);if(!h){tab='all';return null}const pg=h.pages||[],g=pg.find(z=>z.id===m[2])||pg[0];
-  let o='<div class="byx">';if(pg.length>1)o+='<div class="byseg">'+pg.map(z=>'<button type="button" class="'+(z===g?'on':'')+'" data-tab="c:'+h.id+':'+z.id+'">'+esc(z.name)+'</button>').join('')+'</div>';
-  o+=g?(isBy(g.kind)?VIEWS[g.kind](h,g):'<p class="bym">This page type is not available here.</p>'):'<p class="bym">Nothing here yet. Use Edit to add a page.</p>';
-  o+='<div class="byfoot"><button type="button" class="bys" data-tab="he:'+h.id+'">Edit</button><button type="button" class="bys dng" data-byo="del" data-id="'+h.id+'">Delete</button></div></div>';
-  return{title:h.name,color:'#b5707c',parent:'all',html:o}}
  const r=_hv(t);
- if(/^he:/.test(t||'')&&r){const hh=hubOf(t.slice(3));if(hh&&hh.own)r.parent='c:'+hh.id}
+ if(t==='hubnew'&&r&&r.html)r.html=`<button type="button" class="hcard" data-tab="byo" style="width:100%;margin:0 0 12px"><b>Build Your Own</b><em>Pick an idea like Pet Care, Plant Care or Trip Planner, or start from scratch</em></button>`+r.html;
  if(/^he:/.test(t||'')&&r&&r.html)r.html=r.html.replace('<option value="notes">Notes</option></select>','<option value="notes">Notes</option>'+Object.keys(KB).map(k=>`<option value="${k}">${KB[k]}</option>`).join('')+'</select>');
  return r};
-try{let ch=0;(S.hubs||[]).forEach(x=>{if(!x.own&&x.pages&&x.pages.length&&x.pages.every(g=>isBy(g.kind))){x.own=1;ch=1}});if(ch)save()}catch(_){}
-const _hl=hubList;hubList=function(){return _hl().filter(x=>{const hh=x.id==='today'?null:hubOf(x.id);return !(hh&&hh.own)})};
-const _va=V.all;V.all=function(){let o=_va();const mine=hubs().filter(x=>x.own);
- const add='<button type="button" class="arow" data-tab="byo"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg><span>Build Your Own</span><i aria-hidden="true">›</i></button>';
- const rows=mine.map(x=>'<button type="button" class="arow" data-tab="c:'+x.id+'"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/></svg><span>'+esc(x.name)+'</span><i aria-hidden="true">›</i></button>').join('');
- return o.replace(/<\/div>$/,'<div class="alh">'+(mine.length?'My Pages':'Make Your Own')+'</div><div class="alist">'+rows+add+'</div></div>')};
 /* hub tab subtitles for the new kinds */
 const _r0=render;render=function(){const r=_r0.apply(this,arguments);try{byTiles()}catch(_){}return r};
 function byTiles(){const m=/^h:([^:]+)$/.exec(tab||'');if(!m)return;const h=hubOf(m[1]);if(!h)return;(h.pages||[]).forEach(g=>{if(!isBy(g.kind))return;const b=document.querySelector('.tile[data-tab="p:'+h.id+':'+g.id+'"] span');if(!b)return;CF(g);let s='';if(g.kind==='by-log'){const l=g.items.slice().sort((a,z)=>z.at-a.at)[0];s=l?'Last '+ago(Date.now()-l.at):'Tap to log'}else if(g.kind==='by-list')s=g.items.length+(g.items.length===1?' entry':' entries');else if(g.kind==='by-check'){chkReset(g);s=g.items.filter(x=>!x.done).length+' to do'}else{const go=g.cfg.goals[0];if(go){const v=g.items.filter(x=>x.g===go.id&&inPer(go.p,x.at)).reduce((a,x)=>a+x.n,0);s=fmtN(v)+' of '+fmtN(num(go.t))+(go.u?' '+go.u:'')}}b.textContent=s})}
@@ -3532,9 +3520,8 @@ document.addEventListener('click',e=>{
  const bo=e.target.closest&&e.target.closest('[data-byo]');
  if(bo){const k=bo.dataset.byo;
   if(k==='idea'){tab='byo:'+bo.dataset.i;render();window.scrollTo(0,0);return}
-  if(k==='del'){const hh=hubOf(bo.dataset.id);if(!hh||!confirm('Delete "'+hh.name+'" and everything in it? This cannot be undone.'))return;S.hubs=hubs().filter(z=>z!==hh);save();tab='all';try{location.hash=''}catch(_){}render();return}
-  if(k==='make'){const x=IDEAS[+bo.dataset.i];const nm=((document.getElementById('byo-name')||{}).value||'').trim()||x[1];const h=makeHub(nm,x[3]());tab='c:'+h.id;try{location.hash=''}catch(_){}render();return}
-  if(k==='scratch'){const nm=((document.getElementById('byo-name')||{}).value||'').trim()||'My Hub';const ks=[...document.querySelectorAll('[data-byo=pk]:checked')].map(z=>z.value);if(!ks.length)return;const names={'by-log':'Log','by-list':'List','by-check':'Checklist','by-goal':'Goals',notes:'Notes',list:'List'};const pages=ks.map(k=>[names[k],{kind:k,cfg:isBy(k)?DEF[k]():undefined}]);const h=makeHub(nm,pages);tab='c:'+h.id;try{location.hash=''}catch(_){}render();return}
+  if(k==='make'){const x=IDEAS[+bo.dataset.i];const nm=((document.getElementById('byo-name')||{}).value||'').trim()||x[1];const h=makeHub(nm,x[3]());tab='h:'+h.id;try{location.hash=tab}catch(_){}render();return}
+  if(k==='scratch'){const nm=((document.getElementById('byo-name')||{}).value||'').trim()||'My Hub';const ks=[...document.querySelectorAll('[data-byo=pk]:checked')].map(z=>z.value);if(!ks.length)return;const names={'by-log':'Log','by-list':'List','by-check':'Checklist','by-goal':'Goals',notes:'Notes',list:'List'};const pages=ks.map(k=>[names[k],{kind:k,cfg:isBy(k)?DEF[k]():undefined}]);const h=makeHub(nm,pages);tab='h:'+h.id;try{location.hash=tab}catch(_){}render();return}
   return}
  const b=e.target.closest&&e.target.closest('[data-by]');if(!b)return;const k=b.dataset.by;const hp=pgOf(b);if(!hp)return;const [h,g]=hp;const c=CF(g);
  const rnd=()=>{save();render()};
