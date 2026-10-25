@@ -3441,15 +3441,16 @@ try{DEFG.family='family'}catch(_){}
 const ON=()=>typeof tzOK==='function'&&tzOK();
 const hid=()=>Math.random().toString(36).slice(2,9);
 const T=()=>today();
-const KB={'by-log':'Button Log','by-list':'Custom List','by-check':'Routine Checklist','by-goal':'Goals And Counters','by-num':'Number Tracker','by-chart':'Sticker Chart'};
+const KB={'by-log':'Button Log','by-list':'Custom List','by-check':'Routine Checklist','by-goal':'Goals And Counters','by-num':'Number Tracker','by-chart':'Sticker Chart','by-jobs':'Job Search Links'};
 Object.keys(KB).forEach(k=>{HKIND[k]=KB[k]});
 ICO['k:by-log']='<circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3"/>';
 ICO['k:by-list']='<path d="M8 6h12M8 12h12M8 18h12"/><circle cx="4" cy="6" r="1"/><circle cx="4" cy="12" r="1"/><circle cx="4" cy="18" r="1"/>';
 ICO['k:by-check']='<rect x="3" y="3" width="18" height="18" rx="4"/><path d="M8 12l3 3 5-6"/>';
 ICO['k:by-num']='<path d="M4 19V5M4 19h16M7 15l4-4 3 3 5-7"/>';
 ICO['k:by-chart']='<path d="M12 3l2.6 5.6 6 .7-4.5 4.1 1.2 6L12 16.4 6.7 19.4l1.2-6L3.4 9.3l6-.7z"/>';
+ICO['k:by-jobs']='<rect x="3" y="7" width="18" height="13" rx="3"/><path d="M9 7V5a2 2 0 012-2h2a2 2 0 012 2v2M3 13h18"/>';
 ICO['k:by-goal']='<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/>';
-const DEF={'by-log':()=>({buttons:[{id:hid(),l:'Done',e:0}]}),'by-list':()=>({fields:[],sort:'new'}),'by-check':()=>({reset:'daily',last:''}),'by-goal':()=>({goals:[{id:hid(),l:'My Goal',t:1,u:'',p:'day'}]}),'by-num':()=>({l:'My Number',u:'',goal:'',dir:'down'}),'by-chart':()=>({l:'My Chart',target:10,reward:'',icon:'⭐',done:0})};
+const DEF={'by-log':()=>({buttons:[{id:hid(),l:'Done',e:0}]}),'by-list':()=>({fields:[],sort:'new'}),'by-check':()=>({reset:'daily',last:''}),'by-goal':()=>({goals:[{id:hid(),l:'My Goal',t:1,u:'',p:'day'}]}),'by-num':()=>({l:'My Number',u:'',goal:'',dir:'down'}),'by-chart':()=>({l:'My Chart',target:10,reward:'',icon:'⭐',done:0}),'by-jobs':()=>({kw:'',loc:'',mode:'any',days:'7',pay:'',hrs:''})};
 const CF=g=>{if(!g.cfg)g.cfg=DEF[g.kind]();g.items=g.items||[];return g.cfg};
 const isBy=k=>/^by-/.test(k||'');
 const pad=n=>String(n).padStart(2,'0');
@@ -3548,7 +3549,20 @@ function vChart(h,g){const c=CF(g),n=g.items.length,tg=Math.max(1,Math.min(60,+c
  if(n&&!full)o+=`<button type="button" class="byp ghost" data-by="sundo" ${A(g,h)}>Undo Last</button>`;
  o+=`<details class="byc bycust"><summary>Customize</summary><label class="byl">Chart name<input data-byf="cl" ${A(g,h)} value="${esc(c.l)}" maxlength="24"></label><div class="bye"><label class="byl" style="flex:1">Stars needed<input type="number" min="1" max="60" inputmode="numeric" data-byf="ct" ${A(g,h)} value="${esc(c.target)}"></label><label class="byl" style="flex:1">Symbol<select data-byf="ci" ${A(g,h)}>${['⭐','❤️','🌟','🐾','🌈'].map(s=>`<option${(c.icon||'⭐')===s?' selected':''}>${s}</option>`).join('')}</select></label></div><label class="byl">Reward at the end<input data-byf="cr" ${A(g,h)} value="${esc(c.reward||'')}" placeholder="Like: Ice cream trip" maxlength="40"></label></details>`;
  return o}
-const VIEWS={'by-log':vLog,'by-list':vList,'by-check':vCheck,'by-goal':vGoal,'by-num':vNum,'by-chart':vChart};
+/* ---------- Job Search Links ---------- */
+const JSITES=[['indeed','Indeed'],['linkedin','LinkedIn'],['google','Google Jobs'],['zip','ZipRecruiter']];
+const jurl=(s,c)=>{const kw=encodeURIComponent((c.kw||'').trim()),loc=encodeURIComponent((c.loc||'').trim()),m=c.mode||'any',d=c.days||'any';
+ if(s==='indeed'){let u='https://www.indeed.com/jobs?q='+kw+'&l='+(m==='remote'?'Remote':loc);if(d!=='any')u+='&fromage='+d;return u}
+ if(s==='linkedin'){let u='https://www.linkedin.com/jobs/search/?keywords='+kw+(loc?'&location='+loc:'');if(m!=='any')u+='&f_WT='+({onsite:1,remote:2,hybrid:3}[m]);if(d!=='any')u+='&f_TPR=r'+(86400*(+d));return u}
+ if(s==='google'){const q=[(c.kw||'').trim(),m==='remote'?'remote':m==='hybrid'?'hybrid':'',(c.loc||'').trim()&&m!=='remote'?'in '+(c.loc||'').trim():''].filter(Boolean).join(' ');return 'https://www.google.com/search?q='+encodeURIComponent((q||'')+' jobs')+'&ibp=htl;jobs'}
+ let u='https://www.ziprecruiter.com/jobs-search?search='+kw+'&location='+(m==='remote'?'Remote':loc);if(d!=='any')u+='&days='+d;return u};
+function vJobs(h,g){const c=CF(g);
+ const sel=(f,v,L)=>`<select data-byf="${f}" ${A(g,h)}>${L.map(z=>`<option value="${z[0]}"${v===z[0]?' selected':''}>${z[1]}</option>`).join('')}</select>`;
+ let o=`<div class="byc"><b>What are you looking for?</b><p class="bym">Fill this in once. The buttons below open each job site with your search already entered.</p><label class="byl">Job title or keywords<input data-byf="jk" ${A(g,h)} value="${esc(c.kw||'')}" maxlength="60" placeholder="Like: medical assistant" autocomplete="off"></label><label class="byl">City or zip code<input data-byf="jl" ${A(g,h)} value="${esc(c.loc||'')}" maxlength="40" placeholder="Like: Manhattan, KS" autocomplete="off"></label><div class="byg2"><label class="byl">Work type${sel('jm',c.mode||'any',[['any','Any'],['remote','Remote'],['hybrid','Hybrid'],['onsite','On-site']])}</label><label class="byl">Posted within${sel('jd',c.days||'7',[['any','Any time'],['1','24 hours'],['3','3 days'],['7','7 days'],['14','14 days']])}</label></div><div class="byg2"><label class="byl">Pay I need<input data-byf="jp" ${A(g,h)} value="${esc(c.pay||'')}" maxlength="30" placeholder="Like: $20/hr" autocomplete="off"></label><label class="byl">Hours I can work<input data-byf="jh" ${A(g,h)} value="${esc(c.hrs||'')}" maxlength="40" placeholder="Like: 9 to 2" autocomplete="off"></label></div></div>`;
+ o+=`<div class="byh">Search</div>`+JSITES.map(z=>`<button type="button" class="byp${z[0]==='indeed'?'':' ghost'}" style="margin-bottom:8px" data-by="jgo" ${A(g,h)} data-s="${z[0]}">Search ${z[1]}</button>`).join('');
+ o+=`<div class="byc"><p class="bym">Pay and hours are here to remind you. Job sites cannot filter on them, so check each listing. When you find one you like, add it to your Jobs list. Most sites also have a Get Alerts button on their results page, so they can email you when something new matches.</p></div>`;
+ return o}
+const VIEWS={'by-jobs':vJobs,'by-log':vLog,'by-list':vList,'by-check':vCheck,'by-goal':vGoal,'by-num':vNum,'by-chart':vChart};
 const keyD=(html,id)=>html.replace(/<details class="byc bycust"([^>]*)><summary>([^<]*)<\/summary>/g,(m,a,n)=>{const k='by:'+id+':'+n;return '<details class="byc bycust" data-od="'+k+'"'+(WOPEN.has(k)||/open/.test(a)?' open':'')+'><summary>'+n+'</summary>'}).replace(/<details class="byrow" data-od="([^"]+)">/g,(m,k)=>'<details class="byrow" data-od="'+k+'"'+(WOPEN.has(k)?' open':'')+'>');
 const viewOf=(h,g)=>keyD(VIEWS[g.kind](h,g),g.id);
 /* ---------- Ideas ---------- */
@@ -3579,6 +3593,7 @@ const IDEAS=[
  ['Kids','Reading Log','Minutes read each day with a streak.',()=>[['Reading',mkG([['Reading',20,'minutes']])],['Books',mkI('Book',[['Finished','date'],['Rating','choice',['1','2','3','4','5']]])]]],
 ];
 IDEAS.push(
+ ['Work','Job Search','Save jobs you find, track where you applied, keep your resume handy, and jump to job sites with your search already filled in.',()=>[['Find Jobs',{kind:'by-jobs',cfg:DEF['by-jobs']()}],['Jobs',mkI('Job title',[['Company','text'],['Status','choice',['Interested','Applied','Interview','Offer','Not selected']],['Work type','choice',['Remote','Hybrid','On-site']],['Pay','text'],['Apply link','link'],['Applied on','date'],['Follow up by','date',null,1],['Notes','text']])],['Resume',Object.assign(mkI('Document',[['Link to file','link'],['Updated','date'],['Notes','text']]),{items:[{id:hid(),t:'My Resume',at:Date.now(),v:{}},{id:hid(),t:'Cover Letter',at:Date.now(),v:{}}]})],['Notes',note('Notes')]]],
  ['Kids','Potty Chart','Add a star for every success. A reward waits at the end.',()=>[['Stars',mkS('Potty Chart',10,'A special treat','⭐')]]],
  ['Kids','Kid Reward Chart','Stars for good days, helping out or trying hard.',()=>[['Stars',mkS('My Stars',15,'Pick a family activity','🌟')],['Notes',note('Notes')]]],
  ['Health','Water Tracker','Tap each time you finish a glass. It turns green at your goal.',()=>[['Water',mkL([['Glass of Water',0,8,'green','💧']])]]],
@@ -3588,7 +3603,7 @@ IDEAS.push(
  ['Health','Sleep Log','Tap when you go to bed and when you wake up.',()=>[['Sleep',mkL([['Went To Bed',0,null,null,'🌙'],['Woke Up',0,null,null,'☀️']])]]],
  ['Health','Workout Log','Log workouts and see how many you did this week.',()=>[['Workouts',mkL([['Workout',0,null,null,'💪'],['Walk',0,null,null,'🚶'],['Stretch',0,null,null,'🧘']])],['Weekly Goal',mkG([['Workouts',3,'workouts','week']])]]]
 );
-const KWM={'Medicine Tracker':'medication pills prescription dose','Water And Habits':'habits water drink walk','Symptom Journal':'symptoms headache migraine pain mood','Pet Care':'dog cat pets feeding walks vet','Plant Care':'plants watering garden houseplants','Home Projects':'diy remodel renovation projects budget','Cleaning Rotation':'cleaning chores housework weekly','Freezer And Pantry':'food freezer pantry inventory meals','Car Care':'car vehicle oil mileage service maintenance','Morning And Evening Routines':'routine kids morning bedtime checklist','Gift Ideas':'gifts presents christmas birthday','Reading And Watchlist':'books movies shows tv watchlist reading','Trip Planner':'travel vacation trip packing plans','Savings Goals':'savings money goal fund save','Side Business':'business income expenses clients work','Reading Log':'reading books minutes kids','Potty Chart':'potty training toilet toddler stars sticker reward chart','Kid Reward Chart':'sticker chart reward stars kids behavior','Water Tracker':'water hydration drink glasses','Weight Tracker':'weight scale lose gain pounds','Mood Tracker':'mood feelings emotions journal','Medications':'medicine prescriptions pills refill dose times','Sleep Log':'sleep bedtime wake naps','Workout Log':'workout exercise gym walk run fitness'};
+const KWM={'Job Search':'job jobs work career resume application apply hiring employment interview indeed linkedin','Medicine Tracker':'medication pills prescription dose','Water And Habits':'habits water drink walk','Symptom Journal':'symptoms headache migraine pain mood','Pet Care':'dog cat pets feeding walks vet','Plant Care':'plants watering garden houseplants','Home Projects':'diy remodel renovation projects budget','Cleaning Rotation':'cleaning chores housework weekly','Freezer And Pantry':'food freezer pantry inventory meals','Car Care':'car vehicle oil mileage service maintenance','Morning And Evening Routines':'routine kids morning bedtime checklist','Gift Ideas':'gifts presents christmas birthday','Reading And Watchlist':'books movies shows tv watchlist reading','Trip Planner':'travel vacation trip packing plans','Savings Goals':'savings money goal fund save','Side Business':'business income expenses clients work','Reading Log':'reading books minutes kids','Potty Chart':'potty training toilet toddler stars sticker reward chart','Kid Reward Chart':'sticker chart reward stars kids behavior','Water Tracker':'water hydration drink glasses','Weight Tracker':'weight scale lose gain pounds','Mood Tracker':'mood feelings emotions journal','Medications':'medicine prescriptions pills refill dose times','Sleep Log':'sleep bedtime wake naps','Workout Log':'workout exercise gym walk run fitness'};
 const CAT=['Kids','Health','Pets','Home','Family','Fun','Money','Work'];
 const PGK=[['by-log','Tap To Log','Tap a button each time something happens, like water, medicine or a walk. The time is saved.'],['by-goal','Count Toward A Goal','Progress bar and streak for things like glasses of water or minutes read.'],['by-list','Keep A List','Medications, gifts, plants. You choose the details for each item.'],['by-check','Daily Checklist','Steps that start fresh every morning or every week.'],['by-num','Track A Number','Weight, mood, hours slept. See it over time.'],['by-chart','Sticker Chart','Earn a star each time, with a reward at the end.'],['notes','A Page To Write On','Notes, journal, anything.']];
 function makeHub(name,pages){const h={id:hUid(),own:1,name:name,pages:pages.map(p=>{const o={id:hUid(),name:p[0],kind:p[1].kind,items:p[1].items||[],text:''};if(p[1].cfg)o.cfg=p[1].cfg;return o})};hubs().push(h);save();return h}
@@ -3668,6 +3683,7 @@ document.addEventListener('click',e=>{
  if(k==='ctick'){const x=g.items.find(z=>z.id===b.dataset.i);if(x){x.done=b.checked;rnd()}return}
  if(k==='cclear'){g.items.forEach(x=>{x.done=false});rnd();return}
  if(k==='gadd'){const go=c.goals.find(z=>z.id===b.dataset.gid);if(!go)return;let n=b.dataset.n;if(n==='')n=(document.getElementById('by-g-'+go.id)||{}).value;n=num(n);if(!n)return;g.items.push({id:hid(),g:go.id,n,at:Date.now()});rnd();return}
+ if(k==='jgo'){try{window.open(jurl(b.dataset.s,c),'_blank','noopener')}catch(_){}return}
  if(k==='sadd'){if(g.items.length<Math.max(1,Math.min(60,+c.target||10))){g.items.push({id:hid(),at:Date.now()});rnd()}return}
  if(k==='sundo'){g.items.pop();rnd();return}
  if(k==='snew'){c.done=(c.done||0)+1;g.items=[];rnd();return}
@@ -3686,6 +3702,8 @@ document.addEventListener('change',e=>{const t=e.target;if(!t||!t.dataset||!t.da
  if(f==='bfx'){const b=c.buttons.find(x=>x.id===t.dataset.b);if(b){b.fx=t.value;save2(1)}return}
  if(f==='gfx'){const x=c.goals.find(z=>z.id===t.dataset.gid);if(x){x.fx=t.value;save2(1)}return}
  if(f==='nd'){c.dir=t.value;save2(1);return}
+ if(f==='jm'){c.mode=t.value;save2(0);return}
+ if(f==='jd'){c.days=t.value;save2(0);return}
  if(f==='ci'){c.icon=t.value;save2(1);return}
  if(f==='gp'){const x=c.goals.find(z=>z.id===t.dataset.gid);if(x){x.p=t.value;save2(1)}return}
  if(f==='iv'){const x=g.items.find(z=>z.id===t.dataset.i);if(x){x.v=x.v||{};x.v[t.dataset.fid]=t.type==='checkbox'?t.checked:t.value;save2(0)}return}
@@ -3697,6 +3715,10 @@ document.addEventListener('input',e=>{const qi=e.target;if(qi&&qi.id==='byo-q'){
  if(f==='bi'){const b=c.buttons.find(x=>x.id===t.dataset.b);if(b){b.i=t.value.trim()||undefined;save()}return}
  if(f==='bg'){const b=c.buttons.find(x=>x.id===t.dataset.b);if(b){const n=Math.max(0,Math.floor(num(t.value)));b.gl=n||undefined;save()}return}
  if(f==='nl'){c.l=t.value;save();return}
+ if(f==='jk'){c.kw=t.value;save();return}
+ if(f==='jl'){c.loc=t.value;save();return}
+ if(f==='jp'){c.pay=t.value;save();return}
+ if(f==='jh'){c.hrs=t.value;save();return}
  if(f==='nu'){c.u=t.value;save();return}
  if(f==='ng'){c.goal=t.value;save();return}
  if(f==='cl'){c.l=t.value;save();return}
