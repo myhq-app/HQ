@@ -3315,7 +3315,7 @@ function view(){
  let b='<p class="czn" style="margin:0 0 12px">Share only what you choose with your partner or family. Everything else stays private on your phone.</p>';
  if(!SBS)return panel('Family Sharing',b+'<div class="czc"><b>Sign in first</b><p class="czn" style="margin:6px 0 0">Use the Sign In To Sync link on the Today page, then come back here.</p></div>');
  if(!on()){
-  b+=`<div class="czc" style="margin-bottom:12px"><b>Start a family</b><p class="czn" style="margin:6px 0 10px">Creates a private code. Your partner joins with it on their phone. You can leave anytime.</p><button class="pill dark" data-fam="create">Create Our Family</button></div>
+  b+=`<div class="czc" style="margin-bottom:12px"><b>Start a family</b><p class="czn" style="margin:6px 0 10px">Creates a private code. Your partner joins with it on their phone, and the baby log is shared with them too. You can leave anytime.</p><button class="pill dark" data-fam="create">Create Our Family</button></div>
   <div class="czc"><b>Join a family</b><p class="czn" style="margin:6px 0 10px">Enter the code your partner or family member gave you.</p><div style="display:flex;gap:8px"><input id="fam-code" placeholder="Family code" autocomplete="off" autocapitalize="characters" style="flex:1;min-width:0;font:inherit;font-size:16px;padding:10px 12px;border-radius:12px;border:1px solid var(--line);text-transform:uppercase;letter-spacing:.12em"><button class="pill dark" data-fam="join">Join</button></div></div>`;
   if(FM.msg)b+=`<p class="czn" style="margin-top:10px;color:var(--bad,#a33)">${esc(FM.msg)}</p>`;
   return panel('Family Sharing',b)
@@ -3335,7 +3335,7 @@ function view(){
 document.addEventListener('click',async e=>{
  const b=e.target.closest&&e.target.closest('button[data-fam]');if(!b)return;const a=b.dataset.fam;
  if(a==='sync'){sync().then(()=>{render()});return}
- if(a==='create'){if(!SBS)return;b.disabled=true;try{const r=await sbTbl('POST','rpc/create_household',{p_name:nm(),p_kids:(typeof blKids==='function'?blKids():[])||[]});S.hh={id:r.id,code:r.code};FM.loaded=0;FM.msg='';save();await sync()}catch(_){FM.msg='Could not create the family. Try again.'}render();return}
+ if(a==='create'){if(!SBS)return;b.disabled=true;try{const r=await sbTbl('POST','rpc/create_household',{p_name:nm(),p_kids:(typeof blKids==='function'?blKids():[])||[]});try{const rows=(S.blog||[]).map(x=>({household_id:r.id,child:x.child,kind:x.kind,at:x.at,end_at:x.end||null,amt:x.amt==null?null:x.amt,note:x.note||null,by_name:x.by||(typeof blName==='function'?blName():null)}));if(rows.length){await sbTbl('POST','baby_logs',rows,{Prefer:'return=minimal'});S.blog=[]}if(typeof BL!=='undefined'){BL.kids=S.blkids||[];BL.loaded=false}}catch(_){}S.hh={id:r.id,code:r.code};FM.loaded=0;FM.msg='';save();try{if(typeof blLoad==='function')blLoad()}catch(_){}await sync()}catch(_){FM.msg='Could not create the family. Try again.'}render();return}
  if(a==='join'){const c=((document.getElementById('fam-code')||{}).value||'').trim();if(c.length<4)return;b.disabled=true;try{const r=await sbTbl('POST','rpc/join_household',{p_code:c,p_name:nm()});S.hh={id:r.id,code:r.code};FM.loaded=0;FM.msg='';save();await sync()}catch(_){FM.msg='That code was not found. Check it and try again.'}render();return}
  if(a==='leave'){if(!confirm('Leave this family? Your shared items stay on your phone as private copies. This also stops the shared baby log on this phone.'))return;
   if(typeof BL!=='undefined'&&BL.rows){try{S.blog=BL.rows.slice();S.blkids=(BL.kids||[]).slice()}catch(_){}}
