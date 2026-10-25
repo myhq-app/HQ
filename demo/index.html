@@ -1413,7 +1413,7 @@ document.addEventListener('click',e=>{
  if(Date.now()<noClk){e.preventDefault();e.stopPropagation();return}
  const tb=e.target.closest('[data-tab],[data-go]');
  if(tb&&ARR&&tb.classList.contains('tile')){e.preventDefault();ARRS=tb.dataset.tab;render();return}
- if(tb){ARR=false;ARRS='';tab=tb.dataset.tab||tb.dataset.go;msg='';radd=false;tedit='';if(tab==='week')wk=0;try{location.hash=tab}catch(_){}render();return}
+ if(tb){ARR=false;ARRS='';tab=tb.dataset.tab||tb.dataset.go;msg='';radd=false;tedit='';if(tab==='week'){wk=0;if(!tb.closest('.calseg'))S.wkview='c'}try{location.hash=tab}catch(_){}render();return}
  const b=e.target.closest('[data-a]');if(!b)return;
  const a=b.dataset.a,i=b.dataset.i,k=b.dataset.k;msg='';if(a==='fav'||a==='redit'||a==='stnow')e.preventDefault();
  if(a==='tdy'){TCL=!TCL;render();return}if(a==='wjump'){const el=document.getElementById('d-'+b.dataset.d);wsel(b.dataset.d,1);if(el){el.open=true;WOPEN.add(b.dataset.d)}if(el)el.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion:reduce)').matches?'auto':'smooth',block:'start'});return}
