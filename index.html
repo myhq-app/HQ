@@ -3198,6 +3198,7 @@ document.addEventListener('input',function(e){var el=e.target;if(!el)return;if(e
 ['mousedown','pointerdown'].forEach(function(ev){document.addEventListener(ev,function(e){var t=e.target;if(!t||!t.closest)return;var b=t.closest('#hqns button');if(b&&document.activeElement&&/^(TEXTAREA|INPUT)$/.test(document.activeElement.tagName)&&e.type==='mousedown')e.preventDefault()},true)});
 }catch(err){try{console.error('fab',err)}catch(_){}}})();
 </script>
+<style>.todayh .trow{gap:8px}.todayh .trow>.m{min-width:50px}</style>
 <style>
 .scx{display:flex;flex-direction:column;gap:14px}
 .scx .sch{display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin:2px 0 -4px}.scx .sch h3{margin:0}

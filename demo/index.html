@@ -3198,6 +3198,7 @@ document.addEventListener('input',function(e){var el=e.target;if(!el)return;if(e
 ['mousedown','pointerdown'].forEach(function(ev){document.addEventListener(ev,function(e){var t=e.target;if(!t||!t.closest)return;var b=t.closest('#hqns button');if(b&&document.activeElement&&/^(TEXTAREA|INPUT)$/.test(document.activeElement.tagName)&&e.type==='mousedown')e.preventDefault()},true)});
 }catch(err){try{console.error('fab',err)}catch(_){}}})();
 </script>
+<style>.todayh .trow{gap:8px}.todayh .trow>.m{min-width:50px}</style>
 <style>
 .scx{display:flex;flex-direction:column;gap:14px}
 .scx .sch{display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin:2px 0 -4px}.scx .sch h3{margin:0}
@@ -3424,10 +3425,14 @@ S.staples=[{id:'s1',title:'Toilet Paper',every:14,last:d(-6)},{id:'s2',title:'Di
 S.income=[{id:'i1',title:'Paycheck',amount:'2000',date:d(-4),status:'confirmed'},{id:'i2',title:'Paycheck',amount:'2000',date:d(10),status:'potential'},{id:'i3',title:'Side Project',amount:'300',date:d(5),status:'potential'}];
 S.emergency=[{id:'em1',title:'Poison Control',detail:'1-800-222-1222',note:''},{id:'em2',title:'Nearest Urgent Care',detail:'Sample Address',note:''}];
 S.dump='Ask Grandma about Sunday dinner\nIdea: repaint the nursery sage green';
-save();try{var o=document.getElementById('onb');if(o)o.remove();var g=document.getElementById('gate');if(g)g.remove()}catch(e){}render();setTimeout(function(){try{ONB=null;var o=document.getElementById('onb');if(o)o.remove();onbCheck()}catch(e){}},300)}catch(e){try{console.error('demo seed',e)}catch(_){}}})()</script><script>(function(){try{var n=Date.now(),iso=function(m){return new Date(n-m*6e4).toISOString()};
-S.blkids=[{name:'Mia',dob:'2026-02-10'}];
-S.blog=[{id:'dm1',child:'Mia',kind:'sleep',at:iso(150),end:iso(60)},{id:'dm2',child:'Mia',kind:'bottle',at:iso(45),amt:5},{id:'dm3',child:'Mia',kind:'bottle',at:iso(240),amt:6},{id:'dm4',child:'Mia',kind:'sleep',at:iso(420),end:iso(330)},{id:'dm5',child:'Mia',kind:'bottle',at:iso(480),amt:6}];
-save();render()}catch(e){}})()</script><script>(function(){try{
+save();try{var o=document.getElementById('onb');if(o)o.remove();var g=document.getElementById('gate');if(g)g.remove()}catch(e){}render();setTimeout(function(){try{ONB=null;var o=document.getElementById('onb');if(o)o.remove();onbCheck()}catch(e){}},300)}catch(e){try{console.error('demo seed',e)}catch(_){}}})()</script><script>(function(){try{var now=new Date(),n=now.getTime();
+function at(hr,off){var d=new Date(now);d.setDate(d.getDate()+(off||0));d.setHours(Math.floor(hr),Math.round((hr%1)*60),0,0);return d}
+var R=[],id=0,add=function(o){o.id='dm'+(++id);o.child='Mia';R.push(o)};
+var ns=at(19.5,-1),ne=at(6.5,0);
+if(+ne>n)add({kind:'sleep',at:ns.toISOString()});else add({kind:'sleep',at:ns.toISOString(),end:ne.toISOString()});
+[[6.75,6],[10.25,6],[14,5],[17.5,5]].forEach(function(b){var d=at(b[0],0);if(+d<=n)add({kind:'bottle',at:d.toISOString(),amt:b[1]})});
+[[9,10],[12.5,13.75],[16.25,17]].forEach(function(x){var a=at(x[0],0),e=at(x[1],0);if(+e<=n)add({kind:'sleep',at:a.toISOString(),end:e.toISOString()})});
+S.blkids=[{name:'Mia',dob:'2026-02-10'}];S.blog=R;save();render()}catch(e){}})()</script><script>(function(){try{
 if((S.hubs||[]).some(function(h){return h.id==='dmhs'}))return;
 var T0=today(),d=function(n){return addD(T0,n)},T=HUBT.find(function(x){return x[0]==='Homeschool'});if(!T)return;
 var pg=T[2].map(function(y,i){return{id:'dmp'+i,name:y[0],kind:y[1],items:[],text:''}});
