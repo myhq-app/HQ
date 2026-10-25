@@ -348,6 +348,19 @@ details.strow[open]>.grid{grid-template-columns:1fr 1fr!important;gap:8px 10px!i
 <nav id="nav" aria-label="Binder sections"></nav>
 <div id="view"></div>
 </main>
+<script>
+/* Bills and tasks you check off on Today stay (checked) until you leave the screen, so you can uncheck by mistake. */
+(function(){var K=new Map();
+window.TDKh=function(k,x){return K.has(k+':'+x.id)};
+window.TDKd=function(x){var s=K.get('b:'+x.id)||K.get('t:'+x.id);return s?s.due:(x.due||'')};
+window.TDKc=function(x){var s=K.get('b:'+x.id)||K.get('t:'+x.id);return !!s&&(!!x.done||(x.due||'')!==s.due)};
+document.addEventListener('click',function(e){var b=e.target.closest&&e.target.closest('input[data-a=bpaid],input[data-a=tt]');if(!b||typeof tab==='undefined'||tab!=='today')return;
+ var k=b.getAttribute('data-a')==='tt'?'t':'b',x=find(k==='t'?'tasks':'bills',b.getAttribute('data-i'));if(!x)return;var key=k+':'+x.id,s=K.get(key);
+ if(s&&((x.done)||(x.due||'')!==s.due)){e.preventDefault();e.stopImmediatePropagation();x.done=false;x.due=s.due;if(s.prev===undefined)delete x.prev;else x.prev=s.prev;save();render();return}
+ if(!s)K.set(key,{due:x.due||'',prev:x.prev})},true);
+window.__TDK=K;
+})();
+</script>
 <script>window.WKP=new Set();if(/[?&]new(=|&|$)/.test(location.search)){(function(){var P='demo.',g=Storage.prototype.getItem,st=Storage.prototype.setItem,r=Storage.prototype.removeItem;if(/new=reset/.test(location.search)){Object.keys(localStorage).filter(function(k){return k.indexOf(P)===0}).forEach(function(k){r.call(localStorage,k)})}Storage.prototype.getItem=function(k){return g.call(this,P+k)};Storage.prototype.setItem=function(k,v){return st.call(this,P+k,v)};Storage.prototype.removeItem=function(k){return r.call(this,P+k)};window.__demo=1;st.call(localStorage,P+'hqd.guest','1')})()}</script><script>
 const K='homebinder.demo';
 const AREAS=['Kitchen','Bathrooms','Bedrooms','Living areas','Garage','Outdoors','Whole house'];
@@ -2770,19 +2783,7 @@ render=function(){var changed=lt!==null&&lt!==tab;lt=tab;_r.apply(this,arguments
 <style>.dta>.dtadd:not([open]){display:none!important}.dta .dtplus{margin-right:-6px}</style>
 <script>function fseg(on){return '<div class="calseg"><button type="button" data-tab="bills" class="'+(on==='bills'?'on':'')+'">Bills</button><button type="button" data-tab="income" class="'+(on==='income'?'on':'')+'">Income</button></div>'}</script>
 <style>.hq-qag>.hq-qat:last-child:nth-child(odd){grid-column:1/-1}</style>
-<script>
-/* Bills and tasks you check off on Today stay (checked) until you leave the screen, so you can uncheck by mistake. */
-(function(){var K=new Map();
-window.TDKh=function(k,x){return K.has(k+':'+x.id)};
-window.TDKd=function(x){var s=K.get('b:'+x.id)||K.get('t:'+x.id);return s?s.due:(x.due||'')};
-window.TDKc=function(x){var s=K.get('b:'+x.id)||K.get('t:'+x.id);return !!s&&(!!x.done||(x.due||'')!==s.due)};
-document.addEventListener('click',function(e){var b=e.target.closest&&e.target.closest('input[data-a=bpaid],input[data-a=tt]');if(!b||typeof tab==='undefined'||tab!=='today')return;
- var k=b.getAttribute('data-a')==='tt'?'t':'b',x=find(k==='t'?'tasks':'bills',b.getAttribute('data-i'));if(!x)return;var key=k+':'+x.id,s=K.get(key);
- if(s&&((x.done)||(x.due||'')!==s.due)){e.preventDefault();e.stopImmediatePropagation();x.done=false;x.due=s.due;if(s.prev===undefined)delete x.prev;else x.prev=s.prev;save();render();return}
- if(!s)K.set(key,{due:x.due||'',prev:x.prev})},true);
-var _r=render;render=function(){if(typeof tab!=='undefined'&&tab!=='today')K.clear();return _r.apply(this,arguments)};
-})();
-</script>
+<script>(function(){var _r=render;render=function(){if(typeof tab!=='undefined'&&tab!=='today')window.__TDK.clear();return _r.apply(this,arguments)}})();</script>
 <script>
 var QA_ALL=['week','bills','chores','income','tasks','reset','sunday','meals','kids','inventory','studies','quick','vehicles','docs','emergency','contacts'],QA_DEF=['week','bills','chores'];
 function qaList(){var q=S.quick;if(!Array.isArray(q))q=QA_DEF;return q.filter(function(k){return QA_ALL.indexOf(k)>-1&&!(hid()[k])})}
