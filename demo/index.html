@@ -3050,14 +3050,23 @@ var GR=/\b(milk|eggs?|bread|butter|cheese|yogurt|chicken|beef|pork|bacon|sausage
 var TK=/^(remind me|don'?t forget|need to|have to|should|must|remember to|gotta|i need to|we need to|make sure)\b/i;
 var EV=/\b(appointment|appt|meeting|party|game|practice|recital|birthday|dentist|doctor|dr\.|conference|concert|play ?date|checkup|check-up|class|lesson|tournament|dinner with|lunch with|wedding|graduation|pickup|pick-up|flight)\b/i;
 function split(t){var L=String(t||'').split(/\r?\n/);if(L.length===1)L=L[0].split(/;|\.\s+/);var out=[];L.forEach(function(l){l=l.replace(/^[\s\-•*☐☑\d.)]+/,'').trim();if(l)out.push(l)});return out}
+var LEAD=/^(?:i\s+|we\s+)?(?:also\s+)?(?:really\s+)?(?:need to|have to|has to|got to|gotta|should|must|remember to|don'?t forget to|make sure (?:to|i|we)|remind me to|remind me|want to|going to|plan to|try to)\s+/i;
+var VERB=/^(call|phone|text|email|message|dm|ask|tell|talk to|follow up|schedule|book|reserve|cancel|pay|renew|register|sign|fill|submit|send|mail|drop|drop off|return|bring|take|wash|clean|mop|vacuum|fold|sweep|dust|wipe|feed|water|empty|organize|cook|make|fix|change|replace|charge|check|review|update|plan|prep|pack|walk|mow|rake|shovel|trim|sort|iron|declutter|tidy|clear|print|research|look up|find|order|pick up|get the|take out|set up|figure out|finish|start|write|read|do|go|visit|meet|see|buy a|buy the|get a)\b/i;
 function classify(l){var w;try{w=askWhen(l)}catch(e){w={date:'',time:'',rest:l}}
- var lo=l.toLowerCase(),words=lo.split(/\s+/).length;
- if(w.date&&(w.time||EV.test(lo))&&!TK.test(lo)&&!SAYV.test(lo))return[{t:'event',title:l}];
- if(/^(buy|get|grab|pick up|need|out of|low on|we need|we'?re out of|add)\b/i.test(lo)&&!w.date&&(GR.test(lo)||words<=5)){var s=l.replace(/^(buy|get|grab|pick up|we need|we'?re out of|need|out of|low on|add)\s+/i,'').replace(/\s+(to|on)\s+(the\s+)?(grocery|shopping)\s+list$/i,'');var p=s.split(/\s*,\s*|\s+and\s+/i).filter(Boolean);return p.map(function(x){return{t:'grocery',title:x}})}
- if(l.indexOf(',')>0&&!w.date&&!SAYV.test(lo)&&!TK.test(lo)){var q=l.split(/\s*,\s*/).filter(Boolean);if(q.length>1&&q.every(function(x){return x.split(/\s+/).length<=3})&&q.some(function(x){return GR.test(x)}))return q.map(function(x){return{t:'grocery',title:x}})}
- if(words<=3&&GR.test(lo)&&!SAYV.test(lo)&&!w.date)return[{t:'grocery',title:l}];
- if(SAYV.test(lo)||TK.test(lo)||/\bevery (day|week|month|morning|night|monday|tuesday|wednesday|thursday|friday|saturday|sunday)\b/i.test(lo)||w.date)return[{t:'task',title:l.replace(TK,'').replace(/^\s*(to)\s+/i,'').trim()||l}];
- return[{t:'note',title:l}]}
+ var raw=String(l).trim(),core=raw.replace(LEAD,'').trim(),lo=core.toLowerCase(),words=lo.split(/\s+/).length,hadLead=core!==raw;
+ var isVerb=VERB.test(lo)||SAYV.test(lo);
+ if(w.date&&(w.time||EV.test(lo))&&!isVerb)return[{t:'event',title:core}];
+ if(isVerb&&!(/^(get|buy|pick up|order)\b/i.test(lo)&&GR.test(lo)&&!w.date&&!/\b(call|text|email)\b/.test(lo)))return[{t:'task',title:core}];
+ if(/^(buy|get|grab|pick up|need|out of|low on|we need|we'?re out of|add)\b/i.test(lo)&&!w.date&&(GR.test(lo)||words<=3)){var s2=core.replace(/^(buy|get|grab|pick up|we need|we'?re out of|need|out of|low on|add)\s+/i,'').replace(/\s+(to|on)\s+(the\s+)?(grocery|shopping)\s+list$/i,'');var p=s2.split(/\s*,\s*|\s+and\s+/i).filter(Boolean);return p.map(function(x){return{t:'grocery',title:x}})}
+ if(core.indexOf(',')>0&&!w.date){var q=core.split(/\s*,\s*/).filter(Boolean);if(q.length>1&&q.every(function(x){return x.split(/\s+/).length<=3})&&q.some(function(x){return GR.test(x)}))return q.map(function(x){return{t:'grocery',title:x}})}
+ if(words<=3&&GR.test(lo)&&!w.date){var p3=core.split(/\s+and\s+/i).filter(Boolean);return p3.map(function(x){return{t:'grocery',title:x}})}
+ if(hadLead||TK.test(lo)||/\bevery (day|week|month|morning|night|monday|tuesday|wednesday|thursday|friday|saturday|sunday)\b/i.test(lo)||(w.date&&!EV.test(lo)))return[{t:'task',title:core||raw}];
+ if(w.date)return[{t:'event',title:core}];
+ return[{t:'note',title:core||raw}]}
+function smartSplit(t){var out=[];String(t||'').split(/\r?\n/).forEach(function(line){line=line.replace(/^[\s\-•*☐☑\d.)]+/,'').trim();if(!line)return;
+  var segs=line.split(/\s*(?:;|\.\s+|\bthen\b|\balso\b)\s*/i);
+  segs.forEach(function(sg){var parts=sg.split(/\s*,\s*(?!\s*(?:\d|at\b|am\b|pm\b|mon|tue|wed|thu|fri|sat|sun))/i);
+   parts.forEach(function(pt){var bits=pt.split(/\s+and\s+(?=(?:i\s+|we\s+)?(?:need to|have to|gotta|should|remember|don'?t forget|call|text|email|schedule|book|pay|pick up|take|clean|wash|make|get|buy|bring|send|renew|cancel|fix|check|plan|order)\b)/i);bits.forEach(function(b){b=b.replace(/^(?:and|so|um+|uh+|okay|ok)\s+/i,'').trim().replace(/[.!?]+$/,'');if(b.length>1)out.push(b)})})})});return out}
 var D=null;
 function esc2(s){return String(s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
 function memo(it){if(it.t==='event'){var w=askWhen(it.title);return w.date?'Calendar: '+fmtDh(w.date)+(w.time?' at '+tf2(w.time):' (all day)'):'No date found, so this goes on today'}if(it.t==='task'){var s=sayTask(it.title);return 'Task'+(s.due?' due '+fmtDh(s.due):'')+(s.repeat&&s.repeat!=='Once'?' · '+s.repeat:'')}return ''}
@@ -3066,7 +3075,7 @@ function draw(){var o=document.getElementById('hqdp');if(!D){if(o)o.remove();ret
  if(!o){o=document.createElement('div');o.id='hqdp';document.body.appendChild(o)}
  var n=D.items.filter(function(i){return i.on&&i.t!=='note'}).length;
  o.innerHTML='<div class="dpbg" data-dp="close"></div><div class="dpsh" role="dialog" aria-label="Organize"><div class="dph"><b>Here’s What I Found</b><button type="button" class="lnk" data-dp="close">Close</button></div><p class="m" style="margin:0 0 4px">Check each one. Change the type or the words if I guessed wrong.</p>'+D.items.map(function(it,i){return '<div class="dpi"><input type="checkbox" data-dpc="'+i+'"'+(it.on?' checked':'')+' aria-label="Include"><input type="text" data-dpt="'+i+'" value="'+esc2(it.title)+'" aria-label="Item"><select data-dps="'+i+'" aria-label="Type">'+Object.keys(DT).map(function(k){return '<option value="'+k+'"'+(it.t===k?' selected':'')+'>'+DT[k]+'</option>'}).join('')+'</select><div class="dpm">'+esc2(memo(it))+'</div></div>'}).join('')+'<div class="dpf"><button type="button" class="btn ghost" data-dp="close">Not Now</button><button type="button" class="btn go" data-dp="add">'+(n?'Add '+n+' Item'+(n===1?'':'s'):'Done')+'</button></div></div>'}
-function open(){var ta=document.getElementById('hqdump');var txt=ta?ta.value:(S.dump||'');var items=[];split(txt).forEach(function(l){classify(l).forEach(function(x){x.raw=l;x.on=true;items.push(x)})});if(!items.length){toast('Type something first');return}D={items:items};draw()}
+function open(){var ta=document.getElementById('hqdump');var txt=ta?ta.value:(S.dump||'');var items=[];smartSplit(txt).forEach(function(l){classify(l).forEach(function(x){x.raw=l;x.on=true;items.push(x)})});if(!items.length){toast('Type something first');return}D={items:items};draw()}
 function commit(){var c={grocery:0,task:0,event:0};var keep=[];
  D.items.forEach(function(it){var ti=String(it.title).trim();if(!ti)return;if(!it.on||it.t==='note'){keep.push(ti);return}
   if(it.t==='grocery'){if(!S.groceries.some(function(g){return !g.done&&g.title.toLowerCase()===ti.toLowerCase()}))S.groceries.push({id:uid(),title:cap(ti),qty:'',aisle:'Other'});c.grocery++}
@@ -3074,6 +3083,7 @@ function commit(){var c={grocery:0,task:0,event:0};var keep=[];
   else if(it.t==='event'){var w=askWhen(ti);var ttl=cap(w.rest||ti);S.events.push({id:uid(),title:ttl,date:w.date||today(),end:'',time:w.time||'',note:'',cat:(function(){try{return catOf({title:ttl})}catch(_){return 'Other'}})(),rep:0,task:false});c.event++}});
  S.dump=keep.join('\n');save();D=null;draw();var m=[];if(c.grocery)m.push(c.grocery+' to groceries');if(c.task)m.push(c.task+' to tasks');if(c.event)m.push(c.event+' to your calendar');toast(m.length?'Added: '+m.join(', '):'Nothing added');render()}
 V.dump=function(){var t=S.dump||'';return '<section class="panel"><div class="hq-dw"><textarea id="hqdump" aria-label="Brain Dump" placeholder="Type anything. Groceries, to-dos, appointments, ideas, reminders. Use your keyboard’s microphone to talk instead.">'+esc2(t)+'</textarea><div class="hq-dbar"><button type="button" class="btn go" data-dp="org">Organize</button><span class="hq-dsv" id="hqdsv">'+(t?'Saved':'')+'</span></div></div></section>'};
+window.__dp={smartSplit:smartSplit,classify:classify,memo:memo,DT:DT,setD:function(items){D={items:items}},commit:function(){if(D)commit()},clear:function(){D=null}};
 var tmr;document.addEventListener('input',function(e){var el=e.target;if(!el||!el.id)return;if(el.id==='hqdump'){S.dump=el.value;var sv=document.getElementById('hqdsv');if(sv)sv.textContent='Saving…';clearTimeout(tmr);tmr=setTimeout(function(){save();var s2=document.getElementById('hqdsv');if(s2)s2.textContent='Saved'},500)}});
 document.addEventListener('input',function(e){var el=e.target;if(!D||!el.dataset||el.dataset.dpt==null)return;D.items[+el.dataset.dpt].title=el.value;var m=el.parentNode.querySelector('.dpm');if(m)m.textContent=memo(D.items[+el.dataset.dpt])});
 document.addEventListener('change',function(e){var el=e.target;if(!D||!el.dataset)return;if(el.dataset.dpc!=null){D.items[+el.dataset.dpc].on=el.checked;draw()}else if(el.dataset.dps!=null){D.items[+el.dataset.dps].t=el.value;draw()}});
@@ -3097,35 +3107,60 @@ body.st-edi .btn{letter-spacing:.06em}body.st-edi .gbar .btn{padding:8px 10px}
 <script>(function(){try{var _c=czCards;czCards=function(){var h=_c.apply(this,arguments);var m=h.match(/<button type="button" class="czcard" data-a="czt" data-v="account">[\s\S]*?<\/button>/);if(!m)return h;var card=m[0].replace(/<small>[^<]*<\/small>/,'<small>'+(SBS?'Signed in as '+esc(SBS.email||''):'Sign in to sync your devices and share')+'</small>');h=h.replace(m[0],'');return h.replace('<div class="czcards">','<div class="czcards">'+card)}}catch(e){}})();</script>
 
 <style>
-#hqfab{position:fixed;right:max(14px,env(safe-area-inset-right,0px));bottom:calc(78px + env(safe-area-inset-bottom,0px));z-index:40;width:50px;height:50px;border:0;padding:0;cursor:pointer;background:#f4e7b8;color:#4a3d1f;border-radius:3px 3px 3px 16px;box-shadow:0 6px 16px rgba(60,45,20,.28),0 1px 2px rgba(60,45,20,.3);display:grid;place-items:center;transition:transform .15s}
-#hqfab:active{transform:scale(.94)}#hqfab::after{content:'';position:absolute;right:0;bottom:0;width:15px;height:15px;background:linear-gradient(135deg,transparent 50%,rgba(60,45,20,.18) 50%);border-radius:0 0 0 0}
+:root{--paper:#fbf7ee;--paperline:rgba(110,130,150,.22);--margin:rgba(190,110,110,.35);--pen:#2f2823;--penm:#7b7066}
+#hqfab{position:fixed;right:max(14px,env(safe-area-inset-right,0px));bottom:calc(var(--barh,64px) + 16px + env(safe-area-inset-bottom,0px));z-index:40;width:48px;height:52px;border:0;padding:0;cursor:pointer;background:var(--paper);color:var(--pen);border-radius:2px 2px 2px 14px/2px 2px 2px 14px;box-shadow:0 5px 14px rgba(50,35,20,.28),0 0 0 1px rgba(80,60,40,.12);display:grid;place-items:center;transform:rotate(-2deg);transition:transform .15s}
+#hqfab::before{content:'';position:absolute;left:7px;right:7px;top:10px;height:1px;background:var(--paperline);box-shadow:0 8px 0 var(--paperline),0 16px 0 var(--paperline),0 24px 0 var(--paperline)}
+#hqfab svg{position:relative}#hqfab:active{transform:rotate(-2deg) scale(.94)}
 #hqfab:focus-visible{outline:2px solid var(--a,#5f4e44);outline-offset:3px}
-#hqns{position:fixed;inset:0;z-index:96}#hqns .nsbg{position:absolute;inset:0;background:rgba(40,25,20,.45)}
-#hqns .nsc{position:absolute;left:max(14px,env(safe-area-inset-left,0px));right:max(14px,env(safe-area-inset-right,0px));bottom:calc(14px + env(safe-area-inset-bottom,0px));max-width:480px;margin:0 auto;background:#f7ecbf;color:#3f3418;border-radius:4px 4px 4px 26px;padding:16px;box-shadow:0 14px 40px rgba(30,20,5,.4);display:flex;flex-direction:column;gap:10px;background-image:linear-gradient(transparent 31px,rgba(120,95,30,.13) 32px);background-size:100% 32px;background-position:0 52px;background-repeat:repeat-y}
-#hqns .nsh{display:flex;justify-content:space-between;align-items:center}#hqns .nsh b{font-size:19px;letter-spacing:.01em}#hqns .nsh button{background:none;border:0;color:inherit;text-decoration:underline;font-size:14px;cursor:pointer;padding:6px}
-#hqns textarea{width:100%;box-sizing:border-box;min-height:150px;max-height:40vh;resize:none;border:0;background:transparent;color:#3f3418;font-size:16px;line-height:32px;padding:0;outline:0}
-#hqns textarea::placeholder{color:rgba(63,52,24,.55)}
-#hqns .nsb{display:flex;gap:8px;align-items:center}#hqns .nsb .mic{width:46px;height:46px;border-radius:50%;border:1.5px solid #6d5a2a;background:transparent;color:#4a3d1f;display:grid;place-items:center;cursor:pointer;flex:none}
-#hqns .nsb .mic.on{background:#6d5a2a;color:#f7ecbf}#hqns .nsb .go{flex:1;height:46px;border:0;border-radius:23px;background:#3f3418;color:#f7ecbf;font-weight:600;font-size:14px;letter-spacing:.08em;text-transform:uppercase;cursor:pointer}
-#hqns .nsn{font-size:12px;opacity:.7;margin:0}
+#hqns{position:fixed;inset:0;z-index:96}#hqns .nsbg{position:absolute;inset:0;background:rgba(40,25,20,.4)}
+#hqns .nsc{position:absolute;left:max(12px,env(safe-area-inset-left,0px));right:max(12px,env(safe-area-inset-right,0px));bottom:var(--nsb,80px);max-width:480px;margin:0 auto;max-height:calc(100% - var(--nsb,80px) - 70px);overflow:auto;-webkit-overflow-scrolling:touch;color:var(--pen);padding:16px 16px 14px 44px;display:flex;flex-direction:column;gap:10px;border-radius:2px 2px 3px 3px;
+ background-color:var(--paper);background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .35  0 0 0 0 .28  0 0 0 0 .2  0 0 0 .09 0'/></filter><rect width='160' height='160' filter='url(%23n)'/></svg>"),linear-gradient(90deg,transparent 31px,var(--margin) 31px,var(--margin) 32px,transparent 32px),linear-gradient(transparent 31px,var(--paperline) 32px);background-size:160px 160px,100% 100%,100% 32px;background-position:0 0,0 0,0 12px;
+ box-shadow:0 1px 1px rgba(60,45,30,.25),0 10px 28px rgba(40,25,10,.38),0 22px 40px -10px rgba(40,25,10,.25)}
+#hqns .nsh{display:flex;justify-content:space-between;align-items:center;min-height:32px}#hqns .nsh b{font-size:20px;letter-spacing:.01em;font-family:var(--hf,Georgia,serif)}
+#hqns .nsh button{background:none;border:0;color:var(--penm);text-decoration:underline;font-size:14px;cursor:pointer;padding:6px 0 6px 12px}
+#hqns textarea{width:100%;box-sizing:border-box;min-height:128px;max-height:34vh;resize:none;border:0!important;box-shadow:none!important;background:transparent!important;color:var(--pen);font-size:17px;line-height:32px;padding:0;outline:0;margin-top:2px}
+#hqns textarea::placeholder{color:var(--penm)}
+#hqns .nsx{display:flex;flex-wrap:wrap;gap:6px;margin:0}#hqns .nsx button{background:rgba(255,255,255,.55);border:1px dashed rgba(90,70,50,.35);border-radius:14px;padding:5px 10px;font-size:12.5px;color:var(--penm);cursor:pointer;font-style:italic}
+#hqns .nsn{font-size:12.5px;color:var(--penm);margin:0;line-height:1.4}
+#hqns .nsb{display:flex;gap:8px;align-items:center}#hqns .nsb .mic{width:46px;height:46px;border-radius:50%;border:1.5px solid rgba(60,45,30,.5);background:transparent;color:var(--pen);display:grid;place-items:center;cursor:pointer;flex:none}
+#hqns .nsb .mic.on{background:var(--pen);color:var(--paper)}#hqns .nsb .go{flex:1;height:46px;border:0;border-radius:23px;background:var(--pen);color:var(--paper);font-weight:600;font-size:14px;letter-spacing:.08em;text-transform:uppercase;cursor:pointer}
+#hqns .nsr{display:grid;grid-template-columns:auto 1fr auto;gap:2px 8px;align-items:center;min-height:32px;padding:0}
+#hqns .nsr textarea{min-width:0;width:100%;box-sizing:border-box;border:0!important;box-shadow:none!important;background:transparent!important;color:var(--pen);font-size:16px;line-height:32px;padding:0;margin:0;outline:0;resize:none;overflow:hidden;min-height:32px;height:32px}#hqns .nsr textarea:focus{background:rgba(255,255,255,.35)!important}
+#hqns .nsr .tg{border:0;border-radius:11px;padding:3px 9px;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;color:#fff;min-width:0;text-align:center}
+#hqns .tg-task{background:#6b7f6a}#hqns .tg-grocery{background:#b07f4f}#hqns .tg-event{background:#5f7390}#hqns .tg-note{background:#8a8077}
+#hqns .nsr .x{border:0;background:none;color:var(--penm);font-size:20px;line-height:1;cursor:pointer;padding:2px 4px}
+#hqns .nsr .nsd{grid-column:2/4;font-size:12px;color:var(--penm);line-height:1.2;margin-top:-6px;min-height:14px}
+#hqns .nsr .nsd:empty{display:none}
 body.hqfab-off #hqfab{display:none}
 </style>
 <script>
 (function(){try{
 var MIC='<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0014 0M12 18v3"/></svg>';
-var NOTE='<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4z"/></svg>';
-var rec=null;
-function fabSync(){var on=(S.fab!==false)&&tab==='today'&&!document.getElementById('onb')&&!document.getElementById('say')&&!document.getElementById('hqns')&&!(typeof TOUR!=='undefined'&&TOUR)&&!tedit;
+var NOTE='<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4z"/></svg>';
+var rec=null,NS=null,ORDER=['task','grocery','event','note'],NAMES={task:'Task',grocery:'Groceries',event:'Calendar',note:'Just A Note'};
+var EX=['Call Odessa tomorrow','Need milk, eggs and bread','Dentist Tuesday at 3','Pay the electric bill Friday'];
+function esc3(x){return String(x).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+function nm(it){var m=window.__dp.memo(it);return m==='Task'?'':m.replace(/^Calendar: /,'')}
+function barH(){var b=document.getElementById('bbar');var h=b?b.offsetHeight:64;document.documentElement.style.setProperty('--barh',h+'px');return h}
+function place(){var vv=window.visualViewport,kb=0;if(vv)kb=Math.max(0,window.innerHeight-vv.height-vv.offsetTop);var bt=kb>80?kb+10:barH()+10+(parseInt(getComputedStyle(document.documentElement).getPropertyValue('--sab'))||0);var o=document.getElementById('hqns');if(o)o.style.setProperty('--nsb',bt+'px')}
+function fabSync(){barH();var on=(S.fab!==false)&&tab==='today'&&!document.getElementById('onb')&&!document.getElementById('say')&&!document.getElementById('hqns')&&!document.getElementById('hqdp')&&!(typeof TOUR!=='undefined'&&TOUR)&&!tedit;
  var b=document.getElementById('hqfab');
  if(!on){if(b)b.remove();return}
  if(!b){b=document.createElement('button');b.id='hqfab';b.type='button';b.setAttribute('aria-label','Quick Note');b.innerHTML=NOTE;b.dataset.ns='open';document.body.appendChild(b)}}
 var R0=render;render=function(){var r=R0.apply(this,arguments);try{fabSync()}catch(e){}return r};
 setInterval(function(){try{fabSync()}catch(e){}},1500);
-function nsOpen(){try{document.getElementById('hqfab').remove()}catch(e){}
- var o=document.createElement('div');o.id='hqns';
- o.innerHTML='<div class="nsbg" data-ns="close"></div><div class="nsc" role="dialog" aria-label="Quick note"><div class="nsh"><b>Quick Note</b><button type="button" data-ns="close">Close</button></div><textarea id="hqnotetx" aria-label="Quick note" placeholder="What is on your mind? Groceries, to-dos, appointments. Type or tap the mic."></textarea><p class="nsn">I will sort it into groceries, tasks and calendar. You check it before anything is saved.</p><div class="nsb"><button type="button" class="mic" data-ns="mic" aria-label="Speak">'+MIC+'</button><button type="button" class="go" data-ns="org">Organize</button></div></div>';
- document.body.appendChild(o);var t=document.getElementById('hqnotetx');t.value=S.dump||'';setTimeout(function(){t.focus()},60)}
-function nsClose(){try{if(rec)rec.stop()}catch(e){}rec=null;var o=document.getElementById('hqns');if(o)o.remove();fabSync()}
+if(window.visualViewport){visualViewport.addEventListener('resize',place);visualViewport.addEventListener('scroll',place)}
+window.addEventListener('resize',place);
+function nsDraw(){var o=document.getElementById('hqns');if(!o){o=document.createElement('div');o.id='hqns';document.body.appendChild(o)}
+ var h;
+ if(NS.mode==='edit'){h='<div class="nsbg" data-ns="close"></div><div class="nsc" role="dialog" aria-label="Quick note"><div class="nsh"><b>Quick Note</b><button type="button" data-ns="close">Close</button></div><textarea id="hqnotetx" aria-label="Quick note" placeholder="Write it like you would say it. I will sort it out."></textarea><div class="nsx" aria-label="Examples">'+EX.map(function(x){return '<button type="button" data-ns="ex" data-t="'+esc3(x)+'">'+esc3(x)+'</button>'}).join('')+'</div><div class="nsb"><button type="button" class="mic" data-ns="mic" aria-label="Speak">'+MIC+'</button><button type="button" class="go" data-ns="org">Sort It Out</button></div></div>'}
+ else{var n=NS.items.filter(function(i){return i.t!=='note'}).length,c={};NS.items.forEach(function(i){c[i.t]=(c[i.t]||0)+1});
+  var sum=ORDER.filter(function(k){return c[k]}).map(function(k){return c[k]+' '+(k==='grocery'?(c[k]===1?'grocery item':'groceries'):k==='task'?(c[k]===1?'task':'tasks'):k==='event'?(c[k]===1?'event':'events'):(c[k]===1?'note':'notes'))}).join(', ');
+  h='<div class="nsbg" data-ns="close"></div><div class="nsc" role="dialog" aria-label="Sorted note"><div class="nsh"><b>Got It</b><button type="button" data-ns="back">Edit Note</button></div><p class="nsn">'+(NS.items.length?esc3(sum)+'. Tap a label to change where something goes.':'Nothing to add yet.')+'</p>'+NS.items.map(function(it,i){return '<div class="nsr"><button type="button" class="tg tg-'+it.t+'" data-ns="cyc" data-i="'+i+'">'+NAMES[it.t]+'</button><textarea rows="1" data-nsi="'+i+'" aria-label="Item">'+esc3(it.title)+'</textarea><button type="button" class="x" data-ns="rm" data-i="'+i+'" aria-label="Remove">×</button><div class="nsd">'+esc3(nm(it))+'</div></div>'}).join('')+'<div class="nsb" style="margin-top:4px"><button type="button" class="go" data-ns="addall">'+(n?'Add '+n+' To My Lists':'Done')+'</button></div></div>'}
+ o.innerHTML=h;o.querySelectorAll('.nsr textarea').forEach(fit);place()}
+function fit(t){t.style.height='32px';t.style.height=Math.max(32,Math.ceil(t.scrollHeight/32)*32)+'px'}
+function nsOpen(){try{document.getElementById('hqfab').remove()}catch(e){}NS={mode:'edit'};nsDraw();var t=document.getElementById('hqnotetx');t.value=S.dump||'';setTimeout(function(){t.focus()},80)}
+function nsClose(){try{if(rec)rec.stop()}catch(e){}rec=null;NS=null;var o=document.getElementById('hqns');if(o)o.remove();fabSync()}
 function nsMic(){var SR=window.SpeechRecognition||window.webkitSpeechRecognition,tx=document.getElementById('hqnotetx'),b=document.querySelector('#hqns .mic');
  if(!SR){if(tx){tx.placeholder='Voice is not available here. Tap the microphone on your keyboard to dictate instead.';tx.focus()}return}
  if(rec){try{rec.stop()}catch(e){}return}
@@ -3133,14 +3168,18 @@ function nsMic(){var SR=window.SpeechRecognition||window.webkitSpeechRecognition
  r.onresult=function(e){var t='';for(var k=0;k<e.results.length;k++)t+=e.results[k][0].transcript+' ';tx.value=base+t.trim();S.dump=tx.value};
  var end=function(){rec=null;var m=document.querySelector('#hqns .mic');if(m)m.classList.remove('on')};r.onerror=end;r.onend=end;
  try{r.start()}catch(e){end()}}
-document.addEventListener('click',function(e){var b=e.target.closest&&e.target.closest('[data-ns]');if(!b)return;var a=b.dataset.ns;
- if(a==='open')nsOpen();else if(a==='close'){var t=document.getElementById('hqnotetx');if(t){S.dump=t.value;save()}nsClose()}else if(a==='mic')nsMic();
- else if(a==='org'){var t2=document.getElementById('hqnotetx');try{if(rec)rec.stop()}catch(e){}rec=null;S.dump=t2?t2.value:'';save();document.querySelectorAll('[data-dp=org]').length?0:0;
-  var ta=document.getElementById('hqdump');var fake=null;if(!ta){fake=document.createElement('textarea');fake.id='hqdump';fake.hidden=true;fake.value=S.dump;document.body.appendChild(fake)}else{ta.value=S.dump}
-  var bt=document.createElement('button');bt.dataset.dp='org';document.body.appendChild(bt);bt.click();bt.remove();if(fake)fake.remove();
-  if(document.getElementById('hqdp'))nsClose()}});
-document.addEventListener('input',function(e){if(e.target&&e.target.id==='hqnotetx')S.dump=e.target.value});
-['mousedown','pointerdown'].forEach(function(ev){document.addEventListener(ev,function(e){var t=e.target;if(!t||!t.closest)return;var b=t.closest('#hqns button');if(b&&document.activeElement&&document.activeElement.tagName==='TEXTAREA'&&e.type==='mousedown')e.preventDefault()},true)});
+document.addEventListener('click',function(e){var b=e.target.closest&&e.target.closest('[data-ns]');if(!b)return;var a=b.dataset.ns,t;
+ if(a==='open')nsOpen();
+ else if(a==='close'){t=document.getElementById('hqnotetx');if(t){S.dump=t.value;save()}nsClose()}
+ else if(a==='mic')nsMic();
+ else if(a==='ex'){t=document.getElementById('hqnotetx');if(t){t.value=(t.value.trim()?t.value.trim()+'\n':'')+b.dataset.t;S.dump=t.value;t.focus()}}
+ else if(a==='org'){t=document.getElementById('hqnotetx');try{if(rec)rec.stop()}catch(x){}rec=null;var txt=t?t.value:'';S.dump=txt;save();var items=[];window.__dp.smartSplit(txt).forEach(function(l){window.__dp.classify(l).forEach(function(x){x.raw=l;x.on=true;x.title=cap(x.title);items.push(x)})});if(!items.length){if(t){t.placeholder='Type something first, then tap Sort It Out.';t.focus()}return}NS={mode:'review',items:items};nsDraw()}
+ else if(a==='back'){NS.mode='edit';nsDraw();var t2=document.getElementById('hqnotetx');t2.value=S.dump||''}
+ else if(a==='cyc'){var it=NS.items[+b.dataset.i];it.t=ORDER[(ORDER.indexOf(it.t)+1)%ORDER.length];nsDraw()}
+ else if(a==='rm'){NS.items.splice(+b.dataset.i,1);nsDraw()}
+ else if(a==='addall'){var L=NS.items.filter(function(i){return i.t!=='note'||true});window.__dp.setD(L);window.__dp.commit();NS=null;var o=document.getElementById('hqns');if(o)o.remove();fabSync()}});
+document.addEventListener('input',function(e){var el=e.target;if(!el)return;if(el.id==='hqnotetx')S.dump=el.value;else if(el.dataset&&el.dataset.nsi!=null&&NS&&NS.items){NS.items[+el.dataset.nsi].title=el.value.replace(/\n/g,' ');fit(el);var d=el.parentNode.querySelector('.nsd');if(d)d.textContent=nm(NS.items[+el.dataset.nsi])}});
+['mousedown','pointerdown'].forEach(function(ev){document.addEventListener(ev,function(e){var t=e.target;if(!t||!t.closest)return;var b=t.closest('#hqns button');if(b&&document.activeElement&&/^(TEXTAREA|INPUT)$/.test(document.activeElement.tagName)&&e.type==='mousedown')e.preventDefault()},true)});
 }catch(err){try{console.error('fab',err)}catch(_){}}})();
 </script>
 <script>(function(){try{var H='9fd7d2c2499204c2a4998657b236d86c1ab1cc1644b9888f0728c3bee577b195',ent=null,i=TABS.findIndex(function(t){return t[0]==='studies'});if(i>-1)ent=TABS[i];var last='',on=false;
