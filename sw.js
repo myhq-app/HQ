@@ -1,4 +1,4 @@
-const C='hq-v6';
+const C='hq-v7';
 self.addEventListener('install',e=>{self.skipWaiting()});
 self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(k=>Promise.all(k.filter(x=>x!==C).map(x=>caches.delete(x)))).then(()=>self.clients.claim()))});
 self.addEventListener('push',e=>{let d={};try{d=e.data.json()}catch(_){}e.waitUntil(self.registration.showNotification(d.title||'HQ',{body:d.body||'',tag:d.tag,icon:'icon-192.png',badge:'icon-192.png'}))});
