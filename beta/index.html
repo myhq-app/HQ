@@ -4514,7 +4514,7 @@ function overview(h){stepsPull(h);const f=F(h),td=T(),wc=weekLogs(f,wkStart(td))
  const pi=pgDay(f),sv=stepsOn(f,td);f.tchk=f.tchk||{};
  let o=`<div class="ftx"><div class="ntc"><span class="nti">🏃</span><button class="ntth" data-ft="theme" data-hid="${h.id}">${f.light?'Dark':'Light'} mode</button></div>`;
  if(f.prog&&pi>27){f.prog=null;save()}
- o+=`<div class="ntp"><div><span>Plan</span><b>${f.prog?`<button data-ft="go" data-hid="${h.id}" data-to="routines">${esc(pgDef(f).name)}</button>`:`<button data-ft="go" data-hid="${h.id}" data-to="routines">Choose a plan</button>`}</b></div>${f.prog?`<div><span>Day</span><b>${pi+1} of 28 · Week ${pgWeek(pi)+1}</b></div>`:''}<div><span>This week</span><b>${wc} of ${g} workouts</b></div><div><span>Streak</span><b>${st} ${st===1?'week':'weeks'}</b></div><div><span>Steps today</span><b><button data-ft="go" data-hid="${h.id}" data-to="prog" data-v="steps">${n0(sv)}</button></b></div></div><hr class="nth">`;
+ o+=`<div class="ntp"><div><span>Plan</span><b>${f.prog?`<button data-ft="go" data-hid="${h.id}" data-to="routines">${esc(pgDef(f).name)}</button>`:`<button data-ft="go" data-hid="${h.id}" data-to="routines">Choose a plan</button>`}</b></div>${f.prog?`<div><span>Day</span><b>${pi+1} of 28 · Week ${pgWeek(pi)+1}</b></div>`:''}<div><span>This week</span><b>${wc} of ${g} workouts</b></div><div><span>Streak</span><b>${st} ${st===1?'week':'weeks'}</b></div>${f.nut&&f.nut.g?`<div><span>Calories</span><b><button data-ft="go" data-hid="${h.id}" data-to="food">${n0(dayTot(f,T()).kcal)} of ${n0(f.nut.g.kcal)}</button></b></div>`:''}<div><span>Steps today</span><b><button data-ft="go" data-hid="${h.id}" data-to="prog" data-v="steps">${n0(sv)}</button></b></div></div><hr class="nth">`;
  if(a)o+=`<div class="ntco"><span class="e">⏱</span><div><b>${esc(a.name)} in progress</b><small><span id="ftel0">${clock((Date.now()-a.start)/1000)}</span> · ${pl(sessSets(a),'set')} logged</small></div></div><button class="ntbtn pri" style="margin-top:10px" data-ft="go" data-hid="${h.id}" data-to="log">Continue workout</button>`;
  else if(f.prog){const P=pgPlan(f,pi),done=pgDone(f,pi);
   o+=`<div class="ntco"><span class="e">${done?'✅':P.t==='R'?'😴':P.t==='W'?'🚶':'🔥'}</span><div><b>${done?'Done for today':'Today · '+P.name}</b><small>${done?'Tomorrow: '+esc(pgPlan(f,pi+1)?pgPlan(f,pi+1).name:'the finish line'):P.t==='R'?'Rest day. Recovery is part of the plan.':P.t==='W'?P.min+' minutes at a brisk pace':pl(P.ids.length,'exercise')+' · '+P.sets+' rounds · about '+P.min+' min'}</small></div></div>`;
@@ -4526,7 +4526,7 @@ function overview(h){stepsPull(h);const f=F(h),td=T(),wc=weekLogs(f,wkStart(td))
  const L=f.logs.slice().sort((a,b)=>(b.d+(b.at||0)).localeCompare(a.d+(a.at||0))).slice(0,5);
  if(L.length)o+=`<div class="nth2">Workout log</div><table class="ntdb"><tr><th>Date</th><th>Name</th><th>Time</th></tr>${L.map(l=>`<tr data-ft="view" data-hid="${h.id}" data-i="${l.id}"><td>${fd(l.d)}</td><td>${esc(l.t==='cardio'?(l.type||'Cardio'):l.name)}</td><td>${l.t==='cardio'?(l.min||0)+'m':dur(l.dur||0)}</td></tr>`).join('')}</table>`;
  if(!f.prog)o+=`<div class="nth2">Plans</div><div class="ntg">${PROGS.map(p=>`<div class="ntgc"><div class="cv" style="background:linear-gradient(120deg,${p.g[0]},${p.g[1]})"></div><div class="bd"><b>${p.name}</b><small>${p.where} · ${p.min}</small><button data-ft="pgstart" data-hid="${h.id}" data-p="${p.id}">Start</button></div></div>`).join('')}</div>`;
- o+=`<div class="nth2">Pages</div><div class="ntsub">${sub('ft-routines','📋','Plans & routines')}${sub('ft-log','🏋️','Workout history')}${sub('ft-lib','📚','Exercises')}${sub('ft-prog','📈','Progress')}${sub('ft-goals','🎯','Goals & habits')}${sub('weight','⚖️','Weight')}${sub('food','🍎','Food diary')}${sub('notes','📝','Notes')}</div></div>`;
+ o+=`<div class="nth2">Pages</div><div class="ntsub">${sub('ft-routines','📋','Plans & routines')}${sub('ft-log','🏋️','Workout history')}${sub('ft-lib','📚','Exercises')}${sub('ft-prog','📈','Progress')}${sub('ft-goals','🎯','Goals & habits')}${sub('ft-food','🥗','Nutrition')}${sub('weight','⚖️','Weight')}${pg('food')&&(pg('food').items||[]).length?sub('food','🍎','Food diary (old)'):''}${sub('notes','📝','Notes')}</div></div>`;
  return o}
 function logRow(h,l,open){const f=F(h);if(l.t==='cardio')return `<div class="ftr"><div class="hx"><b>${esc(l.type||'Cardio')}${l.min?' · '+dur(l.min):''}${l.dist?' · '+l.dist+' mi':''}</b><small>${fdl(l.d)}${l.note?' · '+esc(l.note):''}</small></div><button class="ftx2" data-ft="rmlog" data-hid="${h.id}" data-i="${l.id}" aria-label="Delete">✕</button></div>`;
  const prs=(l.ex||[]).filter(e=>e.pr).length;
@@ -4594,6 +4594,122 @@ function pgStartWorkout(h,i){const f=F(h);if(f.active){startSession(h,'');return
 const MOT=['Show up. That is the hard part.','Small and steady beats big and rare.','Future you will thank you.','You do not have to be perfect, just consistent.','One workout at a time.','Strong looks good on you.'];
 function progCards(h,f){return `<div class="ftc"><div class="ftl2">${PROGS.map(p=>`<div class="row" style="cursor:default"><div class="t"><b>${p.name}</b><small>${p.sub} · ${p.where} · ${p.min}</small></div><button class="ftb sm" style="flex:none" data-ft="pgstart" data-hid="${h.id}" data-p="${p.id}">Start</button></div>`).join('')}</div></div>`}
 function weekStrip(f){const i=pgDay(f),w0=Math.floor(i/7)*7;let o='<div class="ftdots">';for(let k=0;k<7;k++){const d=w0+k,t=PAT[d%7],ok=pgDone(f,d)||(t==='R'&&d<i);o+=`<i class="${ok?'ok':''}${d===i?' td':''}"></i>`}return o+'</div>'}
+
+/* ---------- nutrition (free: built-in common foods + Open Food Facts/USDA through food-search) ---------- */
+const GEN=`Egg, whole, cooked|155|13|1.1|11|0|1 large (50 g)|50
+Chicken breast, cooked|165|31|0|3.6|0|1 breast (120 g)|120
+Chicken thigh, cooked|209|26|0|10.9|0|1 thigh (90 g)|90
+Ground beef 85%, cooked|250|26|0|15|0|3 oz (85 g)|85
+Ground turkey, cooked|203|27|0|10|0|3 oz (85 g)|85
+Steak, sirloin, cooked|206|30|0|9|0|4 oz (113 g)|113
+Pork chop, cooked|231|26|0|14|0|1 chop (120 g)|120
+Salmon, cooked|206|22|0|12|0|1 fillet (150 g)|150
+Tuna, canned in water|116|26|0|1|0|1 can drained (112 g)|112
+Shrimp, cooked|99|24|0.2|0.3|0|3 oz (85 g)|85
+Bacon, cooked|541|37|1.4|42|0|1 slice (8 g)|8
+Turkey deli slices|104|17|4|2|0|2 slices (56 g)|56
+Tofu, firm|144|17|2.8|8.7|2.3|1/2 cup (126 g)|126
+White rice, cooked|130|2.7|28|0.3|0.4|1 cup (158 g)|158
+Brown rice, cooked|123|2.7|26|1|1.8|1 cup (195 g)|195
+Pasta, cooked|158|5.8|31|0.9|1.8|1 cup (140 g)|140
+Oats, dry|389|17|66|7|10.6|1/2 cup (40 g)|40
+Cheerios cereal|376|12.5|73|6|9.5|1 cup (28 g)|28
+Bread, whole wheat|247|13|41|3.4|7|1 slice (28 g)|28
+Bread, white|265|9|49|3.2|2.7|1 slice (28 g)|28
+Tortilla, flour|312|8|52|8|2.5|1 medium (45 g)|45
+Hamburger bun|270|9|50|4|2.4|1 bun (57 g)|57
+Pancake|227|6.4|28|10|1.1|1 medium (77 g)|77
+Potato, baked|93|2.5|21|0.1|2.2|1 medium (173 g)|173
+Sweet potato, baked|90|2|21|0.2|3.3|1 medium (114 g)|114
+Black beans, cooked|132|8.9|23.7|0.5|8.7|1/2 cup (86 g)|86
+Lentils, cooked|116|9|20|0.4|7.9|1/2 cup (99 g)|99
+Chickpeas, cooked|164|8.9|27.4|2.6|7.6|1/2 cup (82 g)|82
+Banana|89|1.1|22.8|0.3|2.6|1 medium (118 g)|118
+Apple|52|0.3|13.8|0.2|2.4|1 medium (182 g)|182
+Orange|47|0.9|11.8|0.1|2.4|1 medium (131 g)|131
+Strawberries|32|0.7|7.7|0.3|2|1 cup (152 g)|152
+Blueberries|57|0.7|14.5|0.3|2.4|1 cup (148 g)|148
+Grapes|69|0.7|18.1|0.2|0.9|1 cup (151 g)|151
+Avocado|160|2|8.5|14.7|6.7|1/2 fruit (100 g)|100
+Broccoli, cooked|35|2.4|7.2|0.4|3.3|1 cup (156 g)|156
+Spinach, raw|23|2.9|3.6|0.4|2.2|1 cup (30 g)|30
+Carrots, raw|41|0.9|9.6|0.2|2.8|1 medium (61 g)|61
+Tomato|18|0.9|3.9|0.2|1.2|1 medium (123 g)|123
+Cucumber|15|0.7|3.6|0.1|0.5|1/2 cup (52 g)|52
+Romaine lettuce|17|1.2|3.3|0.3|2.1|1 cup (47 g)|47
+Bell pepper|31|1|6|0.3|2.1|1 medium (119 g)|119
+Onion|40|1.1|9.3|0.1|1.7|1/2 cup (80 g)|80
+Corn, cooked|96|3.4|21|1.5|2.4|1/2 cup (82 g)|82
+Green beans|31|1.8|7|0.2|3.4|1 cup (110 g)|110
+Milk, whole|61|3.2|4.8|3.3|0|1 cup (244 g)|244
+Milk, 2%|50|3.3|4.8|2|0|1 cup (244 g)|244
+Greek yogurt, plain nonfat|59|10.2|3.6|0.4|0|3/4 cup (170 g)|170
+Cheddar cheese|403|25|1.3|33|0|1 oz (28 g)|28
+Mozzarella cheese|280|28|3.1|17|0|1 oz (28 g)|28
+Cottage cheese, lowfat|72|12|2.7|1|0|1/2 cup (113 g)|113
+Butter|717|0.9|0.1|81|0|1 tbsp (14 g)|14
+Olive oil|884|0|0|100|0|1 tbsp (14 g)|14
+Peanut butter|588|25|20|50|6|2 tbsp (32 g)|32
+Almonds|579|21|22|50|12.5|1 oz (28 g)|28
+Walnuts|654|15|14|65|6.7|1 oz (28 g)|28
+Hummus|166|7.9|14.3|9.6|6|2 tbsp (30 g)|30
+Honey|304|0.3|82|0|0.2|1 tbsp (21 g)|21
+Sugar|387|0|100|0|0|1 tsp (4 g)|4
+Whey protein powder|400|80|8|6|0|1 scoop (30 g)|30
+Cheese pizza|266|11|33|10|2.3|1 slice (107 g)|107
+French fries|312|3.4|41|15|3.8|1 medium (117 g)|117
+Potato chips|536|7|53|35|4.4|1 oz (28 g)|28
+Dark chocolate|546|4.9|61|31|7|1 oz (28 g)|28
+Vanilla ice cream|207|3.5|24|11|0.7|1/2 cup (66 g)|66
+Coffee, black|1|0.1|0|0|0|1 cup (237 g)|237
+Orange juice|45|0.7|10.4|0.2|0.2|1 cup (248 g)|248
+Cola|42|0|10.6|0|0|1 can (368 g)|368`;
+const GENF=GEN.trim().split('\n').map(l=>{const a=l.split('|');return{id:'g:'+a[0].toLowerCase().replace(/[^a-z0-9]+/g,'-'),n:a[0],b:'',src:'Common foods',per100:{kcal:+a[1],p:+a[2],c:+a[3],f:+a[4],fi:+a[5]},serv:a[6],sg:+a[7]}});
+const MEALS=['Breakfast','Lunch','Dinner','Snacks'];
+const r1=n=>Math.round(n*10)/10;
+function N(f){if(!f.nut)f.nut={};const n=f.nut;n.log=n.log||{};n.rec=n.rec||[];n.cus=n.cus||[];n.prof=n.prof||{};return n}
+const nDay=()=>FT.nd||T();
+const scale=(food,g)=>{const k=g/100,p=food.per100;return{kcal:Math.round(p.kcal*k),p:r1(p.p*k),c:r1(p.c*k),f:r1(p.f*k),fi:r1(p.fi*k)}};
+const dayEnt=(f,d)=>N(f).log[d||nDay()]||[];
+const dayTot=(f,d)=>dayEnt(f,d).reduce((t,e)=>{t.kcal+=e.kcal;t.p+=e.p;t.c+=e.c;t.f+=e.f;t.fi+=e.fi;return t},{kcal:0,p:0,c:0,f:0,fi:0});
+function nMacroBar(l,v,g,u){const pc=g?Math.min(100,Math.round(v/g*100)):0;return `<div class="nmb"><div class="ftrow ftsp"><span>${l}</span><span class="ftm">${Math.round(v)}${g?' / '+Math.round(g):''} ${u||'g'}</span></div><div class="ftbar"><i style="width:${pc}%"></i></div></div>`}
+function nutPage(h){const f=F(h),n=N(f);
+ if(FT.nsel)return nAmount(h);if(FT.nadd)return nAddHTML(h);if(FT.ngs)return nGoals(h);
+ const d=nDay(),g=n.g,tot=dayTot(f,d),isT=d===T();
+ let o=`<div class="ftx"><div class="ftrow ftsp"><button class="ftb ghost sm" data-ft="nday" data-hid="${h.id}" data-d="-1" aria-label="Previous day">‹</button><b>${isT?'Today':fdl(d)}</b><button class="ftb ghost sm" data-ft="nday" data-hid="${h.id}" data-d="1" aria-label="Next day"${isT?' disabled style="opacity:.3"':''}>›</button></div>`;
+ if(!g)o+=`<div class="ntco"><span class="e">🎯</span><div><b>Set your daily targets</b><small>Takes a minute. We estimate calories and macros for you.</small><br><button class="ftb sm" style="margin-top:8px" data-ft="ngs" data-hid="${h.id}">Set targets</button></div></div>`;
+ const rem=g?g.kcal-tot.kcal:0;
+ o+=`<div class="ftc"><div class="ftrow ftsp" style="align-items:flex-end"><div><div class="ftbig">${n0(tot.kcal)}</div><p class="ftm">calories eaten${g?' of '+n0(g.kcal):''}</p></div>${g?`<div style="text-align:right"><div class="ftbig" style="font-size:22px;color:${rem<0?'#e0705f':'inherit'}">${n0(Math.abs(rem))}</div><p class="ftm">${rem<0?'over':'left'}</p></div>`:''}</div>${g?`<div class="ftbar" style="margin-top:10px"><i style="width:${Math.min(100,Math.round(tot.kcal/g.kcal*100))}%"></i></div>`:''}<div style="margin-top:12px;display:flex;flex-direction:column;gap:10px">${nMacroBar('Protein',tot.p,g&&g.p)}${nMacroBar('Carbs',tot.c,g&&g.c)}${nMacroBar('Fat',tot.f,g&&g.f)}${nMacroBar('Fiber',tot.fi,g&&g.fi)}</div>${g?`<p class="ftm" style="margin-top:10px"><button class="ftx2" style="font-size:13px;color:var(--ac);font-weight:600" data-ft="ngs" data-hid="${h.id}">Edit targets</button></p>`:''}</div>`;
+ const ents=dayEnt(f,d);
+ if(!ents.length&&(n.log[addDays(d,-1)]||[]).length)o+=`<button class="ftb ghost" data-ft="ncopy" data-hid="${h.id}">Copy yesterday's meals</button>`;
+ MEALS.forEach(m=>{const L=ents.filter(e=>e.m===m),kc=L.reduce((a,e)=>a+e.kcal,0);
+  o+=`<div class="ftc"><div class="ftrow ftsp"><h4 style="margin:0">${m}</h4><span class="ftm">${kc?n0(kc)+' kcal':''}</span></div>${L.map(e=>`<button class="ftr" data-ft="nedit" data-hid="${h.id}" data-i="${e.id}"><span class="hx"><b>${esc(e.n)}</b><small>${esc(e.amt||'')} · P ${Math.round(e.p)} · C ${Math.round(e.c)} · F ${Math.round(e.f)}</small></span><span class="ftm">${n0(e.kcal)}</span></button>`).join('')}<button class="ftx2" style="width:100%;text-align:left;padding:10px 0 2px;font-size:15px;color:var(--ac);font-weight:600" data-ft="nadd" data-hid="${h.id}" data-m="${m}">＋ Add food</button></div>`});
+ return o+'</div>'}
+function nFoodRow(h,x){FT.nmap=FT.nmap||{};FT.nmap[x.id]=x;return `<button type="button" class="ftr" data-ft="nfood" data-hid="${h.id}" data-i="${esc(x.id)}"><span class="hx"><b>${esc(x.n)}</b><small>${esc((x.b?x.b+' · ':'')+Math.round(x.per100.kcal)+' kcal / 100 g'+(x.serv?' · '+x.serv:''))}</small></span><span class="ftm">＋</span></button>`}
+function nLocal(f,q){const n=N(f),ql=q.toLowerCase().trim();if(!ql)return[];const w=ql.split(/\s+/);return n.cus.concat(GENF).filter(x=>w.every(k=>x.n.toLowerCase().includes(k))).slice(0,15)}
+function nResHTML(h){const f=F(h),q=FT.nq||'';let L=nLocal(f,q);const on=(FT.nres||[]).filter(x=>!L.some(y=>y.n.toLowerCase()===x.n.toLowerCase()));
+ let o=L.map(x=>nFoodRow(h,x)).join('')+on.map(x=>nFoodRow(h,x)).join('');
+ if(!q.trim())return '<p class="ftm">Type a food, like "chicken" or "oats".</p>';
+ if(FT.nbusy)o+='<p class="ftm" style="padding:10px 0">Searching more foods…</p>';
+ else if(!o)o=`<p class="ftm" style="padding:10px 0">Nothing found.${SBS?'':' Sign in to search packaged foods.'} You can add it under Quick add.</p>`;
+ return o}
+function nAddHTML(h){const f=F(h),n=N(f),m=FT.nadd.m,tb=FT.ntab||'s';
+ const tabs=[['s','Search'],['r','Recent'],['q','Quick add']];
+ let o=`<div class="ftx"><div class="ftrow ftsp"><h3 style="margin:0">Add to ${m}</h3><button class="ftb ghost sm" data-ft="nclose" data-hid="${h.id}">Cancel</button></div><div class="ftchips2">${tabs.map(t=>`<button type="button" data-ft="ntab" data-hid="${h.id}" data-v="${t[0]}" class="${tb===t[0]?'on':''}">${t[1]}</button>`).join('')}</div>`;
+ if(tb==='s')o+=`<input id="nf-q" type="search" placeholder="Search foods" value="${esc(FT.nq||'')}" autocomplete="off" aria-label="Search foods"><div class="ftc" id="nf-res">${nResHTML(h)}</div><details class="ftc ftmore"><summary>Have a barcode number?</summary><form data-ftform="nbar" data-hid="${h.id}" class="ftx" style="margin-top:8px"><input name="b" inputmode="numeric" placeholder="Barcode digits"><button class="ftb ghost">Look up</button></form>${FT.nbmsg?`<p class="ftm">${esc(FT.nbmsg)}</p>`:''}</details>`;
+ else if(tb==='r')o+=`<div class="ftc">${n.rec.length?n.rec.map(x=>nFoodRow(h,x)).join(''):'<p class="ftm">Foods you log show up here for one-tap re-adding.</p>'}</div>`;
+ else o+=`<div class="ftc"><form data-ftform="nquick" data-hid="${h.id}" class="ftx"><label class="ftl">Name<input name="n" maxlength="50" placeholder="e.g. Grandma's lasagna" required></label><label class="ftl">Calories<input name="k" inputmode="decimal" required placeholder="0"></label><div class="ftg3"><label class="ftl">Protein g<input name="p" inputmode="decimal" placeholder="0"></label><label class="ftl">Carbs g<input name="c" inputmode="decimal" placeholder="0"></label><label class="ftl">Fat g<input name="f" inputmode="decimal" placeholder="0"></label></div><label class="ftrow" style="font-size:14px"><input type="checkbox" name="sv" style="width:auto"> Save to My foods</label><button class="ftb">Add</button></form></div>`;
+ return o+'</div>'}
+function nAmount(h){const f=F(h),S2=FT.nsel,x=S2.food,m=S2.m,g0=S2.g||x.sg||100,t=scale(x,g0);
+ const chips=x.sg?[0.5,1,2].map(k=>`<button type="button" data-ft="nserv" data-hid="${h.id}" data-g="${Math.round(x.sg*k)}">${k===0.5?'½':k} serving${k>1?'s':''}</button>`).join(''):'';
+ return `<div class="ftx"><div class="ftrow ftsp"><h3 style="margin:0;min-width:0;overflow-wrap:anywhere">${esc(x.n)}</h3><button class="ftb ghost sm" data-ft="${S2.edit?'nclose2':'nback'}" data-hid="${h.id}">Cancel</button></div><p class="ftm" style="margin:-8px 2px 0">${esc(x.b||x.src||'')}${x.serv?' · serving: '+esc(x.serv):''}</p><div class="ftc"><div class="ftbig" id="nf-kc">${t.kcal} kcal</div><p class="ftm" id="nf-mc">P ${t.p} g · C ${t.c} g · F ${t.f} g · Fiber ${t.fi} g</p></div><div class="ftc"><label class="ftl">Amount in grams<input id="nf-g" inputmode="decimal" value="${g0}"></label>${chips?`<div class="ftchips2" style="margin-top:10px">${chips}<button type="button" data-ft="nserv" data-hid="${h.id}" data-g="100">100 g</button></div>`:''}<label class="ftl" style="margin-top:12px">Meal<select id="nf-m">${MEALS.map(z=>`<option${z===m?' selected':''}>${z}</option>`).join('')}</select></label></div><button class="ftb" data-ft="nlog" data-hid="${h.id}">${S2.edit?'Save':'Add to diary'}</button>${S2.edit?`<button class="ftb red" data-ft="ndel" data-hid="${h.id}">Remove</button>`:''}</div>`}
+function nGoals(h){const f=F(h),n=N(f),pr=n.prof,g=n.g||{};
+ return `<div class="ftx"><div class="ftrow ftsp"><h3 style="margin:0">Daily targets</h3><button class="ftb ghost sm" data-ft="ngx" data-hid="${h.id}">Close</button></div><div class="ftc"><h4>Estimate for me</h4><form data-ftform="ncalc" data-hid="${h.id}" class="ftx"><div class="ftg2"><label class="ftl">Sex (for the formula)<select name="sx"><option value="f"${pr.sx!=='m'?' selected':''}>Female</option><option value="m"${pr.sx==='m'?' selected':''}>Male</option></select></label><label class="ftl">Age<input name="a" inputmode="numeric" required value="${pr.a||''}"></label></div><div class="ftg2"><label class="ftl">Height (${f.unit==='kg'?'cm':'inches'})<input name="h" inputmode="decimal" required value="${pr.h||''}"></label><label class="ftl">Weight (${f.unit})<input name="w" inputmode="decimal" required value="${pr.w||''}"></label></div><label class="ftl">Activity<select name="ac">${[['1.2','Mostly sitting'],['1.375','Light: 1-3 workouts/wk'],['1.55','Moderate: 3-5 workouts/wk'],['1.725','Very active']].map(z=>`<option value="${z[0]}"${String(pr.ac||'1.375')===z[0]?' selected':''}>${z[1]}</option>`).join('')}</select></label><label class="ftl">Goal<select name="go"><option value="-500"${pr.go==='-500'||!pr.go?' selected':''}>Lose weight (about 1 lb/week)</option><option value="-250"${pr.go==='-250'?' selected':''}>Lose slowly</option><option value="0"${pr.go==='0'?' selected':''}>Maintain</option><option value="300"${pr.go==='300'?' selected':''}>Build muscle</option></select></label><label class="ftl">Macro split<select name="sp">${[['30,40,30','Balanced'],['35,35,30','High protein'],['30,25,45','Lower carb']].map(z=>`<option value="${z[0]}"${pr.sp===z[0]?' selected':''}>${z[1]}</option>`).join('')}</select></label><button class="ftb">Calculate my targets</button><p class="ftm">An estimate using a standard formula, not medical advice. Adjust to how you feel and talk to a professional for health conditions.</p></form></div><div class="ftc"><h4>Or set them yourself</h4><form data-ftform="ngoals" data-hid="${h.id}" class="ftx"><div class="ftg2"><label class="ftl">Calories<input name="k" inputmode="numeric" required value="${g.kcal||''}"></label><label class="ftl">Fiber g<input name="fi" inputmode="numeric" value="${g.fi||28}"></label></div><div class="ftg3"><label class="ftl">Protein g<input name="p" inputmode="numeric" value="${g.p||''}"></label><label class="ftl">Carbs g<input name="c" inputmode="numeric" value="${g.c||''}"></label><label class="ftl">Fat g<input name="f" inputmode="numeric" value="${g.f||''}"></label></div><button class="ftb ghost">Save targets</button></form></div></div>`}
+function nPrev(){const S2=FT.nsel;if(!S2)return;const g=+document.getElementById('nf-g').value||0,t=scale(S2.food,g),a=document.getElementById('nf-kc'),b=document.getElementById('nf-mc');if(a)a.textContent=t.kcal+' kcal';if(b)b.textContent='P '+t.p+' g · C '+t.c+' g · F '+t.f+' g · Fiber '+t.fi+' g'}
+let nTimer=0;
+async function nOnline(h,q){const f=F(h);if(!SBS||q.trim().length<3){FT.nres=[];FT.nbusy=false;nPaint(h);return}
+ const my=q;FT.nbusy=true;nPaint(h);try{const t=await sbTok();const r=await fetch(SBU+'/functions/v1/food-search',{method:'POST',headers:{apikey:SBK,Authorization:'Bearer '+t,'Content-Type':'application/json'},body:JSON.stringify({q})});const j=await r.json();if((FT.nq||'')===my)FT.nres=j.items||[]}catch(e){if((FT.nq||'')===my)FT.nres=[]}if((FT.nq||'')===my){FT.nbusy=false;nPaint(h)}}
+function nPaint(h){const el=document.getElementById('nf-res');if(el)el.innerHTML=nResHTML(h)}
 /* ---------- pages ---------- */
 function logPage(h){const f=F(h);
  if(FT.pick&&FT.pick.mode==='session')return pickerHTML(h);
@@ -4653,10 +4769,10 @@ function goalsPage(h){const f=F(h),b=badges(f),st=streak(f);
  <div class="ftc"><h4>Settings</h4><div class="ftg2"><label class="ftl">Weight unit<select data-ftf="unit" data-hid="${h.id}"><option value="lb"${f.unit==='lb'?' selected':''}>Pounds</option><option value="kg"${f.unit==='kg'?' selected':''}>Kilograms</option></select></label><label class="ftl">Daily step goal<select data-ftf="sgoal" data-hid="${h.id}">${[5000,6000,7000,8000,9000,10000,12000,15000].map(s=>`<option value="${s}"${f.sgoal===s?' selected':''}>${n0(s)}</option>`).join('')}</select></label><label class="ftl">Rest timer<select data-ftf="rest" data-hid="${h.id}">${[30,45,60,90,120,180,240].map(s=>`<option value="${s}"${f.rest===s?' selected':''}>${s>=60?(s/60)+' min':s+' sec'}</option>`).join('')}</select></label></div><p class="ftm" style="margin:12px 0 6px">Equipment I have (used by Build Me A Workout)</p><div class="ftday">${['Barbell','Dumbbell','Machine','Cable','Bodyweight','Kettlebell'].map(q=>`<button type="button" style="width:auto;height:auto;padding:8px 12px;border-radius:99px" class="${f.eq.includes(q)?'on':''}" data-ft="eq" data-hid="${h.id}" data-q="${q}">${q}</button>`).join('')}</div></div></div>`}
 function habitStreak(f,id){let d=T(),n=0;if(!(f.hlog[d]||[]).includes(id))d=addDays(d,-1);while((f.hlog[d]||[]).includes(id)){n++;d=addDays(d,-1)}return n}
 /* ---------- wiring ---------- */
-const PAGES={'ft-log':logPage,'ft-routines':routinesPage,'ft-lib':libPage,'ft-prog':progPage,'ft-goals':goalsPage};
-const KN={'ft-log':'Workouts','ft-routines':'Programs','ft-lib':'Exercises','ft-prog':'Progress','ft-goals':'Goals'};
+const PAGES={'ft-food':nutPage,'ft-log':logPage,'ft-routines':routinesPage,'ft-lib':libPage,'ft-prog':progPage,'ft-goals':goalsPage};
+const KN={'ft-food':'Nutrition','ft-log':'Workouts','ft-routines':'Programs','ft-lib':'Exercises','ft-prog':'Progress','ft-goals':'Goals'};
 Object.keys(KN).forEach(k=>{HKIND[k]=KN[k]});
-const IC={'ft-log':'<path d="M6 8v8M18 8v8M3 10v4M21 10v4M6 12h12"/>','ft-routines':'<path d="M5 6h14M5 12h14M5 18h9"/>','ft-lib':'<circle cx="11" cy="11" r="6"/><path d="M16 16l4 4"/>','ft-prog':'<path d="M4 19V5M4 19h16M8 15l4-4 3 3 5-6"/>','ft-goals':'<circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="4"/>'};
+const IC={'ft-food':'<path d="M7 3v8M5 3v5a2 2 0 004 0V3M7 11v10M17 3c-2 2-3 5-3 8h3v10"/>','ft-log':'<path d="M6 8v8M18 8v8M3 10v4M21 10v4M6 12h12"/>','ft-routines':'<path d="M5 6h14M5 12h14M5 18h9"/>','ft-lib':'<circle cx="11" cy="11" r="6"/><path d="M16 16l4 4"/>','ft-prog':'<path d="M4 19V5M4 19h16M8 15l4-4 3 3 5-6"/>','ft-goals':'<circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="4"/>'};
 Object.keys(IC).forEach(k=>{ICO['k:'+k]=IC[k]});
 const _hv=hubView;
 hubView=function(t){const m=/^(h|p):([^:]+)(?::(.+))?$/.exec(t||'');if(m){const h=hubOf(m[2]);if(isFt(h)){
@@ -4664,11 +4780,11 @@ hubView=function(t){const m=/^(h|p):([^:]+)(?::(.+))?$/.exec(t||'');if(m){const 
   const g=(h.pages||[]).find(z=>z.id===m[3]);if(g&&PAGES[g.kind])return{title:g.name,color:'#b5707c',parent:'h:'+h.id,html:PAGES[g.kind](h)}}}
  return _hv(t)};
 /* new template + migration */
-(function(){const i=HUBT.findIndex(x=>x[0]==='Fitness'),N=['Fitness','Log workouts, track progress and build the habit',[['Workouts','ft-log'],['Programs','ft-routines'],['Exercises','ft-lib'],['Progress','ft-prog'],['Goals And Habits','ft-goals'],['Weight','weight'],['Food Diary','food'],['Notes','notes']]];if(i>=0)HUBT.splice(i,1,N);else HUBT.push(N)})();
+(function(){const i=HUBT.findIndex(x=>x[0]==='Fitness'),N=['Fitness','Log workouts, track progress and build the habit',[['Workouts','ft-log'],['Programs','ft-routines'],['Exercises','ft-lib'],['Progress','ft-prog'],['Goals And Habits','ft-goals'],['Nutrition','ft-food'],['Weight','weight'],['Notes','notes']]];if(i>=0)HUBT.splice(i,1,N);else HUBT.push(N)})();
 function mig(){(S.hubs||[]).forEach(h=>{if(!h||!h.pages||isFt(h))return;const k=h.pages.map(p=>p.kind);if(!(k.includes('weight')&&k.includes('food')))return;
   const mk=(n,kd)=>({id:hUid(),name:n,kind:kd,items:[],text:''});const add=[mk('Workouts','ft-log'),mk('Routines','ft-routines'),mk('Exercises','ft-lib'),mk('Progress','ft-prog'),mk('Goals And Habits','ft-goals')];
   h.pages=add.concat(h.pages.filter(p=>!(p.kind==='list'&&/^workouts?$/i.test(p.name))));save()})}
-try{mig();(S.hubs||[]).forEach(h=>(h.pages||[]).forEach(p=>{if(p.kind==='ft-routines'&&p.name==='Routines')p.name='Programs'}))}catch(_){}
+try{mig();(S.hubs||[]).forEach(h=>{if(isFt(h)&&!(h.pages||[]).some(p=>p.kind==='ft-food')){const i=h.pages.findIndex(p=>p.kind==='ft-goals');h.pages.splice(i>=0?i+1:h.pages.length,0,{id:hUid(),name:'Nutrition',kind:'ft-food',items:[],text:''});save()}});(S.hubs||[]).forEach(h=>(h.pages||[]).forEach(p=>{if(p.kind==='ft-routines'&&p.name==='Routines')p.name='Programs'}))}catch(_){}
 /* events */
 const cur2=el=>hubOf(el.dataset.hid)||cur();
 document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest('[data-ft]');if(!b)return;const a=b.dataset.ft,h=cur2(b);if(!h)return;const f=F(h),D=b.dataset;
@@ -4681,6 +4797,22 @@ document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest
  if(a==='pgwalk'){const P=pgPlan(f,+D.d);f.logs.push({id:hUid(),t:'cardio',d:T(),at:Date.now(),type:'Walk',min:P.min,dist:0,note:'Plan walk',pgd:+D.d,pid:pgPid(f)});save();toast('Walk logged. Nice!');render();return}
  if(a==='rsetn'){const r=f.routines.find(x=>x.id===D.r),x=r&&r.ex[+D.e];if(x){x.sets=Math.max(1,Math.min(10,(x.sets||3)+ +D.d));save();render()}return}
  if(a==='cact'||a==='cmin'){const fm=b.closest('form');fm.elements[a==='cact'?'t':'m'].value=D.v;b.parentNode.querySelectorAll('button').forEach(z=>z.classList.toggle('on',z===b));if(a==='cmin')fm.elements.mm.value='';return}
+
+ if(a==='nday'){FT.nd=addDays(nDay(),+D.d);if(FT.nd>T())FT.nd=T();render();return}
+ if(a==='nadd'){FT.nadd={m:D.m};FT.nq='';FT.nres=[];FT.ntab='s';FT.nbmsg='';render();window.scrollTo(0,0);return}
+ if(a==='nclose'){FT.nadd=null;FT.nsel=null;render();return}if(a==='nback'){FT.nsel=null;render();return}if(a==='nclose2'){FT.nsel=null;FT.nadd=null;render();return}
+ if(a==='ntab'){FT.ntab=D.v;render();return}
+ if(a==='nfood'){const x=(FT.nmap||{})[D.i];if(!x)return;FT.nsel={food:x,m:(FT.nadd||{}).m||'Snacks',g:x.sg||100};render();window.scrollTo(0,0);return}
+ if(a==='nserv'){const el=document.getElementById('nf-g');if(el){el.value=D.g;FT.nsel.g=+D.g;nPrev()}return}
+ if(a==='nlog'){const S2=FT.nsel,g=Math.max(1,+document.getElementById('nf-g').value||0),m=document.getElementById('nf-m').value,t=scale(S2.food,g),n=N(f),d=nDay();
+  const ent=Object.assign({id:S2.edit||hUid(),m,n:S2.food.n,b:S2.food.b||'',g,amt:(String(S2.food.id).startsWith('c:')?(r1(g/100)+(g===100?' serving':' servings')):Math.round(g)+' g'),fid:S2.food.id,per100:S2.food.per100,sg:S2.food.sg||0,serv:S2.food.serv||''},t);
+  n.log[d]=(n.log[d]||[]);if(S2.edit){const i=n.log[d].findIndex(z=>z.id===S2.edit);if(i>=0)n.log[d][i]=ent}else n.log[d].push(ent);
+  if(!S2.edit){n.rec=[S2.food].concat(n.rec.filter(z=>z.id!==S2.food.id)).slice(0,25)}
+  FT.nsel=null;FT.nadd=null;save();toast('Added');render();window.scrollTo(0,0);return}
+ if(a==='nedit'){const n=N(f),e=dayEnt(f,nDay()).find(z=>z.id===D.i);if(!e)return;const food={id:e.fid,n:e.n,b:e.b,src:'',per100:e.per100,sg:e.sg||0,serv:e.serv||''};FT.nsel={food,m:e.m,g:e.g,edit:e.id};render();window.scrollTo(0,0);return}
+ if(a==='ndel'){const n=N(f),d=nDay();n.log[d]=(n.log[d]||[]).filter(z=>z.id!==FT.nsel.edit);FT.nsel=null;save();render();return}
+ if(a==='ncopy'){const n=N(f),d=nDay(),y=n.log[addDays(d,-1)]||[];n.log[d]=y.map(e=>Object.assign({},e,{id:hUid()}));save();render();return}
+ if(a==='ngs'){FT.ngs=true;render();window.scrollTo(0,0);return}if(a==='ngx'){FT.ngs=false;render();return}
  if(a==='go'){go('ft-'+D.to);if(D.v)FT.prog=D.v;render();window.scrollTo(0,0);return}
  if(a==='syncgo'){stepsToken(false);return}
  if(a==='synceset'){if(!confirm('This stops the old Shortcut from working until you paste the new key. Continue?'))return;f.synced=0;SYNC.token=null;stepsToken(true);return}
@@ -4717,12 +4849,22 @@ document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest
  if(a==='rmhabit'){f.habits=f.habits.filter(x=>x.id!==D.i);save();render();return}
 });
 document.addEventListener('submit',e=>{const fm=e.target.closest&&e.target.closest('[data-ftform]');if(!fm)return;e.preventDefault();const h=cur2(fm);if(!h)return;const f=F(h),fd2=new FormData(fm),k=fm.dataset.ftform;
+
+ if(k==='nquick'){const n=N(f),kc=+fd2.get('k')||0,nm=String(fd2.get('n')||'').trim();if(!nm)return;const food={id:'c:'+hUid(),n:nm,b:'',src:'My foods',serv:'1 serving',sg:100,per100:{kcal:kc,p:+fd2.get('p')||0,c:+fd2.get('c')||0,f:+fd2.get('f')||0,fi:0}};if(fd2.get('sv'))n.cus.push(food);FT.nsel={food,m:FT.nadd.m,g:100};render();return}
+ if(k==='nbar'){const code=String(fd2.get('b')||'').replace(/\D/g,'');if(code.length<6)return;(async()=>{try{FT.nbmsg='Looking up…';render();const t=await sbTok();const r=await fetch(SBU+'/functions/v1/food-search',{method:'POST',headers:{apikey:SBK,Authorization:'Bearer '+t,'Content-Type':'application/json'},body:JSON.stringify({code})});const j=await r.json();const x=(j.items||[])[0];if(x){FT.nmap=FT.nmap||{};FT.nmap[x.id]=x;FT.nsel={food:x,m:FT.nadd.m,g:x.sg||100};FT.nbmsg=''}else FT.nbmsg='Not found. Try searching by name or use Quick add.'}catch(e){FT.nbmsg='Could not look that up right now.'}render()})();return}
+ if(k==='ncalc'){const n=N(f),sx=fd2.get('sx'),a2=+fd2.get('a'),hh=+fd2.get('h'),w=+fd2.get('w'),ac=+fd2.get('ac'),go=+fd2.get('go'),sp=String(fd2.get('sp')).split(',').map(Number);if(!(a2>0&&hh>0&&w>0))return;
+  const kg=f.unit==='kg'?w:w*0.4536,cm=f.unit==='kg'?hh:hh*2.54;let bmr=10*kg+6.25*cm-5*a2+(sx==='m'?5:-161),kc=Math.round((bmr*ac+go)/10)*10;kc=Math.max(sx==='m'?1500:1200,kc);
+  n.prof={sx,a:a2,h:hh,w,ac:String(ac),go:String(go),sp:sp.join(',')};n.g={kcal:kc,p:Math.round(kc*sp[0]/100/4),c:Math.round(kc*sp[1]/100/4),f:Math.round(kc*sp[2]/100/9),fi:28};FT.ngs=false;save();toast('Targets saved');render();return}
+ if(k==='ngoals'){const n=N(f),kc=+fd2.get('k')||0;if(!kc)return;n.g={kcal:kc,p:+fd2.get('p')||Math.round(kc*.3/4),c:+fd2.get('c')||Math.round(kc*.4/4),f:+fd2.get('f')||Math.round(kc*.3/9),fi:+fd2.get('fi')||28};FT.ngs=false;save();toast('Targets saved');render();return}
  if(k==='cardio'){const m=+(fd2.get('mm')||fd2.get('m'))||0;if(!m)return;f.logs.push({id:hUid(),t:'cardio',d:fd2.get('d')||T(),at:Date.now(),type:fd2.get('t'),min:m,dist:+fd2.get('di')||0,note:String(fd2.get('n')||'').trim()});FT.cardio=false;save();toast('Saved');render();return}
  if(k==='custom'){const n=String(fd2.get('n')||'').trim();if(!n)return;const id='c-'+hUid();f.custom.push({id,name:n,mus:fd2.get('m'),eq:fd2.get('e')});if(FT.pick&&FT.pick.mode==='session'&&f.active)f.active.ex.push({id,sets:newSets(f,id,3)});else if(FT.pick&&FT.pick.mode==='routine'){const r=f.routines.find(x=>x.id===FT.pick.r);if(r)r.ex.push({id,sets:3,reps:'10'})}FT.pick=null;save();render();return}
  if(k==='meas'){const o={d:T()};let any=0;['waist','chest','hips','arm','thigh'].forEach(z=>{const v=+fd2.get(z);if(v){o[z]=v;any=1}});if(!any)return;f.meas=f.meas.filter(x=>x.d!==o.d).concat(o);save();toast('Saved');render();return}
  if(k==='steps'){const n=Math.round(+String(fd2.get('n')).replace(/[^\d.]/g,''));if(!(n>=0))return;f.steps[T()]=n;save();toast('Steps updated');render();return}
  if(k==='habit'){const t=String(fd2.get('t')||'').trim();if(!t)return;f.habits.push({id:hUid(),t});save();render();return}});
-document.addEventListener('input',e=>{const t=e.target;if(!t||!t.dataset)return;if(t.id==='ft-q'){filterPick();return}if(!t.dataset.ftf)return;const h=cur2(t);if(!h)return;const f=F(h),k=t.dataset.ftf,D=t.dataset;
+document.addEventListener('input',e=>{const t=e.target;if(!t||!t.dataset)return;
+ if(t.id==='nf-q'){FT.nq=t.value;const h2=cur();if(h2){nPaint(h2);clearTimeout(nTimer);nTimer=setTimeout(()=>nOnline(h2,FT.nq),450)}return}
+ if(t.id==='nf-g'){nPrev();return}
+ if(t.id==='ft-q'){filterPick();return}if(!t.dataset.ftf)return;const h=cur2(t);if(!h)return;const f=F(h),k=t.dataset.ftf,D=t.dataset;
  if(k==='sw'||k==='sr'){const s=f.active&&f.active.ex[+D.e]&&f.active.ex[+D.e].sets[+D.s];if(s){s[k==='sw'?'w':'r']=t.value;save();const v=document.getElementById('ftvol');if(v)v.textContent=n0(sessVol(f.active))}return}
  if(k==='sname'&&f.active){f.active.name=t.value;save();return}if(k==='snote'&&f.active){f.active.note=t.value;save();return}
  if(k==='rname'){const r=f.routines.find(x=>x.id===D.r);if(r){r.name=t.value;save()}return}
