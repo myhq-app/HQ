@@ -4339,7 +4339,7 @@ setTimeout(function(){try{nfPrefs()}catch(_){}},5000);})();</script>
 .ftx .ftc h4{font-size:15px}
 .ftx button.ftb{background:var(--ac);color:#fff;box-shadow:none}
 .ftx button.ftb.ghost{background:none;border:1px solid var(--line);color:inherit}
-.ftx .ftday{flex-wrap:nowrap;gap:5px}.ftx .ftday button{width:38px;height:38px;flex:none}
+.ftx .ftdays{flex-wrap:nowrap;gap:5px}.ftx .ftdays button{width:38px;height:38px;flex:none}
 .ftx .ftday button.on,.ftx .ftseg button.on{background:var(--ac);border-color:var(--ac);color:#fff}
 .ftx .ftbar i{background:var(--ac)}
 .ftx .ftdot i.on{background:var(--ac);border-color:var(--ac)}
@@ -4372,19 +4372,19 @@ setTimeout(function(){try{nfPrefs()}catch(_){}},5000);})();</script>
 .ftx{--ac:var(--accent,var(--a,#b5707c));--onac:#fff;padding:0 0 24px}body.ftw .ftx{--ac:var(--accent,#c6f24e);--onac:#101214;--card:#202020;--ink:#ebebeb;--mut:#9b9b9b;--line:rgba(255,255,255,.1);--field:#2a2a2a;color:#ebebeb}
 body.ftw{--bg:#191919;--card:#202020;--soft:#202020;--ink:#ebebeb;--mut:#9b9b9b;--line:rgba(255,255,255,.1);--a:#c6f24e;--sec:#c6f24e;color-scheme:dark;background:#191919!important;color:#ebebeb}
 body.ftw::before{background:none!important}
-body.ftw .ftx .ftc,.ftx .ftex{background:#202020;border:1px solid rgba(255,255,255,.07);box-shadow:none}
+body.ftw .ftx .ftc,body.ftw .ftx .ftex{background:#202020;border:1px solid rgba(255,255,255,.07);box-shadow:none}
 body.ftw .ftx .ftc h4{color:#ebebeb}
 body.ftw .ftx button.ftb{color:var(--onac);font-weight:800}
 body.ftw .ftx button.ftb.ghost{background:none;color:#ebebeb;border:1px solid rgba(255,255,255,.2)}
 body.ftw .ftx button.ftb.red{background:none;color:#ff9b8c;border-color:#ff9b8c}
-body.ftw .ftx .ftday button,.ftx .ftseg button,.ftx .ftchips2 button,.ftx .ftlinks button,.ftx .ftstep button{color:#ebebeb}
-body.ftw .ftx .ftday button.on,.ftx .ftseg button.on,.ftx .ftchips2 button.on{color:var(--onac)}
+body.ftw .ftx .ftday button,body.ftw .ftx .ftseg button,body.ftw .ftx .ftchips2 button,body.ftw .ftx .ftlinks button,body.ftw .ftx .ftstep button{color:#ebebeb}
+body.ftw .ftx .ftday button.on,body.ftw .ftx .ftseg button.on,body.ftw .ftx .ftchips2 button.on{color:var(--onac)}
 body.ftw .ftx .ftl2 .num{background:rgba(255,255,255,.08);color:#ebebeb}.ftx .ftl2 .num.ok{background:var(--ac);color:var(--onac)}
 
 body.ftw .ftx .fttop b{color:var(--ac)}
 body.ftw .ftx .ftdots i{background:rgba(255,255,255,.16)}
 body.ftw .ftx .ftsticky .ftb{box-shadow:0 10px 26px rgba(0,0,0,.45)}
-body.ftw .ftx .fti,.ftx .ftmu{background:rgba(255,255,255,.08);color:var(--ac)}
+body.ftw .ftx .fti,body.ftw .ftx .ftmu{background:rgba(255,255,255,.08);color:var(--ac)}
 body.ftw .ftx .ftset.done{background:color-mix(in srgb,var(--ac) 16%,transparent)}
 body.ftw .ftx .ftpr{background:var(--ac);color:var(--onac)}
 body.ftw .ftx .ftbd{background:rgba(255,255,255,.05)}.ftx .ftbd.on{background:color-mix(in srgb,var(--ac) 18%,transparent);border-color:var(--ac)}
@@ -4421,6 +4421,26 @@ body.ftw .ftx details.ftmore>summary{color:var(--ac)}
 .ftx .ntsub{display:flex;flex-direction:column}
 .ftx .ntsub button{display:flex;align-items:center;gap:10px;padding:8px 4px;border:0;background:none;color:inherit;font:inherit;font-size:16px;text-align:left;border-radius:6px;cursor:pointer}
 .ftx .ntsub button:hover{background:color-mix(in srgb,var(--ink) 6%,transparent)}.ftx .ntsub .e{width:24px;text-align:center;font-size:18px}
+
+/* ---- v9 polish ---- */
+.ftx h3{font-size:20px!important;font-weight:700!important;text-transform:none!important;letter-spacing:0!important;margin:14px 2px 2px;font-family:inherit!important;color:inherit!important}
+.ftx .ntc{height:84px;background:linear-gradient(120deg,var(--ac),color-mix(in srgb,var(--ac) 40%,#2fd4b4));opacity:.92}
+body:not(.ftw) .ftx .ntc{background:linear-gradient(120deg,color-mix(in srgb,var(--ac) 70%,#fff),color-mix(in srgb,var(--ac) 25%,#fff))}
+.ftx .nti{left:16px;bottom:-30px;filter:none}
+.ftx .nti i{display:grid;place-items:center;width:60px;height:60px;border-radius:16px;font-style:normal;font-size:34px;background:var(--bg,#191919);border:1px solid var(--line);box-shadow:0 6px 16px rgba(0,0,0,.25)}
+body.ftw .ftx .nti i{background:#202020}
+.ftx .ntc{margin-bottom:38px}
+.ftx .ntth{background:rgba(0,0,0,.35)}
+.ftx .ftsticky{position:sticky;bottom:78px;z-index:6;padding-top:6px}
+.ftx .ftsticky .ntbtn,.ftx .ftsticky .ftb{box-shadow:0 10px 24px rgba(0,0,0,.35)}
+.ftx .ftset button.ck{border:2px solid color-mix(in srgb,var(--ink) 35%,transparent)}
+.ftx .ftset button.ck.on{background:var(--ac);border-color:var(--ac);color:var(--onac)}
+.ftx .ftdone{width:64px;height:64px;border-radius:50%;margin:0 auto;display:grid;place-items:center;font-size:34px;font-weight:800;background:var(--ac);color:var(--onac)}
+.ftx [data-ft=eq],.ftx [data-ft=addhabit]{flex:none}
+.ftx .ftg2 button.ftb,.ftx .ftrow button.ftb{min-width:0}
+.ftx .ntnew{gap:6px 18px}
+.ftx .ftprevhint{color:var(--mut)}
+.ftx .ftc{overflow:hidden}
 </style>
 <script>
 (function(){
@@ -4505,23 +4525,23 @@ function suggest(f){const rc=recov(f),ready=rc.filter(x=>x.days==null||x.days>=2
 function buildMe(h){const f=F(h);if(f.active){startSession(h,'');return}const s=suggest(f);
  if(!s.ids.length){toast('Turn on some equipment in Goals And Habits first.');return}
  f.active={id:hUid(),name:s.name,start:Date.now(),rid:'',ex:s.ids.map(id=>({id,sets:newSets(f,id,3,BW.has(id)?'12':'10')})),note:''};f.restEnd=0;save();FT.view=null;const p=h.pages.find(x=>x.kind==='ft-log');tab='p:'+h.id+':'+p.id;render()}
-function recovCard(f){return `<div class="ftc"><h4>Muscle Recovery</h4><div class="ftg2" style="gap:8px">${recov(f).map(x=>`<div class="ftrow ftsp" style="padding:8px 10px;border-radius:12px;background:${x.days==null?'rgba(0,0,0,.04)':x.days<2?'#f7ecd2':'#e3f1e7'}"><b style="font-weight:600">${x.m}</b><span class="ftm">${x.days==null?'Not yet':x.days<1?'Today':x.days<2?'Recovering':x.days+' days ago'}</span></div>`).join('')}</div><p class="ftm" style="margin-top:8px">Green means rested and ready. Muscles usually need about two days between hard workouts.</p></div>`}
+function recovCard(f){return `<div class="ftc"><h4>Muscle Recovery</h4><div class="ftg2" style="gap:8px">${recov(f).map(x=>`<div class="ftrow ftsp" style="padding:8px 10px;border-radius:12px;background:${x.days==null?'color-mix(in srgb,var(--ink) 6%,transparent)':x.days<2?'rgba(224,170,70,.22)':'color-mix(in srgb,var(--ac) 20%,transparent)'}"><b style="font-weight:600">${x.m}</b><span class="ftm">${x.days==null?'Not yet':x.days<1?'Today':x.days<2?'Recovering':x.days+' days ago'}</span></div>`).join('')}</div><p class="ftm" style="margin-top:8px">Highlighted means rested and ready. Muscles usually need about two days between hard workouts.</p></div>`}
 /* ---------- overview ---------- */
 function weekDots(f){const s=wkStart(T()),td=T(),sc=new Set();f.routines.forEach(r=>(r.days||[]).forEach(d=>sc.add(d)));let o='<div class="ftweek">';for(let i=0;i<7;i++){const d=addDays(s,i),dow=new Date(d+'T12:00').getDay(),did=f.logs.some(l=>l.d===d);o+=`<div class="ftdot"><i class="${did?'on':''}${d===td?' td':''}${!did&&sc.has(dow)&&d>=td?' pl':''}">${did?'✓':''}</i>${DN[dow]}</div>`}return o+'</div>'}
 function ringSvg(p,txt,col){const r=34,c=2*Math.PI*r;p=Math.max(0,Math.min(1,p||0));return `<svg viewBox="0 0 90 90" aria-hidden="true"><circle cx="45" cy="45" r="${r}" fill="none" stroke="rgba(0,0,0,.08)" stroke-width="10"/><circle cx="45" cy="45" r="${r}" fill="none" stroke="${p>=1?'#4f9467':col}" stroke-width="10" stroke-linecap="round" stroke-dasharray="${(c*p).toFixed(1)} ${c.toFixed(1)}" transform="rotate(-90 45 45)"/><text x="45" y="51" text-anchor="middle" font-size="${txt.length>5?15:19}" font-weight="700" fill="currentColor">${txt}</text></svg>`}
 function overview(h){stepsPull(h);const f=F(h),td=T(),wc=weekLogs(f,wkStart(td)).length,g=f.goal,st=streak(f),a=f.active,hb=f.habits;
  const pg=n=>(h.pages||[]).find(p=>p.kind===n),sub=(k,e,t)=>{const p=pg(k);return p?`<button data-tab="p:${h.id}:${p.id}"><span class="e">${e}</span>${t}</button>`:''};
  const pi=pgDay(f),sv=stepsOn(f,td);f.tchk=f.tchk||{};
- let o=`<div class="ftx"><div class="ntc"><span class="nti">🏃</span><button class="ntth" data-ft="theme" data-hid="${h.id}">${f.light?'Dark':'Light'} mode</button></div>`;
+ let o=`<div class="ftx"><div class="ntc"><span class="nti"><i>🏃</i></span><button class="ntth" data-ft="theme" data-hid="${h.id}">${f.light?'Dark':'Light'} mode</button></div>`;
  if(f.prog&&pi>27){f.prog=null;save()}
  o+=`<div class="ntp"><div><span>Plan</span><b>${f.prog?`<button data-ft="go" data-hid="${h.id}" data-to="routines">${esc(pgDef(f).name)}</button>`:`<button data-ft="go" data-hid="${h.id}" data-to="routines">Choose a plan</button>`}</b></div>${f.prog?`<div><span>Day</span><b>${pi+1} of 28 · Week ${pgWeek(pi)+1}</b></div>`:''}<div><span>This week</span><b>${wc} of ${g} workouts</b></div><div><span>Streak</span><b>${st} ${st===1?'week':'weeks'}</b></div>${f.nut&&f.nut.g?`<div><span>Calories</span><b><button data-ft="go" data-hid="${h.id}" data-to="food">${n0(dayTot(f,T()).kcal)} of ${n0(f.nut.g.kcal)}</button></b></div>`:''}<div><span>Steps today</span><b><button data-ft="go" data-hid="${h.id}" data-to="prog" data-v="steps">${n0(sv)}</button></b></div></div><hr class="nth">`;
  if(a)o+=`<div class="ntco"><span class="e">⏱</span><div><b>${esc(a.name)} in progress</b><small><span id="ftel0">${clock((Date.now()-a.start)/1000)}</span> · ${pl(sessSets(a),'set')} logged</small></div></div><button class="ntbtn pri" style="margin-top:10px" data-ft="go" data-hid="${h.id}" data-to="log">Continue workout</button>`;
  else if(f.prog){const P=pgPlan(f,pi),done=pgDone(f,pi);
   o+=`<div class="ntco"><span class="e">${done?'✅':P.t==='R'?'😴':P.t==='W'?'🚶':'🔥'}</span><div><b>${done?'Done for today':'Today · '+P.name}</b><small>${done?'Tomorrow: '+esc(pgPlan(f,pi+1)?pgPlan(f,pi+1).name:'the finish line'):P.t==='R'?'Rest day. Recovery is part of the plan.':P.t==='W'?P.min+' minutes at a brisk pace':pl(P.ids.length,'exercise')+' · '+P.sets+' rounds · about '+P.min+' min'}</small></div></div>`;
-  if(!done&&P.ids){o+=`<div style="margin:8px 0">${P.ids.map(id=>`<label class="ntt"><input type="checkbox" data-ftf="tchk" data-hid="${h.id}" data-i="${td}:${id}"${f.tchk[td+':'+id]?' checked':''}><span class="n">${esc(exOf(f,id).name)}</span><span class="m">${P.sets} × ${P.reps}</span></label>`).join('')}</div><button class="ntbtn pri" data-ft="pgrun" data-hid="${h.id}" data-d="${pi}">▶ Start workout</button>`}
+  if(!done&&P.ids){o+=`<div style="margin:8px 0">${P.ids.map(id=>`<label class="ntt"><input type="checkbox" data-ftf="tchk" data-hid="${h.id}" data-i="${td}:${id}"${f.tchk[td+':'+id]?' checked':''}><span class="n">${esc(exOf(f,id).name)}</span><span class="m">${P.sets} × ${P.reps}</span></label>`).join('')}</div><div class="ftsticky"><button class="ntbtn pri" data-ft="pgrun" data-hid="${h.id}" data-d="${pi}">▶ Start workout</button></div>`}
   else if(!done&&P.t==='W')o+=`<button class="ntbtn pri" style="margin-top:10px" data-ft="pgwalk" data-hid="${h.id}" data-d="${pi}">✓ I did my ${P.min}-minute walk</button>`}
  else o+=`<div class="ntco"><span class="e">👋</span><div><b>Start here</b><small>Pick a 4-week plan below. It tells you exactly what to do each day.</small></div></div>`;
- o+=`<div class="ntnew" style="margin-top:6px"><button data-ft="buildme" data-hid="${h.id}">＋ Quick workout</button><button data-ft="start" data-hid="${h.id}">＋ Empty workout</button><button data-ft="cardio" data-hid="${h.id}">＋ Log cardio</button></div>`;
+ o+=`<div class="ntnew" style="margin-top:6px"><button data-ft="buildme" data-hid="${h.id}">＋ Quick workout</button><button data-ft="start" data-hid="${h.id}">＋ Empty</button><button data-ft="cardio" data-hid="${h.id}">＋ Cardio</button><button data-ft="nqadd" data-hid="${h.id}">＋ Food</button></div>`;
  if(hb.length){const d2=f.hlog[td]||[];o+=`<div class="nth2">Habits</div>${hb.map(x=>`<label class="ntt"><input type="checkbox" data-ftf="habit" data-hid="${h.id}" data-i="${x.id}"${d2.includes(x.id)?' checked':''}><span class="n">${esc(x.t)}</span></label>`).join('')}`}
  const L=f.logs.slice().sort((a,b)=>(b.d+(b.at||0)).localeCompare(a.d+(a.at||0))).slice(0,5);
  if(L.length)o+=`<div class="nth2">Workout log</div><table class="ntdb"><tr><th>Date</th><th>Name</th><th>Time</th></tr>${L.map(l=>`<tr data-ft="view" data-hid="${h.id}" data-i="${l.id}"><td>${fd(l.d)}</td><td>${esc(l.t==='cardio'?(l.type||'Cardio'):l.name)}</td><td>${l.t==='cardio'?(l.min||0)+'m':dur(l.dur||0)}</td></tr>`).join('')}</table>`;
@@ -4552,7 +4572,7 @@ function sessionHTML(h){const f=F(h),a=f.active;
   <div class="ftset hd"><span>Set</span><span>Previous</span><span>${BW.has(e.id)?'+'+f.unit:f.unit}</span><span>Reps</span><span></span></div>`;
   e.sets.forEach((s,si)=>{const pv=p&&p.sets[si]?((+p.sets[si].w?p.sets[si].w+'×':'')+p.sets[si].r):'–';o+=`<div class="ftset${s.d?' done':''}"><span class="n">${si+1}</span><span class="pv">${pv}</span><input inputmode="decimal" data-ftf="sw" data-hid="${h.id}" data-e="${ei}" data-s="${si}" value="${esc(s.w)}" placeholder="${BW.has(e.id)?'BW':'0'}" aria-label="Weight"><input inputmode="numeric" data-ftf="sr" data-hid="${h.id}" data-e="${ei}" data-s="${si}" value="${esc(s.r)}" placeholder="0" aria-label="Reps"><button class="ck${s.d?' on':''}" data-ft="setck" data-hid="${h.id}" data-e="${ei}" data-s="${si}" aria-label="Done">${s.d?'✓':''}</button></div>`});
   o+=`<div class="ftrow" style="margin-top:10px"><button class="ftb ghost sm" data-ft="addset" data-hid="${h.id}" data-e="${ei}">+ Add Set</button>${e.sets.length>1?`<button class="ftb ghost sm" data-ft="rmset" data-hid="${h.id}" data-e="${ei}">− Remove Set</button>`:''}</div></div>`});
- o+=`<button class="ftb ghost" data-ft="pickopen" data-hid="${h.id}" data-mode="session">+ Add Exercise</button><div class="ftc"><label class="ftl">Notes<textarea rows="2" data-ftf="snote" data-hid="${h.id}" placeholder="How did it feel?">${esc(a.note||'')}</textarea></label></div><div class="ftg2"><button class="ftb" data-ft="finish" data-hid="${h.id}">Finish Workout</button><button class="ftb red" data-ft="discard" data-hid="${h.id}">Discard</button></div><div style="height:150px" aria-hidden="true"></div></div>`;
+ o+=`<button class="ftb ghost" data-ft="pickopen" data-hid="${h.id}" data-mode="session">+ Add Exercise</button><div class="ftc"><label class="ftl">Notes<textarea rows="2" data-ftf="snote" data-hid="${h.id}" placeholder="How did it feel?">${esc(a.note||'')}</textarea></label></div><div class="ftsticky"><button class="ftb" data-ft="finish" data-hid="${h.id}">Finish workout</button></div><button class="ftb red" data-ft="discard" data-hid="${h.id}">Discard workout</button><div style="height:150px" aria-hidden="true"></div></div>`;
  return o+restBar(f)}
 function restBar(f){if(!f.restEnd||f.restEnd<Date.now()-4000)return '';return `<div class="ftrest" id="ftrestbar"><span>Rest</span><b id="ftrest">${clock((f.restEnd-Date.now())/1000)}</b><button data-ft="rest" data-d="-15">−15</button><button data-ft="rest" data-d="15">+15</button><button data-ft="rest" data-d="stop">Skip</button></div>`}
 function finish(h){const f=F(h),a=f.active;if(!a)return;
@@ -4563,8 +4583,9 @@ function finish(h){const f=F(h),a=f.active;if(!a)return;
   if(bw>0){if(bw>p.w)e.pr='Heaviest set: '+bw+' '+f.unit;else if(bo>p.o+.01)e.pr='Best estimated max: '+Math.round(bo)+' '+f.unit}else if(br>p.r)e.pr='Most reps: '+br})
  const l={id:a.id,t:'lift',d:iso(new Date(a.start)),at:a.start,name:a.name,rid:a.rid,pgd:a.pgd,pid:a.pid,dur:Math.max(1,Math.round((Date.now()-a.start)/6e4)),ex,note:a.note||''};l.sets=sessSets(l);l.vol=Math.round(sessVol(l));
  f.logs.push(l);f.active=null;f.restEnd=0;save();FT.done=l.id;FT.msg='';render()}
-function doneHTML(h,l){const f=F(h),prs=(l.ex||[]).filter(e=>e.pr);
- return `<div class="ftx"><div class="ftc" style="text-align:center"><div class="ftbig">Workout Saved</div><p class="ftm">${esc(l.name)}</p><div class="ftg3" style="margin-top:12px"><div><div class="ftbig" style="font-size:22px">${dur(l.dur)}</div><p class="ftm">Time</p></div><div><div class="ftbig" style="font-size:22px">${l.sets}</div><p class="ftm">${l.sets===1?'Set':'Sets'}</p></div><div><div class="ftbig" style="font-size:22px">${n0(l.vol)}</div><p class="ftm">${f.unit} lifted</p></div></div></div>${prs.length?`<div class="ftc"><h4>New Records</h4>${prs.map(e=>`<div class="ftr"><div class="hx"><b>${esc(exOf(f,e.id).name)}</b><small>${esc(e.pr)}</small></div><span class="ftpr">PR</span></div>`).join('')}</div>`:''}<div class="ftc"><p class="ftm">That is ${weekLogs(f,wkStart(T())).length} of ${f.goal} workouts this week.${streak(f)?' You are on a '+streak(f)+'-week streak.':''}</p></div><button class="ftb" data-ft="doneok" data-hid="${h.id}">Done</button></div>`}
+function doneHTML(h,l){const f=F(h),prs=(l.ex||[]).filter(e=>e.pr),wk=weekLogs(f,wkStart(T())).length;let nx='';
+ if(f.prog){const pi=pgDay(f),nn=pgPlan(f,pi+1);nx=`<p class="ftm" style="margin-top:6px">${pi<27?'Next up: '+esc(nn?nn.name:''):'You finished the plan!'}</p>`}
+ return `<div class="ftx"><div class="ftc" style="text-align:center;padding:26px 16px"><div class="ftdone">✓</div><div class="ftbig" style="margin-top:12px">Workout saved</div><p class="ftm">${esc(l.name)}</p><div class="ftg3" style="margin-top:18px"><div><div class="ftbig" style="font-size:22px">${dur(l.dur)}</div><p class="ftm">Time</p></div><div><div class="ftbig" style="font-size:22px">${l.sets}</div><p class="ftm">${l.sets===1?'Set':'Sets'}</p></div><div><div class="ftbig" style="font-size:22px">${n0(l.vol)}</div><p class="ftm">${f.unit} lifted</p></div></div></div>${prs.length?`<div class="ftc"><h4>New records</h4>${prs.map(e=>`<div class="ftr"><div class="hx"><b>${esc(exOf(f,e.id).name)}</b><small>${esc(e.pr)}</small></div><span class="ftpr">PR</span></div>`).join('')}</div>`:''}<div class="ftc"><p class="ftm" style="margin:0">${wk} of ${f.goal} workouts this week.${streak(f)?' '+streak(f)+'-week streak.':''}</p>${nx}</div><div class="ftsticky"><button class="ftb" data-ft="doneok" data-hid="${h.id}">Done</button></div></div>`}
 function cardioSheet(h){return `<div class="ftc"><h4>Log Cardio Or Activity</h4><form data-ftform="cardio" data-hid="${h.id}" class="ftx" style="background:none;padding:0;margin:0"><input type="hidden" name="t" value="Walk"><input type="hidden" name="m" value="30"><p class="ftm">What did you do?</p><div class="ftchips2" id="ftca">${CARDIO.map((x,i)=>`<button type="button" data-ft="cact" data-v="${x}" class="${i===0?'on':''}">${x}</button>`).join('')}</div><p class="ftm">How long?</p><div class="ftchips2" id="ftcm">${[15,20,30,45,60].map(m=>`<button type="button" data-ft="cmin" data-v="${m}" class="${m===30?'on':''}">${m} min</button>`).join('')}</div><input name="mm" inputmode="numeric" placeholder="or type minutes" aria-label="Minutes"><details class="ftmore"><summary>More details</summary><div class="ftx" style="background:none;padding:8px 0 0;margin:0"><label class="ftl">Miles<input name="di" inputmode="decimal" placeholder="0"></label><label class="ftl">Date<input name="d" type="date" value="${T()}"></label><label class="ftl">Note<input name="n" maxlength="80"></label></div></details><button class="ftb">Save</button><button type="button" class="ftb ghost" data-ft="cardiox" data-hid="${h.id}">Cancel</button></form></div>`}
 
 /* ---------- programs ---------- */
@@ -4735,7 +4756,7 @@ function routinesPage(h){const f=F(h);
  o+=`<button class="ftb ghost" data-ft="rnew" data-hid="${h.id}">+ Build My Own</button>`;
  o+=`<details class="ftc ftmore"><summary>Ready-made routines</summary>${PLANS.map(p=>`<div class="ftr"><div class="hx"><b>${p.name}</b><small>${p.sub}</small></div><button class="ftb sm" data-ft="plan" data-hid="${h.id}" data-p="${p.id}">Add</button></div>`).join('')}</details>`;
  return o+'</div>'}
-function editHTML(h,r){const f=F(h);return `<div class="ftx"><div class="ftc"><label class="ftl">Workout name<input data-ftf="rname" data-hid="${h.id}" data-r="${r.id}" value="${esc(r.name)}" maxlength="40"></label><p class="ftm" style="margin:14px 0 8px">Which days?</p><div class="ftday">${[1,2,3,4,5,6,0].map(d=>`<button type="button" class="${(r.days||[]).includes(d)?'on':''}" data-ft="rday" data-hid="${h.id}" data-r="${r.id}" data-d="${d}" aria-label="${DNL[d]}">${DNL[d].slice(0,2)}</button>`).join('')}</div></div><div class="ftc"><h4>Exercises</h4>${r.ex.length?r.ex.map((e,i)=>`<div class="fted"><div class="ftrow ftsp"><div class="hx" style="flex:1;min-width:0"><b>${esc(exOf(f,e.id).name)}</b><br><small class="ftm">${exOf(f,e.id).mus}</small></div><button class="ftx2" data-ft="rrmex" data-hid="${h.id}" data-r="${r.id}" data-e="${i}" aria-label="Remove">✕</button></div><div class="ftrow" style="margin-top:8px"><div class="ftstep"><button type="button" data-ft="rsetn" data-hid="${h.id}" data-r="${r.id}" data-e="${i}" data-d="-1">−</button><span>${e.sets||3} sets</span><button type="button" data-ft="rsetn" data-hid="${h.id}" data-r="${r.id}" data-e="${i}" data-d="1">+</button></div><input class="ftrp" data-ftf="rreps" data-hid="${h.id}" data-r="${r.id}" data-e="${i}" value="${esc(e.reps||'10')}" placeholder="reps" aria-label="Reps"><span class="ftm">reps</span></div></div>`).join(''):'<p class="ftm">No exercises yet. Add your first one.</p>'}<button class="ftb ghost" style="width:100%;margin-top:10px" data-ft="pickopen" data-hid="${h.id}" data-mode="routine" data-r="${r.id}">+ Add Exercise</button></div><button class="ftb" data-ft="redone" data-hid="${h.id}">Save Workout</button><button class="ftb red" data-ft="rdel" data-hid="${h.id}" data-r="${r.id}">Delete This Workout</button></div>`}
+function editHTML(h,r){const f=F(h);return `<div class="ftx"><div class="ftc"><label class="ftl">Workout name<input data-ftf="rname" data-hid="${h.id}" data-r="${r.id}" value="${esc(r.name)}" maxlength="40"></label><p class="ftm" style="margin:14px 0 8px">Which days?</p><div class="ftday ftdays">${[1,2,3,4,5,6,0].map(d=>`<button type="button" class="${(r.days||[]).includes(d)?'on':''}" data-ft="rday" data-hid="${h.id}" data-r="${r.id}" data-d="${d}" aria-label="${DNL[d]}">${DNL[d].slice(0,2)}</button>`).join('')}</div></div><div class="ftc"><h4>Exercises</h4>${r.ex.length?r.ex.map((e,i)=>`<div class="fted"><div class="ftrow ftsp"><div class="hx" style="flex:1;min-width:0"><b>${esc(exOf(f,e.id).name)}</b><br><small class="ftm">${exOf(f,e.id).mus}</small></div><button class="ftx2" data-ft="rrmex" data-hid="${h.id}" data-r="${r.id}" data-e="${i}" aria-label="Remove">✕</button></div><div class="ftrow" style="margin-top:8px"><div class="ftstep"><button type="button" data-ft="rsetn" data-hid="${h.id}" data-r="${r.id}" data-e="${i}" data-d="-1">−</button><span>${e.sets||3} sets</span><button type="button" data-ft="rsetn" data-hid="${h.id}" data-r="${r.id}" data-e="${i}" data-d="1">+</button></div><input class="ftrp" data-ftf="rreps" data-hid="${h.id}" data-r="${r.id}" data-e="${i}" value="${esc(e.reps||'10')}" placeholder="reps" aria-label="Reps"><span class="ftm">reps</span></div></div>`).join(''):'<p class="ftm">No exercises yet. Add your first one.</p>'}<button class="ftb ghost" style="width:100%;margin-top:10px" data-ft="pickopen" data-hid="${h.id}" data-mode="routine" data-r="${r.id}">+ Add Exercise</button></div><button class="ftb" data-ft="redone" data-hid="${h.id}">Save Workout</button><button class="ftb red" data-ft="rdel" data-hid="${h.id}" data-r="${r.id}">Delete This Workout</button></div>`}
 function libPage(h){const f=F(h);
  if(FT.lib){const x=exOf(f,FT.lib);return exHTML(h,f,x)}
  const all=exAll(f).slice().sort((a,b)=>a.name.localeCompare(b.name));
@@ -4798,6 +4819,7 @@ document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest
  if(a==='rsetn'){const r=f.routines.find(x=>x.id===D.r),x=r&&r.ex[+D.e];if(x){x.sets=Math.max(1,Math.min(10,(x.sets||3)+ +D.d));save();render()}return}
  if(a==='cact'||a==='cmin'){const fm=b.closest('form');fm.elements[a==='cact'?'t':'m'].value=D.v;b.parentNode.querySelectorAll('button').forEach(z=>z.classList.toggle('on',z===b));if(a==='cmin')fm.elements.mm.value='';return}
 
+ if(a==='nqadd'){const hr=new Date().getHours();FT.nadd={m:hr<10?'Breakfast':hr<15?'Lunch':hr<20?'Dinner':'Snacks'};FT.nq='';FT.nres=[];FT.ntab='s';FT.nbmsg='';go('ft-food');render();window.scrollTo(0,0);return}
  if(a==='nday'){FT.nd=addDays(nDay(),+D.d);if(FT.nd>T())FT.nd=T();render();return}
  if(a==='nadd'){FT.nadd={m:D.m};FT.nq='';FT.nres=[];FT.ntab='s';FT.nbmsg='';render();window.scrollTo(0,0);return}
  if(a==='nclose'){FT.nadd=null;FT.nsel=null;render();return}if(a==='nback'){FT.nsel=null;render();return}if(a==='nclose2'){FT.nsel=null;FT.nadd=null;render();return}
@@ -4828,7 +4850,7 @@ document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest
  if(a==='rest'){if(D.d==='stop')f.restEnd=0;else f.restEnd=Math.max(Date.now(),f.restEnd||Date.now())+ +D.d*1000;save();render();return}
  if(a==='finish'){finish(h);return}
  if(a==='discard'){if(!confirm('Discard this workout? Nothing will be saved.'))return;f.active=null;f.restEnd=0;FT.msg='';save();render();return}
- if(a==='doneok'){FT.done=null;go('ft-log');render();window.scrollTo(0,0);return}
+ if(a==='doneok'){FT.done=null;tab='h:'+h.id;render();window.scrollTo(0,0);return}
  if(a==='pickopen'){FT.pick={mode:D.mode,r:D.r};FT.mus='';render();window.scrollTo(0,0);return}
  if(a==='pickx'){FT.pick=null;render();return}
  if(a==='mus'){FT.mus=D.m;render();setTimeout(filterPick,0);return}
