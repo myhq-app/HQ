@@ -1,0 +1,1 @@
+{"name": "Kids Board", "short_name": "Kids", "start_url": "/HQ/beta/?kids=1", "scope": "/HQ/", "display": "standalone", "orientation": "any", "background_color": "#e8f6ee", "theme_color": "#3fa97c", "icons": [{"src": "/HQ/icon-kids-192.png", "sizes": "192x192", "type": "image/png"}, {"src": "/HQ/icon-kids-512.png", "sizes": "512x512", "type": "image/png"}]}
