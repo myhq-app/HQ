@@ -1815,7 +1815,7 @@ document.addEventListener('submit',e=>{
  e.preventDefault();const k=e.target.dataset.k;if(!k)return;
  const o=Object.fromEntries(new FormData(e.target));o.id=uid();CAPF.forEach(f=>{if(typeof o[f]==='string')o[f]=cap(o[f].trim())});
  if(k==='calev'){if(!o.title||!o.date)return;const rec={title:o.title,date:o.date,end:o.end&&o.end>o.date?o.end:'',time:o.time||'',note:o.note||'',rep:+o.rep||0,task:o.task==='on',sh:o.fsh==='on'?1:0,cat:catOf({cat:o.cat,title:o.title})};const x=eid?find('events',eid):null;if(x)Object.assign(x,rec);else S.events.push(Object.assign({id:o.id},rec));eid='';cd=o.date;save();render();return}
- if(k==='recquick'){const nb0=S.recipes.length,n=quickRecipe(o);if(n){msg='';mtab='rec';S.recipes.slice(nb0).forEach(x=>recImport(x))}radd=false;save();render();return}
+ if(k==='recquick'){const nb0=S.recipes.length,n=quickRecipe(o);if(!n){const w=window.__rqWhy;if(w==='updated'){radd=false;save();render();toast('Added the ingredients and steps to the recipe you already had.');return}toast(w==='dup'?'That recipe link is already in your recipes.':'Nothing was added yet. Type a name, or paste a link or the whole recipe.');return}if(n){msg='';mtab='rec';S.recipes.slice(nb0).forEach(x=>recImport(x))}radd=false;save();render();return}
  if(k==='reward'){if(!o.title||!+o.cost)return;S.rewards=S.rewards||[];S.rewards.push({id:o.id,title:cap(o.title.trim()),cost:Math.max(1,+o.cost)});WOPEN.add('rewards');save();render();return}
  if(k==='staple'){if(!o.title)return;S.staples=S.staples||[];S.staples.push({id:o.id,title:cap(o.title.trim()),every:+o.every||14,last:o.last||today()});save();render();return}
  if(k==='stsite'){stAddSite(o);return}if(k==='income'){if(!o.title)return;S.income=S.income||[];S.income.push({id:o.id,title:cap(o.title.trim()),amount:o.amount,date:o.date||'',status:o.status||'potential'});save();render();return}
@@ -8517,6 +8517,30 @@ document.addEventListener('visibilitychange',function(){if(document.visibilitySt
 window.addEventListener('pageshow',function(){setTimeout(tick,500)});
 })();
 </script>
+<script>
+/* Pasted recipe text (Nov 22). The Add A Recipe box only understood a link or a name, so a whole
+   recipe pasted with no link was silently dropped. Now the text becomes a recipe (name, ingredients,
+   steps), and if nothing can be added the form stays open and says why. */
+(function(){if(typeof quickRecipe!=='function')return;var _q=quickRecipe;
+var LINK=/https?:\/\/|(?:^|\s)(?:[\w-]+\.)+[a-z]{2,}\/\S+/i,ING=/^(ingredients?|what you(?:'|’)?ll need|you(?:'|’)?ll need)\s*:?\s*$/i,STP=/^(instructions?|directions?|steps?|method|preparation|how to make(?: it)?)\s*:?\s*$/i;
+var QTY=/^(\d|[½¼¾⅓⅔⅛]|a |an |one |two |three |half |pinch|dash|handful|salt|pepper)/i;
+function clean(l){return l.replace(/^[\s\-–•*▢☐□✓◻︎•]+/,'').replace(/\s+/g,' ').trim()}
+window.rxFromText=function(txt,title){var L=String(txt||'').split(/\r?\n/).map(clean).filter(Boolean);if(!L.length&&!title)return null;
+ var ih=L.findIndex(function(l){return ING.test(l)}),sh=L.findIndex(function(l){return STP.test(l)}),ti=(title||'').trim(),ing=[],st=[],time='',head=[];
+ if(!ti){var f=L.findIndex(function(l){return !ING.test(l)&&!STP.test(l)});if(f>=0&&L[f].length<=90&&(ih<0||f<ih)&&(sh<0||f<sh)){ti=L[f];L.splice(f,1);if(ih>f)ih--;if(sh>f)sh--}}
+ if(ih>=0||sh>=0){var a=ih>=0?ih:-1,b=sh>=0?sh:L.length;head=L.slice(0,Math.max(0,Math.min(a<0?b:a,b)));if(ih>=0)ing=L.slice(ih+1,sh>ih?sh:L.length);if(sh>=0)st=L.slice(sh+1,ih>sh?ih:L.length);if(ih<0)ing=head.filter(function(l){return QTY.test(l)})}
+ else L.forEach(function(l){(QTY.test(l)&&l.length<=90?ing:st).push(l)});
+ head.concat(L).some(function(l){var m=l.match(/(?:total|cook|prep)?\s*time\s*:?\s*([\d½]+\s*(?:hours?|hrs?|minutes?|mins?)(?:\s*\d+\s*(?:minutes?|mins?))?)/i);if(m){time=m[1];return true}});
+ (function(){var c=st.findIndex(function(l){return /^(notes?|nutrition(?: facts)?|tips?|storage)\s*:?\s*$/i.test(l)});if(c>=0)st=st.slice(0,c)})();st=st.filter(function(l){return !/^(notes?|nutrition|servings?|yield|prep time|cook time|total time)\b/i.test(l)}).map(function(l){return l.replace(/^(step\s*)?\d+\s*[.):-]\s*/i,'')}).filter(Boolean);
+ if(!ti)ti=(ing[0]?'':st[0]||'').slice(0,60)||'New Recipe';
+ return {title:cap(ti),ingredients:ing.join('\n'),steps:st.map(function(t,i){return (i+1)+'. '+t}).join('\n'),time:time}};
+quickRecipe=function(o){window.__rqWhy='';var txt=(o.links||'').trim();
+ if(txt&&!LINK.test(txt)){var r=rxFromText(txt,o.title);if(!r)return 0;var ex=S.recipes.find(function(x){return x.title.toLowerCase()===r.title.toLowerCase()});
+  if(ex){if(!ex.ingredients&&r.ingredients)ex.ingredients=r.ingredients;if(!ex.steps&&r.steps)ex.steps=r.steps;if(!ex.time&&r.time)ex.time=r.time;window.__rqWhy='updated';return 0}
+  var mm=(o.meal&&o.meal!=='Auto')?o.meal:guessMeal(r.title+' '+r.ingredients);S.recipes.push({id:uid(),title:r.title,meal:mm,time:r.time||'',link:'',ingredients:r.ingredients,steps:r.steps,auto:0});return 1}
+ var n=_q(o);if(!n){window.__rqWhy=txt&&S.recipes.some(function(x){return x.link&&txt.indexOf(x.link)>=0})?'dup':'empty'}return n};
+})();
+</script>
 <script>/* If the first draw failed because the app opened straight onto a screen whose parts load later, draw again now that everything is loaded. */(function(){window.__booted=1;if(!window.__bootRetry)return;try{render()}catch(e){try{(S.errlog=S.errlog||[]).push({k:'boot2',m:String(e&&e.message||e).slice(0,160),at:new Date().toISOString().slice(0,19),tab:tab});save()}catch(_){}try{tab='today';render()}catch(_){}}})();</script>
 <script>(function(){try{var H='9fd7d2c2499204c2a4998657b236d86c1ab1cc1644b9888f0728c3bee577b195',ent=null,i=TABS.findIndex(function(t){return t[0]==='studies'});if(i>-1)ent=TABS[i];var last='',on=false;
 function apply(ok){on=ok;window.__own=ok;if(ok){try{if(localStorage.getItem('hq.beta')!=='0'){localStorage.setItem('hq.beta','1');if(!window.__isBeta)window.__go()}}catch(e){}}var j=TABS.findIndex(function(t){return t[0]==='studies'});if(ok&&j<0&&ent)TABS.push(ent);if(!ok&&j>-1)TABS.splice(j,1);var k=QA_ALL.indexOf('studies');if(!ok&&k>-1)QA_ALL.splice(k,1);if(ok&&k<0)QA_ALL.push('studies');if(!ok&&tab==='studies')tab='today'}
@@ -8541,5 +8565,5 @@ document.addEventListener('touchend',function(){if(!on)return;on=false;var fire=
  if(fire){if(pend||psafe())go();else if(el){el.textContent='Finish what you are typing first'+(window.__psWhy?' ('+window.__psWhy+')':'');setTimeout(function(){el.style.opacity=0},1800)}}},{passive:true});
 })();
 try{var rs=JSON.parse(sessionStorage.getItem('hq.rs')||'null');if(rs){sessionStorage.removeItem('hq.rs');setTimeout(function(){try{(rs.open||[]).forEach(function(k){WOPEN.add(k)});if(rs.tab&&typeof tab!=='undefined')tab=rs.tab;render();window.scrollTo(0,rs.y||0)}catch(e){}},800)}}catch(e){}
-})()</script><div style="position:fixed;top:env(safe-area-inset-top,0);left:50%;transform:translateX(-50%);z-index:99999;background:#b4532a;color:#fff;font:700 9px system-ui;letter-spacing:.08em;padding:1px 8px;border-radius:0 0 8px 8px;pointer-events:none;opacity:.85">BETA 11/21 10:31pm</div></body>
+})()</script><div style="position:fixed;top:env(safe-area-inset-top,0);left:50%;transform:translateX(-50%);z-index:99999;background:#b4532a;color:#fff;font:700 9px system-ui;letter-spacing:.08em;padding:1px 8px;border-radius:0 0 8px 8px;pointer-events:none;opacity:.85">BETA 11/22 12:45pm</div></body>
 </html>
