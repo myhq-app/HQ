@@ -7273,6 +7273,12 @@ quickRecipe=function(o){window.__rqWhy='';var txt=(o.links||'').trim();
    "Snack Or Dessert", so those recipes fell out of every group. Fix any case mismatch on open. */
 (function(){try{var M=typeof MT!=='undefined'?MT:[];var fix=function(){var n=0;(S.recipes||[]).forEach(function(r){if(!r||!r.meal)return;var m=M.find(function(x){return x.toLowerCase()===String(r.meal).toLowerCase()});if(m&&m!==r.meal){r.meal=m;n++}});if(n){save();render()}};fix();setTimeout(fix,4000);setTimeout(fix,15000)}catch(_){}})();
 </script>
+<script>
+/* Fraction symbols (Nov 22). Changing servings writes amounts like "4 ⅔ cups", but the ingredient
+   splitter only read "4 2/3", so groceries got "4" and an item named "⅔ cups elbow pasta". */
+(function(){if(typeof ingSplit!=='function')return;var F={'½':'1/2','⅓':'1/3','⅔':'2/3','¼':'1/4','¾':'3/4','⅛':'1/8','⅜':'3/8','⅝':'5/8','⅞':'7/8','⅕':'1/5'};
+var _s=ingSplit;ingSplit=function(t){t=String(t==null?'':t).replace(/(\d)\s*([½⅓⅔¼¾⅛⅜⅝⅞⅕])/g,function(_,d,f){return d+' '+F[f]}).replace(/[½⅓⅔¼¾⅛⅜⅝⅞⅕]/g,function(f){return F[f]});return _s(t)}})();
+</script>
 <script>/* If the first draw failed because the app opened straight onto a screen whose parts load later, draw again now that everything is loaded. */(function(){window.__booted=1;if(!window.__bootRetry)return;try{render()}catch(e){try{(S.errlog=S.errlog||[]).push({k:'boot2',m:String(e&&e.message||e).slice(0,160),at:new Date().toISOString().slice(0,19),tab:tab});save()}catch(_){}try{tab='today';render()}catch(_){}}})();</script>
 <script>(function(){try{var H='9fd7d2c2499204c2a4998657b236d86c1ab1cc1644b9888f0728c3bee577b195',ent=null,i=TABS.findIndex(function(t){return t[0]==='studies'});if(i>-1)ent=TABS[i];var last='',on=false;
 function apply(ok){on=ok;window.__own=ok;if(ok){try{if(localStorage.getItem('hq.beta')!=='0'){localStorage.setItem('hq.beta','1');if(!window.__isBeta)window.__go()}}catch(e){}}var j=TABS.findIndex(function(t){return t[0]==='studies'});if(ok&&j<0&&ent)TABS.push(ent);if(!ok&&j>-1)TABS.splice(j,1);var k=QA_ALL.indexOf('studies');if(!ok&&k>-1)QA_ALL.splice(k,1);if(ok&&k<0)QA_ALL.push('studies');if(!ok&&tab==='studies')tab='today'}

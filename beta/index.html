@@ -8601,7 +8601,7 @@ function pl(w,n){return n===1?w:(/(box)$/.test(w)?w+'es':w+'s')}
 function nice(v){var r=Math.round(v*4)/4,i=Math.floor(r),f=r-i,fs=f===.25?'¼':f===.5?'½':f===.75?'¾':'';return (i?String(i):'')+(fs||(!i?'0':''))}
 function ozTxt(v,fl){if(v>=24&&!fl){var lb=v/16;return Math.abs(lb-Math.round(lb))<.08?Math.round(lb)+' lb':nice(lb)+' lb'}return (v<10?nice(v):Math.round(v))+' oz'}
 function buy(total,p){if(!(total>0))return '';/* loosely measured things (pasta, shredded cheese, rice...) get a 10% cushion so you're never short */
- var pk=p.pk,T=p.lo?total*1.1:total*0.99;var one=pk.find(function(x){return x[0]>=T});
+ var pk=p.pk,T=total*0.99;var one=pk.find(function(x){return x[0]>=T});
  if(one)return '1 '+one[1]+' ('+one[2]+')';var L=pk[pk.length-1],c=Math.ceil(T/L[0]);
  if(p.bag)return ozTxt(c*L[0])+' · '+(W[c]||c)+' '+L[2]+' '+pl(L[1],c);
  return c+' '+pl(L[1],c)+' ('+L[2]+' each)'}
@@ -8628,6 +8628,12 @@ var _r=render;render=function(){var x=_r.apply(this,arguments);sweep();return x}
 try{new MutationObserver(function(ms){for(var i=0;i<ms.length;i++)for(var j=0;j<ms[i].addedNodes.length;j++){var n=ms[i].addedNodes[j];if(n.id==='grs'){setTimeout(sweep,0);return}}}).observe(document.body,{childList:true})}catch(_){}
 })();
 </script>
+<script>
+/* Fraction symbols (Nov 22). Changing servings writes amounts like "4 ⅔ cups", but the ingredient
+   splitter only read "4 2/3", so groceries got "4" and an item named "⅔ cups elbow pasta". */
+(function(){if(typeof ingSplit!=='function')return;var F={'½':'1/2','⅓':'1/3','⅔':'2/3','¼':'1/4','¾':'3/4','⅛':'1/8','⅜':'3/8','⅝':'5/8','⅞':'7/8','⅕':'1/5'};
+var _s=ingSplit;ingSplit=function(t){t=String(t==null?'':t).replace(/(\d)\s*([½⅓⅔¼¾⅛⅜⅝⅞⅕])/g,function(_,d,f){return d+' '+F[f]}).replace(/[½⅓⅔¼¾⅛⅜⅝⅞⅕]/g,function(f){return F[f]});return _s(t)}})();
+</script>
 <script>/* If the first draw failed because the app opened straight onto a screen whose parts load later, draw again now that everything is loaded. */(function(){window.__booted=1;if(!window.__bootRetry)return;try{render()}catch(e){try{(S.errlog=S.errlog||[]).push({k:'boot2',m:String(e&&e.message||e).slice(0,160),at:new Date().toISOString().slice(0,19),tab:tab});save()}catch(_){}try{tab='today';render()}catch(_){}}})();</script>
 <script>(function(){try{var H='9fd7d2c2499204c2a4998657b236d86c1ab1cc1644b9888f0728c3bee577b195',ent=null,i=TABS.findIndex(function(t){return t[0]==='studies'});if(i>-1)ent=TABS[i];var last='',on=false;
 function apply(ok){on=ok;window.__own=ok;if(ok){try{if(localStorage.getItem('hq.beta')!=='0'){localStorage.setItem('hq.beta','1');if(!window.__isBeta)window.__go()}}catch(e){}}var j=TABS.findIndex(function(t){return t[0]==='studies'});if(ok&&j<0&&ent)TABS.push(ent);if(!ok&&j>-1)TABS.splice(j,1);var k=QA_ALL.indexOf('studies');if(!ok&&k>-1)QA_ALL.splice(k,1);if(ok&&k<0)QA_ALL.push('studies');if(!ok&&tab==='studies')tab='today'}
@@ -8652,5 +8658,5 @@ document.addEventListener('touchend',function(){if(!on)return;on=false;var fire=
  if(fire){if(pend||psafe())go();else if(el){el.textContent='Finish what you are typing first'+(window.__psWhy?' ('+window.__psWhy+')':'');setTimeout(function(){el.style.opacity=0},1800)}}},{passive:true});
 })();
 try{var rs=JSON.parse(sessionStorage.getItem('hq.rs')||'null');if(rs){sessionStorage.removeItem('hq.rs');setTimeout(function(){try{(rs.open||[]).forEach(function(k){WOPEN.add(k)});if(rs.tab&&typeof tab!=='undefined')tab=rs.tab;render();window.scrollTo(0,rs.y||0)}catch(e){}},800)}}catch(e){}
-})()</script><div style="position:fixed;top:env(safe-area-inset-top,0);left:50%;transform:translateX(-50%);z-index:99999;background:#b4532a;color:#fff;font:700 9px system-ui;letter-spacing:.08em;padding:1px 8px;border-radius:0 0 8px 8px;pointer-events:none;opacity:.85">BETA 11/22 1:08pm</div></body>
+})()</script><div style="position:fixed;top:env(safe-area-inset-top,0);left:50%;transform:translateX(-50%);z-index:99999;background:#b4532a;color:#fff;font:700 9px system-ui;letter-spacing:.08em;padding:1px 8px;border-radius:0 0 8px 8px;pointer-events:none;opacity:.85">BETA 11/22 1:12pm</div></body>
 </html>
