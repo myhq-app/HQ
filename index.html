@@ -751,7 +751,7 @@ function vMealsPlan(){
  }
  return panel('Recipes & Meals',dl+tog+(msg?'<p class="m">'+msg+'</p>':'')+`<div class="nv"><button class="btn ghost" data-a="mnav" data-n="-1" aria-label="Previous">‹</button><h3>${title}</h3><button class="btn ghost" data-a="mnav" data-n="1" aria-label="Next">›</button></div>`+body);
 }
-const guessMeal=t=>{t=(t||'').toLowerCase();if(/breakfast|pancake|waffle|oatmeal|omelet|omelette|\begg|french toast|muffin|smoothie|bagel|granola|biscuit|brunch/.test(t))return 'Breakfast';if(/cookie|cake|brownie|\bpie\b|dessert|cupcake|\bdip\b|snack|ice cream|fudge|cobbler|pudding|candy|banana bread|zucchini bread|pumpkin bread|donut|doughnut|cinnamon roll/.test(t))return 'Snack or dessert';if(/sandwich|salad|\bwrap\b|\bsub\b|lunch/.test(t))return 'Lunch';return 'Dinner'};
+const guessMeal=t=>{t=(t||'').toLowerCase();if(/breakfast|pancake|waffle|oatmeal|omelet|omelette|\begg|french toast|muffin|smoothie|bagel|granola|biscuit|brunch/.test(t))return 'Breakfast';if(/cookie|cake|brownie|\bpie\b|dessert|cupcake|\bdip\b|snack|ice cream|fudge|cobbler|pudding|candy|banana bread|zucchini bread|pumpkin bread|donut|doughnut|cinnamon roll/.test(t))return 'Snack Or Dessert';if(/sandwich|salad|\bwrap\b|\bsub\b|lunch/.test(t))return 'Lunch';return 'Dinner'};
 const urlTitle=u=>{try{const x=new URL(u),segs=x.pathname.split('/').filter(Boolean).reverse();for(const g0 of segs){let g=decodeURIComponent(g0).replace(/\.[a-z0-9]{2,4}$/i,'').replace(/[-_+]+/g,' ').replace(/\b(recipe|recipes|share|view)\b/ig,' ').replace(/\b[a-f0-9]{8,}\b/ig,' ').replace(/\d{5,}/g,' ').replace(/\s+/g,' ').trim();if(/[a-z]{3,}/i.test(g)&&g.split(' ').some(w=>/[aeiou]/i.test(w)&&w.length>2)&&!/^[A-Za-z0-9]{10,}$/.test(g))return cap(g.toLowerCase())}}catch(e){}return ''};
 const urlsFrom=(plain,list,html)=>{const o=[];(list||'').split(/\r?\n/).forEach(l=>{l=l.trim();if(/^https?:\/\//i.test(l))o.push(l)});(html||'').replace(/href=["']([^"']+)["']/gi,(m,u)=>{if(/^https?:\/\//i.test(u))o.push(u);return m});(plain||'').replace(/https?:\/\/\S+/gi,u=>{o.push(u);return u});return [...new Set(o)]};
 function insertAt(el,t){const a=el.selectionStart??el.value.length,b=el.selectionEnd??a;t=((a>0&&!/\s$/.test(el.value.slice(0,a)))?'\n':'')+t.trim()+'\n';el.value=el.value.slice(0,a)+t+el.value.slice(b);const c=a+t.length;try{el.setSelectionRange(c,c)}catch(_){}}
@@ -7267,6 +7267,11 @@ quickRecipe=function(o){window.__rqWhy='';var txt=(o.links||'').trim();
   var mm=(o.meal&&o.meal!=='Auto')?o.meal:guessMeal(r.title+' '+r.ingredients);S.recipes.push({id:uid(),title:r.title,meal:mm,time:r.time||'',link:'',ingredients:r.ingredients,steps:r.steps,auto:0});return 1}
  var n=_q(o);if(!n){window.__rqWhy=txt&&S.recipes.some(function(x){return x.link&&txt.indexOf(x.link)>=0})?'dup':'empty'}return n};
 })();
+</script>
+<script>
+/* Recipe category spelling repair (Nov 22). The auto-pick saved "Snack or dessert" while the list is
+   "Snack Or Dessert", so those recipes fell out of every group. Fix any case mismatch on open. */
+(function(){try{var M=typeof MT!=='undefined'?MT:[];var fix=function(){var n=0;(S.recipes||[]).forEach(function(r){if(!r||!r.meal)return;var m=M.find(function(x){return x.toLowerCase()===String(r.meal).toLowerCase()});if(m&&m!==r.meal){r.meal=m;n++}});if(n){save();render()}};fix();setTimeout(fix,4000);setTimeout(fix,15000)}catch(_){}})();
 </script>
 <script>/* If the first draw failed because the app opened straight onto a screen whose parts load later, draw again now that everything is loaded. */(function(){window.__booted=1;if(!window.__bootRetry)return;try{render()}catch(e){try{(S.errlog=S.errlog||[]).push({k:'boot2',m:String(e&&e.message||e).slice(0,160),at:new Date().toISOString().slice(0,19),tab:tab});save()}catch(_){}try{tab='today';render()}catch(_){}}})();</script>
 <script>(function(){try{var H='9fd7d2c2499204c2a4998657b236d86c1ab1cc1644b9888f0728c3bee577b195',ent=null,i=TABS.findIndex(function(t){return t[0]==='studies'});if(i>-1)ent=TABS[i];var last='',on=false;
