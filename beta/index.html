@@ -8365,7 +8365,7 @@ function glance(c,rows){var now=Date.now(),open=rows.find(function(r){return r.k
  var L,R,nap='';
  if(!bbOn('sleep'))L='';
  else if(open)L='<div class="b2c"><div class="b2l">'+IC.moon+'Asleep</div><div class="b2v">'+dur(now-new Date(open.at))+'</div><div class="b2sub">'+blSleepName(open)+' since '+blT(open.at)+'</div></div>';
- else if(ls){var nm=blSleepName(ls)==='Nap'?'napped ':'slept ';L='<div class="b2c"><div class="b2l">'+IC.sun+'Woke up</div><div class="b2v">'+ago(now-new Date(ls.end))+'</div><div class="b2sub">'+blT(ls.end)+' · '+nm+dur(new Date(ls.end)-new Date(ls.at))+'</div></div>';nap=napTxt(c,ls)}
+ else if(ls){var nm=blSleepName(ls)==='Nap'?' nap':' sleep';L='<div class="b2c"><div class="b2l">'+IC.sun+'Woke up</div><div class="b2v">'+ago(now-new Date(ls.end))+'</div><div class="b2sub">'+blT(ls.end)+' · '+dur(new Date(ls.end)-new Date(ls.at))+nm+'</div></div>';nap=napTxt(c,ls)}
  else L='<div class="b2c"><div class="b2l">'+IC.sun+'Woke up</div><div class="b2v">—</div><div class="b2sub">Tap Fell Asleep when she goes down</div></div>';
  if(lf){var u=lf.kind==='bottle'?(lf.amt?lf.amt+' oz':'Bottle'):lf.kind==='nurse'?('Nursing'+(lf.amt?' '+lf.amt+' min':'')):'Solids';R='<div class="b2c"><div class="b2l">'+IC.bot+'Last fed</div><div class="b2v">'+ago(now-new Date(lf.at))+'</div><div class="b2sub">'+blT(lf.at)+' · '+esc(u)+'</div></div>'}
  else R=bbOn('feed')?'<div class="b2c"><div class="b2l">'+IC.bot+'Last fed</div><div class="b2v">—</div><div class="b2sub">Nothing logged yet</div></div>':'';
@@ -8459,7 +8459,7 @@ babyBox=function(){var c;try{if(blOn()&&!BL.loaded)blLoad();c=blChild()}catch(e)
  var age=c.dob?blAgeTxt(c.dob).replace(/ Months?$/i,' mo').replace(/ Years?$/i,' yr'):'';
  var T=[],nap='';
  if(bbOn('sleep')){if(open)T.push('<div class="b2t s"><small>Asleep</small><b>'+H.dur(now-new Date(open.at))+'</b><span>since '+blT(open.at)+'</span></div>');
-  else if(ls){T.push('<div class="b2t s"><small>Woke up</small><b>'+H.ago(now-new Date(ls.end))+'</b><span>'+blT(ls.end)+' · '+(blSleepName(ls)==='Nap'?'napped ':'slept ')+H.dur(new Date(ls.end)-new Date(ls.at))+'</span></div>');nap=H.napTxt(c,ls)}
+  else if(ls){T.push('<div class="b2t s"><small>Woke up</small><b>'+H.ago(now-new Date(ls.end))+'</b><span>'+blT(ls.end)+' · '+H.dur(new Date(ls.end)-new Date(ls.at))+(blSleepName(ls)==='Nap'?' nap':' sleep')+'</span></div>');nap=H.napTxt(c,ls)}
   else T.push('<div class="b2t s"><small>Woke up</small><b>—</b><span>No sleep logged yet</span></div>')}
  if(bbOn('feed')){if(lf){var u=lf.kind==='bottle'?(lf.amt?lf.amt+' oz':'Bottle'):lf.kind==='nurse'?'Nursing'+(lf.amt?' '+lf.amt+' min':''):'Solids';T.push('<div class="b2t f"><small>Last fed</small><b>'+H.ago(now-new Date(lf.at))+'</b><span>'+blT(lf.at)+' · '+esc(u)+'</span></div>')}
   else T.push('<div class="b2t f"><small>Last fed</small><b>—</b><span>Nothing logged yet</span></div>')}
@@ -8505,6 +8505,18 @@ html body.look-bp #view.tdv2 .tr-todo .tevk,html body.look-bp #view .tr-todo inp
  var _r=render;render=function(){var x=_r.apply(this,arguments);try{if(S.look&&S.look.bp){document.querySelectorAll('#view [data-a="lkset"]').forEach(function(b){b.classList.toggle('on',b.dataset.v==='blushperi')});var sm=document.querySelector('#view details.czsec[data-od="cz:looks"] summary');if(sm&&/Custom/.test(sm.innerHTML))sm.innerHTML=sm.innerHTML.replace('Custom','Blush &amp; Periwinkle')}}catch(_){}return x};
 }catch(_){}})();
 </script>
+<script>
+/* Keep the Today baby card current (Nov 21). The Baby Log page refreshed itself every 30s, but the
+   Today card only changed when something else redrew the page, so "20m ago" could sit frozen for hours.
+   Only the card is swapped, so the rest of Today doesn't move and typing isn't interrupted. */
+(function(){function busy(){var a=document.activeElement;return !!a&&(a.tagName==='INPUT'||a.tagName==='TEXTAREA'||a.tagName==='SELECT'||a.isContentEditable)&&!!(a.closest&&a.closest('.b2box'))}
+function swap(){try{var el=document.querySelector('#view .b2box');if(!el||BL.sheet||busy()||typeof babyBox!=='function')return;var h=babyBox();if(!h)return;var t=document.createElement('div');t.innerHTML=h;var n=t.firstElementChild;if(n&&n.outerHTML!==el.outerHTML)el.replaceWith(n)}catch(_){}}
+function tick(){try{if(document.hidden||!document.querySelector('#view .b2box'))return;var p=(typeof blOn==='function'&&blOn())?blLoad():null;if(p&&p.then)p.then(swap,swap);else swap()}catch(_){}}
+setInterval(tick,30000);
+document.addEventListener('visibilitychange',function(){if(document.visibilityState==='visible')setTimeout(tick,500)});
+window.addEventListener('pageshow',function(){setTimeout(tick,500)});
+})();
+</script>
 <script>/* If the first draw failed because the app opened straight onto a screen whose parts load later, draw again now that everything is loaded. */(function(){window.__booted=1;if(!window.__bootRetry)return;try{render()}catch(e){try{(S.errlog=S.errlog||[]).push({k:'boot2',m:String(e&&e.message||e).slice(0,160),at:new Date().toISOString().slice(0,19),tab:tab});save()}catch(_){}try{tab='today';render()}catch(_){}}})();</script>
 <script>(function(){try{var H='9fd7d2c2499204c2a4998657b236d86c1ab1cc1644b9888f0728c3bee577b195',ent=null,i=TABS.findIndex(function(t){return t[0]==='studies'});if(i>-1)ent=TABS[i];var last='',on=false;
 function apply(ok){on=ok;window.__own=ok;if(ok){try{if(localStorage.getItem('hq.beta')!=='0'){localStorage.setItem('hq.beta','1');if(!window.__isBeta)window.__go()}}catch(e){}}var j=TABS.findIndex(function(t){return t[0]==='studies'});if(ok&&j<0&&ent)TABS.push(ent);if(!ok&&j>-1)TABS.splice(j,1);var k=QA_ALL.indexOf('studies');if(!ok&&k>-1)QA_ALL.splice(k,1);if(ok&&k<0)QA_ALL.push('studies');if(!ok&&tab==='studies')tab='today'}
@@ -8529,5 +8541,5 @@ document.addEventListener('touchend',function(){if(!on)return;on=false;var fire=
  if(fire){if(pend||psafe())go();else if(el){el.textContent='Finish what you are typing first'+(window.__psWhy?' ('+window.__psWhy+')':'');setTimeout(function(){el.style.opacity=0},1800)}}},{passive:true});
 })();
 try{var rs=JSON.parse(sessionStorage.getItem('hq.rs')||'null');if(rs){sessionStorage.removeItem('hq.rs');setTimeout(function(){try{(rs.open||[]).forEach(function(k){WOPEN.add(k)});if(rs.tab&&typeof tab!=='undefined')tab=rs.tab;render();window.scrollTo(0,rs.y||0)}catch(e){}},800)}}catch(e){}
-})()</script><div style="position:fixed;top:env(safe-area-inset-top,0);left:50%;transform:translateX(-50%);z-index:99999;background:#b4532a;color:#fff;font:700 9px system-ui;letter-spacing:.08em;padding:1px 8px;border-radius:0 0 8px 8px;pointer-events:none;opacity:.85">BETA 11/21 4:34pm</div></body>
+})()</script><div style="position:fixed;top:env(safe-area-inset-top,0);left:50%;transform:translateX(-50%);z-index:99999;background:#b4532a;color:#fff;font:700 9px system-ui;letter-spacing:.08em;padding:1px 8px;border-radius:0 0 8px 8px;pointer-events:none;opacity:.85">BETA 11/21 10:31pm</div></body>
 </html>
