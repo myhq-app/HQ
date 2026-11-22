@@ -8546,6 +8546,87 @@ quickRecipe=function(o){window.__rqWhy='';var txt=(o.links||'').trim();
    "Snack Or Dessert", so those recipes fell out of every group. Fix any case mismatch on open. */
 (function(){try{var M=typeof MT!=='undefined'?MT:[];var fix=function(){var n=0;(S.recipes||[]).forEach(function(r){if(!r||!r.meal)return;var m=M.find(function(x){return x.toLowerCase()===String(r.meal).toLowerCase()});if(m&&m!==r.meal){r.meal=m;n++}});if(n){save();render()}};fix();setTimeout(fix,4000);setTimeout(fix,15000)}catch(_){}})();
 </script>
+<style id="buyamt">
+.gsrc2{margin-top:3px;display:flex;flex-wrap:wrap;align-items:center;gap:5px 8px;font-size:12.5px;color:var(--mut)}
+.gbuy{display:inline-flex;align-items:center;font:600 12.5px var(--bf,system-ui),system-ui,sans-serif;color:#5b4c86;background:color-mix(in srgb,#8d9bcf 17%,var(--card,#fff));border-radius:999px;padding:3px 9px;line-height:1.3}
+.gneed{font-size:12px;color:var(--mut);flex-basis:100%}
+html body .gsrc2 .grp{display:inline-flex;align-items:center;gap:4px;border:1px solid var(--line)!important;background:var(--card)!important;border-radius:999px!important;padding:2px 9px 2px 7px!important;font:500 12px var(--bf,system-ui),system-ui,sans-serif!important;color:var(--ink)!important;margin:0!important;box-shadow:none!important;text-decoration:none!important;max-width:100%;min-width:0;flex:0 1 auto;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.gsrc2 .grp svg{width:12px;height:12px;flex:none;opacity:.7}
+.gsrc2 .grp em{font-style:normal;color:var(--mut);margin-left:2px;flex:none}
+.gsrc2 .grp .grn{min-width:0;overflow:hidden;text-overflow:ellipsis}
+.ringl li .ozh,#grs li .ozh{font:500 12px var(--bf,system-ui),system-ui,sans-serif;color:#5b4c86;margin-left:6px;white-space:nowrap}
+</style>
+<script>
+/* Store amounts (Nov 22). Recipes say cups; stores sell ounces, pounds, boxes and bags. Each grocery item
+   that came from a recipe shows what to buy in store sizes (added up across dinners, rounded up), what the
+   recipe needs, and a clear button that opens the recipe right over the list. Recipe lists show ≈ oz. */
+(function(){if(typeof gSrc!=='function')return;
+var FR={'½':.5,'¼':.25,'¾':.75,'⅓':1/3,'⅔':2/3,'⅛':.125,'⅜':.375,'⅝':.625,'⅞':.875};
+function n1(t){t=t.trim();var m;if((m=t.match(/^(\d+)\s+(\d+)\/(\d+)$/)))return +m[1]+m[2]/m[3];if((m=t.match(/^(\d+)\/(\d+)$/)))return m[1]/m[2];if(/^\d*\.?\d+$/.test(t))return +t;return NaN}
+/* "3 1/2 cups" -> {n:3.5,u:'cup'}; ranges use the larger number */
+function amt(s){s=String(s||'').replace(/[½¼¾⅓⅔⅛⅜⅝⅞]/g,function(c){return ' '+FR[c]+' '}).replace(/(\d)\s+(0?\.\d+)/g,function(_,a,b){return String(+a+ +b)}).replace(/\s+/g,' ').trim().toLowerCase();
+ var m=s.match(/^((?:\d+\s+)?\d+\/\d+|\d*\.?\d+)(?:\s*(?:-|–|to)\s*((?:\d+\s+)?\d+\/\d+|\d*\.?\d+))?\s*(.*)$/);if(!m)return null;var n=n1(m[2]||m[1]);if(!(n>0))return null;
+ var u=(m[3]||'').replace(/^of\s+/,''),U='';
+ if(/^(c|cups?)\b/.test(u))U='cup';else if(/^(tbsps?|tablespoons?|tbs|tbl)\b/.test(u))U='tbsp';else if(/^(tsps?|teaspoons?)\b/.test(u))U='tsp';else if(/^(fl\.? ?oz|fluid ounces?)\b/.test(u))U='floz';else if(/^(oz|ounces?)\b/.test(u))U='oz';else if(/^(lbs?|pounds?)\b/.test(u))U='lb';else if(/^sticks?\b/.test(u))U='stick';else if(/^(pints?)\b/.test(u))U='pint';else if(/^(quarts?|qts?)\b/.test(u))U='quart';else if(/^(cans?)\b/.test(u))U='can';else if(/^(dozen)\b/.test(u))U='dozen';
+ return {n:n,u:U,rest:u}}
+/* what a cup weighs (oz) or holds (fl oz), and how the store sells it */
+var P=[
+ [/\bbutter\b/,{k:'butter'}],
+ [/\beggs?\b/,{k:'egg'}],
+ [/cream cheese/,{c:8,pk:[[8,'block','8 oz']]}],
+ [/sour cream/,{c:8,pk:[[8,'tub','8 oz'],[16,'tub','16 oz'],[24,'tub','24 oz']]}],
+ [/heavy (whipping )?cream|whipping cream|half[ -]and[ -]half/,{c:8,fl:1,pk:[[16,'pint','16 oz'],[32,'quart','32 oz']]}],
+ [/^(?!.*(condensed|evaporated|coconut)).*\bmilk\b/,{c:8,fl:1,pk:[[32,'quart','32 oz'],[64,'half gallon','64 oz'],[128,'gallon','128 oz']]}],
+ [/parmesan/,{c:3,pk:[[8,'container','8 oz']]}],
+ [/(?!.*cream cheese)(cheese|cheddar|mozzarella|colby|monterey|pepper jack|gouda|gruyere|velveeta)/,{c:4,pk:[[8,'bag','8 oz']],bag:1}],
+ [/macaroni|elbow|penne|rotini|ziti|shells|farfalle|bow ?tie|rigatoni|fusilli|pasta|spaghetti|linguine|fettuccine/,{c:4,pk:[[16,'box','16 oz']]}],
+ [/egg noodles?|noodles/,{c:2.7,pk:[[12,'bag','12 oz']]}],
+ [/broth|stock/,{c:8,fl:1,pk:[[14.5,'can','14.5 oz'],[32,'carton','32 oz']]}],
+ [/\brice\b/,{c:6.5,pk:[[32,'bag','2 lb']]}],
+ [/brown sugar/,{c:7.5,pk:[[32,'bag','2 lb']]}],
+ [/powdered sugar|confectioners/,{c:4.25,pk:[[32,'bag','2 lb']]}],
+ [/\bsugar\b/,{c:7,pk:[[64,'bag','4 lb']]}],
+ [/\bflour\b/,{c:4.25,pk:[[80,'bag','5 lb']]}],
+ [/marshmallows?/,{c:1.75,pk:[[10,'bag','10 oz']]}],
+ [/tomato sauce/,{c:8,pk:[[8,'can','8 oz'],[15,'can','15 oz']]}],
+ [/marinara|pasta sauce|spaghetti sauce/,{c:8,pk:[[24,'jar','24 oz']]}],
+ [/ground (beef|turkey|chicken|pork)|\bsausage\b/,{c:8,pk:[[16,'pack','1 lb']]}],
+ [/chocolate chips?/,{c:6,pk:[[12,'bag','12 oz']]}],
+ [/bread ?crumbs|panko/,{c:4,pk:[[8,'canister','8 oz']]}]];
+function prof(name){var l=String(name||'').toLowerCase();for(var i=0;i<P.length;i++)if(P[i][0].test(l))return P[i][1];return null}
+/* convert one amount to ounces for a profile; null when it can't be done */
+function oz(a,p){if(!a||!p||p.k)return null;var n=a.n;switch(a.u){case 'cup':return n*p.c;case 'tbsp':return n*p.c/16;case 'tsp':return n*p.c/48;case 'oz':case 'floz':return n;case 'lb':return n*16;case 'pint':return n*16;case 'quart':return n*32;case 'can':return p.pk&&p.pk[0]?n*p.pk[0][0]:null}return null}
+var W=['zero','one','two','three','four','five','six','seven','eight','nine','ten'];
+function pl(w,n){return n===1?w:(/(box)$/.test(w)?w+'es':w+'s')}
+function nice(v){var r=Math.round(v*4)/4,i=Math.floor(r),f=r-i,fs=f===.25?'¼':f===.5?'½':f===.75?'¾':'';return (i?String(i):'')+(fs||(!i?'0':''))}
+function ozTxt(v,fl){if(v>=24&&!fl){var lb=v/16;return Math.abs(lb-Math.round(lb))<.08?Math.round(lb)+' lb':nice(lb)+' lb'}return (v<10?nice(v):Math.round(v))+' oz'}
+function buy(total,p){if(!(total>0))return '';var pk=p.pk,T=total*0.97;var one=pk.find(function(x){return x[0]>=T});
+ if(one)return '1 '+one[1]+' ('+one[2]+')';var L=pk[pk.length-1],c=Math.ceil(T/L[0]);
+ if(p.bag)return ozTxt(c*L[0])+' · '+(W[c]||c)+' '+L[2]+' '+pl(L[1],c);
+ return c+' '+pl(L[1],c)+' ('+L[2]+' each)'}
+/* the recipe line for this grocery item, to recover a unit the list lost ("4" -> "4 cups") */
+function recLine(rname,item){try{var r=(S.recipes||[]).find(function(x){return String(x.title).toLowerCase()===String(rname).toLowerCase()});if(!r)return null;var k=gNorm(item).key;var L=(r.ingredients||'').split('\n');for(var i=0;i<L.length;i++){var sp=ingSplit(L[i].trim());if(sp&&sp.name&&gNorm(sp.name).key===k)return {line:L[i].trim(),sp:sp}}}catch(_){}return null}
+function srcAmt(z,item){var a=amt(z.a);if(a&&!a.u){var rl=recLine(z.r,item);if(rl){var b=amt(rl.sp.amt);if(b&&b.u)a.u=b.u;else if(b&&!b.u&&/stick/i.test(rl.line))a.u='stick'}}return a}
+function fmtA(a,raw){if(!a)return raw||'';var u={cup:a.n>1?'cups':'cup',tbsp:'tbsp',tsp:'tsp',oz:'oz',floz:'fl oz',lb:'lb',stick:a.n>1?'sticks':'stick',pint:a.n>1?'pints':'pint',quart:a.n>1?'quarts':'quart',can:a.n>1?'cans':'can',dozen:'dozen'}[a.u]||'';return nice(a.n).replace(/^0(?=[¼½¾])/,'')+(u?' '+u:'')}
+window.hqBuy=function(x){var p=prof(x.title),src=x.src||[],need=[],tot=0,ok=!!p;
+ src.forEach(function(z){var a=srcAmt(z,x.title);need.push({r:z.r,a:a,raw:z.a});if(!p)return;
+  if(p.k==='butter'){var s=a?(a.u==='stick'||!a.u?a.n:a.u==='cup'?a.n*2:a.u==='tbsp'?a.n/8:a.u==='oz'?a.n/4:a.u==='lb'?a.n*4:NaN):NaN;if(s>0)tot+=s;else ok=false}
+  else if(p.k==='egg'){if(a&&!a.u)tot+=a.n;else if(a&&a.u==='dozen')tot+=a.n*12;else ok=false}
+  else{var v=oz(a,p);if(v>0)tot+=v;else ok=false}});
+ var b='';if(ok&&tot>0){if(p.k==='butter')b=tot<=4.05?'1 box (4 sticks)':Math.ceil(tot/4-0.01)+' boxes (4 sticks each)';else if(p.k==='egg')b=tot<=12?'1 dozen':Math.ceil(tot/12)+' dozen';else b=buy(tot,p)}
+ return {buy:b,need:need,tot:tot,p:p,ok:ok}};
+var BK='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2z"/><path d="M4 19V5M8 7h7"/></svg>';
+var _g=gSrc;gSrc=function(x){try{if(!x||!x.src||!x.src.length)return _g(x);var B=hqBuy(x),one=B.need.length===1;
+ var conv=function(n){if(!B.p||!n.a||B.p.k)return '';var v=oz(n.a,B.p);return v&&n.a.u!=='oz'&&n.a.u!=='lb'?' (about '+ozTxt(v,B.p.fl)+')':''};
+ var needTxt=one?'Needs '+fmtA(B.need[0].a,B.need[0].raw)+conv(B.need[0]):'Needs '+B.need.map(function(n){return fmtA(n.a,n.raw)}).filter(Boolean).join(' + ');
+ return '<div class="gsrc gsrc2">'+(B.buy?'<span class="gbuy">Buy '+esc(B.buy)+'</span>':'')+B.need.map(function(n){return '<button type="button" class="grp gsl" data-rec="'+esc(n.r)+'" aria-label="See the '+esc(n.r)+' recipe">'+BK+'<span class="grn">'+esc(n.r)+'</span>'+(!one&&n.raw?'<em>'+esc(fmtA(n.a,n.raw))+'</em>':'')+'</button>'}).join('')+(B.need.some(function(n){return n.raw})?'<span class="gneed">'+esc(needTxt)+'</span>':'')+'</div>'}catch(e){return _g(x)}};
+/* ≈ ounces next to recipe lines (recipe page and the popup on the grocery list) */
+function hint(li){if(!li||li.querySelector('.ozh'))return;var t=li.textContent.trim(),sp;try{sp=ingSplit(t)}catch(_){return}if(!sp||!sp.amt)return;var p=prof(sp.name),a=amt(sp.amt);if(!p||!a||p.k||a.u==='oz'||a.u==='lb'||!a.u)return;var v=oz(a,p);if(!(v>0))return;var s=document.createElement('span');s.className='ozh';s.textContent=(p.fl?'':'≈ ')+ozTxt(v,p.fl);li.appendChild(s)}
+function sweep(){try{document.querySelectorAll('.ringl li, #grs li').forEach(hint)}catch(_){}}
+var _r=render;render=function(){var x=_r.apply(this,arguments);sweep();return x};
+try{new MutationObserver(function(ms){for(var i=0;i<ms.length;i++)for(var j=0;j<ms[i].addedNodes.length;j++){var n=ms[i].addedNodes[j];if(n.id==='grs'){setTimeout(sweep,0);return}}}).observe(document.body,{childList:true})}catch(_){}
+})();
+</script>
 <script>/* If the first draw failed because the app opened straight onto a screen whose parts load later, draw again now that everything is loaded. */(function(){window.__booted=1;if(!window.__bootRetry)return;try{render()}catch(e){try{(S.errlog=S.errlog||[]).push({k:'boot2',m:String(e&&e.message||e).slice(0,160),at:new Date().toISOString().slice(0,19),tab:tab});save()}catch(_){}try{tab='today';render()}catch(_){}}})();</script>
 <script>(function(){try{var H='9fd7d2c2499204c2a4998657b236d86c1ab1cc1644b9888f0728c3bee577b195',ent=null,i=TABS.findIndex(function(t){return t[0]==='studies'});if(i>-1)ent=TABS[i];var last='',on=false;
 function apply(ok){on=ok;window.__own=ok;if(ok){try{if(localStorage.getItem('hq.beta')!=='0'){localStorage.setItem('hq.beta','1');if(!window.__isBeta)window.__go()}}catch(e){}}var j=TABS.findIndex(function(t){return t[0]==='studies'});if(ok&&j<0&&ent)TABS.push(ent);if(!ok&&j>-1)TABS.splice(j,1);var k=QA_ALL.indexOf('studies');if(!ok&&k>-1)QA_ALL.splice(k,1);if(ok&&k<0)QA_ALL.push('studies');if(!ok&&tab==='studies')tab='today'}
@@ -8570,5 +8651,5 @@ document.addEventListener('touchend',function(){if(!on)return;on=false;var fire=
  if(fire){if(pend||psafe())go();else if(el){el.textContent='Finish what you are typing first'+(window.__psWhy?' ('+window.__psWhy+')':'');setTimeout(function(){el.style.opacity=0},1800)}}},{passive:true});
 })();
 try{var rs=JSON.parse(sessionStorage.getItem('hq.rs')||'null');if(rs){sessionStorage.removeItem('hq.rs');setTimeout(function(){try{(rs.open||[]).forEach(function(k){WOPEN.add(k)});if(rs.tab&&typeof tab!=='undefined')tab=rs.tab;render();window.scrollTo(0,rs.y||0)}catch(e){}},800)}}catch(e){}
-})()</script><div style="position:fixed;top:env(safe-area-inset-top,0);left:50%;transform:translateX(-50%);z-index:99999;background:#b4532a;color:#fff;font:700 9px system-ui;letter-spacing:.08em;padding:1px 8px;border-radius:0 0 8px 8px;pointer-events:none;opacity:.85">BETA 11/22 12:47pm</div></body>
+})()</script><div style="position:fixed;top:env(safe-area-inset-top,0);left:50%;transform:translateX(-50%);z-index:99999;background:#b4532a;color:#fff;font:700 9px system-ui;letter-spacing:.08em;padding:1px 8px;border-radius:0 0 8px 8px;pointer-events:none;opacity:.85">BETA 11/22 1:20pm</div></body>
 </html>
