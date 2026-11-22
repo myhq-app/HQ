@@ -8577,22 +8577,22 @@ var P=[
  [/sour cream/,{c:8,pk:[[8,'tub','8 oz'],[16,'tub','16 oz'],[24,'tub','24 oz']]}],
  [/heavy (whipping )?cream|whipping cream|half[ -]and[ -]half/,{c:8,fl:1,pk:[[16,'pint','16 oz'],[32,'quart','32 oz']]}],
  [/^(?!.*(condensed|evaporated|coconut)).*\bmilk\b/,{c:8,fl:1,pk:[[32,'quart','32 oz'],[64,'half gallon','64 oz'],[128,'gallon','128 oz']]}],
- [/parmesan/,{c:3,pk:[[8,'container','8 oz']]}],
- [/(?!.*cream cheese)(cheese|cheddar|mozzarella|colby|monterey|pepper jack|gouda|gruyere|velveeta)/,{c:4,pk:[[8,'bag','8 oz']],bag:1}],
- [/macaroni|elbow|penne|rotini|ziti|shells|farfalle|bow ?tie|rigatoni|fusilli|pasta|spaghetti|linguine|fettuccine/,{c:4,pk:[[16,'box','16 oz']]}],
- [/egg noodles?|noodles/,{c:2.7,pk:[[12,'bag','12 oz']]}],
+ [/parmesan/,{c:3,pk:[[8,'container','8 oz']],lo:1}],
+ [/(?!.*cream cheese)(cheese|cheddar|mozzarella|colby|monterey|pepper jack|gouda|gruyere|velveeta)/,{c:4,pk:[[8,'bag','8 oz']],bag:1,lo:1}],
+ [/macaroni|elbow|penne|rotini|ziti|shells|farfalle|bow ?tie|rigatoni|fusilli|pasta|spaghetti|linguine|fettuccine/,{c:4,pk:[[16,'box','16 oz']],lo:1}],
+ [/egg noodles?|noodles/,{c:2.7,pk:[[12,'bag','12 oz']],lo:1}],
  [/broth|stock/,{c:8,fl:1,pk:[[14.5,'can','14.5 oz'],[32,'carton','32 oz']]}],
- [/\brice\b/,{c:6.5,pk:[[32,'bag','2 lb']]}],
- [/brown sugar/,{c:7.5,pk:[[32,'bag','2 lb']]}],
- [/powdered sugar|confectioners/,{c:4.25,pk:[[32,'bag','2 lb']]}],
- [/\bsugar\b/,{c:7,pk:[[64,'bag','4 lb']]}],
- [/\bflour\b/,{c:4.25,pk:[[80,'bag','5 lb']]}],
- [/marshmallows?/,{c:1.75,pk:[[10,'bag','10 oz']]}],
+ [/\brice\b/,{c:6.5,pk:[[32,'bag','2 lb']],lo:1}],
+ [/brown sugar/,{c:7.5,pk:[[32,'bag','2 lb']],lo:1}],
+ [/powdered sugar|confectioners/,{c:4.25,pk:[[32,'bag','2 lb']],lo:1}],
+ [/\bsugar\b/,{c:7,pk:[[64,'bag','4 lb']],lo:1}],
+ [/\bflour\b/,{c:4.25,pk:[[80,'bag','5 lb']],lo:1}],
+ [/marshmallows?/,{c:1.75,pk:[[10,'bag','10 oz']],lo:1}],
  [/tomato sauce/,{c:8,pk:[[8,'can','8 oz'],[15,'can','15 oz']]}],
  [/marinara|pasta sauce|spaghetti sauce/,{c:8,pk:[[24,'jar','24 oz']]}],
  [/ground (beef|turkey|chicken|pork)|\bsausage\b/,{c:8,pk:[[16,'pack','1 lb']]}],
- [/chocolate chips?/,{c:6,pk:[[12,'bag','12 oz']]}],
- [/bread ?crumbs|panko/,{c:4,pk:[[8,'canister','8 oz']]}]];
+ [/chocolate chips?/,{c:6,pk:[[12,'bag','12 oz']],lo:1}],
+ [/bread ?crumbs|panko/,{c:4,pk:[[8,'canister','8 oz']],lo:1}]];
 function prof(name){var l=String(name||'').toLowerCase();for(var i=0;i<P.length;i++)if(P[i][0].test(l))return P[i][1];return null}
 /* convert one amount to ounces for a profile; null when it can't be done */
 function oz(a,p){if(!a||!p||p.k)return null;var n=a.n;switch(a.u){case 'cup':return n*p.c;case 'tbsp':return n*p.c/16;case 'tsp':return n*p.c/48;case 'oz':case 'floz':return n;case 'lb':return n*16;case 'pint':return n*16;case 'quart':return n*32;case 'can':return p.pk&&p.pk[0]?n*p.pk[0][0]:null}return null}
@@ -8600,7 +8600,8 @@ var W=['zero','one','two','three','four','five','six','seven','eight','nine','te
 function pl(w,n){return n===1?w:(/(box)$/.test(w)?w+'es':w+'s')}
 function nice(v){var r=Math.round(v*4)/4,i=Math.floor(r),f=r-i,fs=f===.25?'¼':f===.5?'½':f===.75?'¾':'';return (i?String(i):'')+(fs||(!i?'0':''))}
 function ozTxt(v,fl){if(v>=24&&!fl){var lb=v/16;return Math.abs(lb-Math.round(lb))<.08?Math.round(lb)+' lb':nice(lb)+' lb'}return (v<10?nice(v):Math.round(v))+' oz'}
-function buy(total,p){if(!(total>0))return '';var pk=p.pk,T=total*0.97;var one=pk.find(function(x){return x[0]>=T});
+function buy(total,p){if(!(total>0))return '';/* loosely measured things (pasta, shredded cheese, rice...) get a 10% cushion so you're never short */
+ var pk=p.pk,T=p.lo?total*1.1:total*0.99;var one=pk.find(function(x){return x[0]>=T});
  if(one)return '1 '+one[1]+' ('+one[2]+')';var L=pk[pk.length-1],c=Math.ceil(T/L[0]);
  if(p.bag)return ozTxt(c*L[0])+' · '+(W[c]||c)+' '+L[2]+' '+pl(L[1],c);
  return c+' '+pl(L[1],c)+' ('+L[2]+' each)'}
@@ -8651,5 +8652,5 @@ document.addEventListener('touchend',function(){if(!on)return;on=false;var fire=
  if(fire){if(pend||psafe())go();else if(el){el.textContent='Finish what you are typing first'+(window.__psWhy?' ('+window.__psWhy+')':'');setTimeout(function(){el.style.opacity=0},1800)}}},{passive:true});
 })();
 try{var rs=JSON.parse(sessionStorage.getItem('hq.rs')||'null');if(rs){sessionStorage.removeItem('hq.rs');setTimeout(function(){try{(rs.open||[]).forEach(function(k){WOPEN.add(k)});if(rs.tab&&typeof tab!=='undefined')tab=rs.tab;render();window.scrollTo(0,rs.y||0)}catch(e){}},800)}}catch(e){}
-})()</script><div style="position:fixed;top:env(safe-area-inset-top,0);left:50%;transform:translateX(-50%);z-index:99999;background:#b4532a;color:#fff;font:700 9px system-ui;letter-spacing:.08em;padding:1px 8px;border-radius:0 0 8px 8px;pointer-events:none;opacity:.85">BETA 11/22 1:20pm</div></body>
+})()</script><div style="position:fixed;top:env(safe-area-inset-top,0);left:50%;transform:translateX(-50%);z-index:99999;background:#b4532a;color:#fff;font:700 9px system-ui;letter-spacing:.08em;padding:1px 8px;border-radius:0 0 8px 8px;pointer-events:none;opacity:.85">BETA 11/22 1:08pm</div></body>
 </html>
