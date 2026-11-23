@@ -691,7 +691,7 @@ function vGroc2(){
  const laterH=later.length?`<h3>Buy Closer To The Day</h3>`+later.sort((p,q2)=>p.buy.localeCompare(q2.buy)).map(x=>`<div class="row"><div class="t">${esc(cap(x.title))}<div class="m">Buy ${esc(fmt(x.buy))}${x.qty?' · '+esc(x.qty):''}</div>${gSrc(x)}</div><button class="btn ghost" data-a="gnow" data-i="${x.id}">Buy Now</button>${del('groceries',x.id)}</div>`).join(''):'';
  const gRow=x=>`<div class="row ${x.done?'done':''}"><input type="checkbox" ${x.done?'checked':''} data-a="gt" data-i="${x.id}" aria-label="${x.done?'Put back on list':'Got it'}"><div class="t gname" data-ge="${x.id}">${esc(cap(x.title))}${x.qty?`<span class="m"> · ${esc(x.qty)}</span>`:''}${gSrc(x)}</div>${del('groceries',x.id)}</div>`;
  const rows=AISLES.filter(a=>by[a]).map(a=>`<h3>${a}</h3>`+by[a].map(gRow).join('')).join(''),gdn=S.groceries.filter(x=>x.done),gdH=gdn.length?`<details class="addf q gshd" data-od="gshopped"${WOPEN.has('gshopped')?' open':''}><summary>Already Shopped (${gdn.length})</summary>${gdn.map(gRow).join('')}<div class="bar"><button class="btn ghost" data-a="clearg">Clear Checked</button></div></details>`:'';
- const has=S.groceries.some(x=>!x.done),pst=gtools==='menu'?`<div class="gtools"><div class="bar" style="margin:0"><button class="btn" data-say="pack:groceries">Pick From Lists</button>${S.groceries.some(x=>x.src&&x.src.length)||(S.pchk||[]).length?`<button class="btn ghost" data-wm="meals">Remove By Meal</button><button class="btn ghost" data-grm="1">Remove All Dinner Ingredients (${S.groceries.filter(x=>x.src&&x.src.length).length+(S.pchk||[]).length})</button>`:''}<button class="btn" data-a="gpick" data-v="paste">Paste A List</button><button class="btn ghost" data-a="gt2" data-v="wish">Wish List${(S.wishes||[]).length?' ('+S.wishes.length+')':''}</button>${has?'<button class="btn" data-a="gcopy">Copy List</button>':''}</div></div>`:gtools==='paste'?`<div class="gtools"><b>Paste A List</b><p class="m" style="margin:2px 0 8px">Paste your whole Alexa list. Each line becomes an item and sorts itself into the right section.</p><textarea name="gpaste" rows="5" placeholder="Paste List" aria-label="Paste list"></textarea><div class="bar" style="margin:8px 0 0"><button class="btn" data-a="gpaste">Add All</button><button class="btn ghost" data-a="gpick" data-v="menu">Back</button></div></div>`:gtools==='copy'?`<div class="gtools"><b>Your List</b><textarea rows="8" readonly aria-label="Your list" onfocus="this.select()" style="margin-top:6px">${esc(gshow)}</textarea><p class="m">Tap the box, then Copy.</p><div class="bar" style="margin:0"><button class="btn ghost" data-a="gpick" data-v="menu">Back</button></div></div>`:'',cp='';
+ const has=S.groceries.some(x=>!x.done),pst=gtools==='menu'?`<div class="gtools gmenu2"><button type="button" class="gmi" data-a="gpick" data-v="paste"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="8" y="3" width="8" height="4" rx="1"/><path d="M8 5H6a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/></svg>Paste a list</button>${has?'<button type="button" class="gmi" data-a="gcopy"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v1"/></svg>Copy list</button>':''}${S.groceries.some(x=>x.src&&x.src.length)||(S.pchk||[]).length?`<button type="button" class="gmi dg" data-grm="1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14M10 11v6M14 11v6"/></svg>Remove all dinners<em>${S.groceries.filter(x=>x.src&&x.src.length).length+(S.pchk||[]).length}</em></button>`:''}</div>`:gtools==='paste'?`<div class="gtools"><b>Paste A List</b><p class="m" style="margin:2px 0 8px">Paste your whole Alexa list. Each line becomes an item and sorts itself into the right section.</p><textarea name="gpaste" rows="5" placeholder="Paste List" aria-label="Paste list"></textarea><div class="bar" style="margin:8px 0 0"><button class="btn" data-a="gpaste">Add All</button><button class="btn ghost" data-a="gpick" data-v="menu">Back</button></div></div>`:gtools==='copy'?`<div class="gtools"><b>Your List</b><textarea rows="8" readonly aria-label="Your list" onfocus="this.select()" style="margin-top:6px">${esc(gshow)}</textarea><p class="m">Tap the box, then Copy.</p><div class="bar" style="margin:0"><button class="btn ghost" data-a="gpick" data-v="menu">Back</button></div></div>`:'',cp='';
  const pc=S.pchk||[],pcH=pc.length?`<div class="pchk"><b>Check Your Pantry</b><p class="m">Your dinners this week use these. Tell me what you already have.</p>${pc.map(x=>`<div class="row"><div class="t">${esc(x.title)}${(window.__wkItem&&window.__wkItem(x.key))?`<button type="button" class="lnk palw" data-a="palw" data-i="${x.id}">Asks again next week · always have it?</button>`:``}</div><button class="btn ghost" data-a="pyes" data-i="${x.id}">Have It</button><button class="btn" data-a="pno" data-i="${x.id}">Need It</button></div>`).join('')}<div class="bar" style="margin:8px 0 0"><button class="btn ghost" data-a="pall">I Have All Of These This Week</button></div></div>`:'';
  return `<section class="panel gp">`+gHead(has)+pst+pcH+(rows||(later.length?'':gdn.length?'<p class="empty">Everything Is Checked Off.</p>':'<p class="empty">Your list is empty. Add what you need, or tap “Need” on a low inventory item.</p>'))+laterH+''+gdH+'</section>';
 }
@@ -6950,7 +6950,7 @@ html #view.lux .mtl{border-left-color:#e3cfc0}
    var i=h.indexOf('</div>');if(h.indexOf('<div class="calseg">')===0&&i>0)h=h.slice(0,i+6)+strip()+h.slice(i+6);else h=strip()+h;
   }catch(_){}
   return h};
- var pg=V.groceries;if(pg)V.groceries=function(){var h=pg();try{if(typeof gtab==='undefined'||gtab==='list')h+='<p class="kst"><button type="button" data-tab="inventory">Staples you always buy ›</button></p>'}catch(_){}return h};
+ var pg=V.groceries;if(pg)V.groceries=function(){var h=pg();try{if(typeof gtab==='undefined'||gtab==='list')h+='<p class="kst"><button type="button" data-tab="inventory">Staples you always buy ›</button><span class="kdot" aria-hidden="true">·</span><button type="button" data-a="gt2" data-v="wish">Wish list'+((S.wishes||[]).length?' ('+S.wishes.length+')':'')+' ›</button></p>'}catch(_){}return h};
  var pi=V.inventory;if(pi)V.inventory=function(){return pi()};
  function enh(){try{var t=document.getElementById('ttl');if(t&&(tab==='groceries'||tab==='meals'))t.textContent='Kitchen';
   if(tab!=='meals'||mtab!=='rec'||(typeof radd!=='undefined'&&radd))return;
@@ -8646,6 +8646,7 @@ function shortBuy(B){if(!B.ok||!(B.tot>0)||!B.p)return '';var p=B.p,t=B.tot;
  if(p.bag){var hb=Math.ceil(t*0.99/8);return hb<=1?'8 oz':nice(hb/2)+' lb'}
  var pk=p.pk,T=t*0.99,one=pk.find(function(x){return x[0]>=T}),L=one||pk[pk.length-1],c=one?1:Math.ceil(T/L[0]),lbl=L[1];
  var named=/^(pint|quart|half gallon|gallon)$/.test(lbl);return c+' '+pl(lbl,c)+(!named&&pk.length>1?' ('+L[2]+')':'')}
+window.__hqb={shortBuy:shortBuy,fmtA:fmtA,srcAmt:srcAmt};
 var _g=gSrc;gSrc=function(x){try{if(!x||!x.src||!x.src.length)return _g(x);var B=hqBuy(x),sb=shortBuy(B);
  var parts=B.need.map(function(n){var a=fmtA(n.a,n.raw),cv='';try{if(B.p&&!B.p.k&&n.a&&n.a.u&&n.a.u!=='oz'&&n.a.u!=='lb'){var v=oz(n.a,B.p);if(v>0)cv=' (about '+ozTxt(v,B.p.fl).replace(/^about /,'')+')'}}catch(_){}return (a?'<span class="gna">'+esc(a+cv)+'</span> ':'')+'<button type="button" class="gsl grl" data-rec="'+esc(n.r)+'" aria-label="See the '+esc(n.r)+' recipe">'+esc(String(n.r).replace(/\s*[\u{1F300}-\u{1FAFF}☀-➿]️?\s*/gu,' ').trim())+'</button>'});
  var tt='';try{if(B.need.length>1&&B.ok&&B.tot>0&&B.p){if(B.p.k==='butter')tt=nice(B.tot)+' '+(B.tot>1?'sticks':'stick');else if(B.p.k==='egg')tt=Math.round(B.tot)+' eggs';else tt='about '+ozTxt(B.tot,B.p.fl)}}catch(_){}
@@ -8692,6 +8693,70 @@ setTimeout(repair,5000);setTimeout(repair,15000);
  S.groceries.forEach(function(g){var m=M[g.id];if(!m||g.done||!g.src)return;g.src.forEach(function(z){if(z.r==='Mac And Cheese'&&String(z.a)===m[0]){z.a=m[1];n++}})});S.mcFix1=1;save();if(n)render()}catch(_){}}
 setTimeout(fix,5000);setTimeout(fix,15000)})();
 </script>
+<style id="dchips">
+.gmenu2{display:flex;flex-direction:column;padding:0!important;overflow:hidden;background:var(--card)!important;border:1px solid var(--line)!important;border-radius:16px!important;margin-top:10px}
+html body #view .gmenu2 .gmi{display:flex!important;align-items:center;gap:11px;width:100%!important;text-align:left;border:0!important;border-radius:0!important;background:none!important;box-shadow:none!important;margin:0!important;padding:13px 15px!important;font:500 15px var(--bf,system-ui),system-ui,sans-serif!important;letter-spacing:0!important;text-transform:none!important;color:var(--ink)!important}
+html body #view .gmenu2 .gmi+.gmi{border-top:1px solid var(--line)!important}
+.gmenu2 .gmi svg{width:17px;height:17px;flex:none;color:#b07d86}
+html body #view .gmenu2 .gmi.dg{color:#b4545f!important}.gmenu2 .gmi.dg svg{color:#b4545f}
+.gmenu2 .gmi em{margin-left:auto;font-style:normal;font-size:12.5px;color:var(--mut)}
+.kst .kdot{margin:0 10px;color:var(--mut);opacity:.6}
+.dnrow{margin:12px 0 2px}
+.dnrow .dnl{font:700 10.5px var(--bf,system-ui),system-ui,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:var(--mut);margin:0 2px 7px}
+.dnch{display:flex;gap:7px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;padding-bottom:2px}.dnch::-webkit-scrollbar{display:none}
+html body #view .dnch button{flex:none;display:inline-flex!important;align-items:center;gap:7px;border:1px solid var(--line)!important;background:var(--card)!important;border-radius:999px!important;padding:6px 12px 6px 10px!important;margin:0!important;box-shadow:none!important;font:500 13px var(--bf,system-ui),system-ui,sans-serif!important;letter-spacing:0!important;text-transform:none!important;color:var(--ink)!important;white-space:nowrap}
+.dnch button i{width:8px;height:8px;border-radius:50%;flex:none}
+.dnch button b{font-weight:600;color:var(--mut);font-size:12px}
+#dnsh{position:fixed;inset:0;z-index:120;background:rgba(55,35,42,.32);display:flex;align-items:flex-end;justify-content:center}
+#dnsh .sh{width:100%;max-width:560px;max-height:82vh;overflow:auto;background:var(--card,#fff);border-radius:22px 22px 0 0;padding:10px 18px calc(18px + env(safe-area-inset-bottom,0px));box-shadow:0 -8px 24px rgba(60,30,40,.15);color:var(--ink)}
+#dnsh .grab{width:40px;height:5px;border-radius:3px;background:var(--line);margin:0 auto 10px}
+#dnsh .hd{display:flex;align-items:flex-start;gap:10px}
+#dnsh h3{flex:1;font:600 22px var(--hf,Georgia),Georgia,serif;margin:0;line-height:1.2}
+#dnsh .x{border:0;background:none;font-size:20px;color:var(--mut);padding:2px 4px;cursor:pointer}
+html body #dnsh .sub{font:13px var(--bf,system-ui),system-ui,sans-serif!important;color:var(--mut)!important;margin:3px 0 10px!important;text-transform:none!important;letter-spacing:0!important}
+#dnsh ul{list-style:none;margin:0 0 14px;padding:0 12px;background:color-mix(in srgb,var(--line) 35%,var(--card));border-radius:14px}
+#dnsh li{display:flex;align-items:baseline;gap:10px;padding:9px 0;font:14.5px var(--bf,system-ui),system-ui,sans-serif}
+#dnsh li+li{border-top:1px solid var(--line)}
+#dnsh li .n{flex:1;min-width:0}#dnsh li .a{color:var(--mut);font-size:13px;white-space:nowrap}
+#dnsh li .q{font-weight:600;color:#4a3f78;white-space:nowrap;min-width:54px;text-align:right}
+#dnsh li .q.sh2{font-weight:400;color:var(--mut);font-size:12px}
+#dnsh .act{display:flex;gap:10px}
+#dnsh .act button{flex:1;border-radius:14px;padding:13px 0;font:600 14.5px var(--bf,system-ui),system-ui,sans-serif;cursor:pointer}
+#dnsh .act .o{border:1px solid var(--line);background:var(--card);color:var(--ink)}
+#dnsh .act .r{border:0;background:color-mix(in srgb,#e8a3a8 22%,var(--card));color:#a8454f}
+#dnsh .nt{font:12px var(--bf,system-ui),system-ui,sans-serif;color:var(--mut);text-align:center;margin:10px 0 0}
+</style>
+<script>
+/* Dinners on the grocery list (Nov 23). A row of chips, one per dinner that added items. Tap one to see
+   its items with amounts, open its recipe, or remove just its items (shared items keep the other dinners). */
+(function(){var COL=['#e8a3a8','#9aa6d6','#9bb59a','#d9b46e','#c9a3d6','#8fc1c8'];
+function strip(t){return String(t||'').replace(/\s*[\u{1F300}-\u{1FAFF}☀-➿]️?\s*/gu,' ').trim()}
+function dinners(){var M={},O=[];(S.groceries||[]).forEach(function(x){if(x.done||!x.src)return;var seen={};x.src.forEach(function(z){if(!z.r||seen[z.r])return;seen[z.r]=1;if(!M[z.r]){M[z.r]={r:z.r,d:z.d||'',items:[]};O.push(M[z.r])}M[z.r].items.push(x);if(z.d&&(!M[z.r].d||z.d<M[z.r].d))M[z.r].d=z.d})});
+ return O.sort(function(a,b){return (a.d||'9').localeCompare(b.d||'9')||a.r.localeCompare(b.r)})}
+function row(){try{if(tab!=='groceries'||(typeof gtab!=='undefined'&&gtab!=='list'))return;var f=document.querySelector('#view form[data-gq]');if(!f||document.querySelector('#view .dnrow'))return;var D=dinners();if(!D.length)return;
+ var w=document.createElement('div');w.className='dnrow';w.innerHTML='<div class="dnl">From your dinners</div><div class="dnch">'+D.map(function(d,i){return '<button type="button" data-dnch="'+esc(d.r)+'"><i style="background:'+COL[i%COL.length]+'"></i>'+esc(strip(d.r))+' <b>'+d.items.length+'</b></button>'}).join('')+'</div>';
+ var after=f.nextElementSibling&&f.nextElementSibling.classList.contains('gtools')?f.nextElementSibling:f;after.parentNode.insertBefore(w,after.nextSibling)}catch(_){}}
+function close(){var o=document.getElementById('dnsh');if(o)o.remove();document.body.style.overflow=''}
+function open(r){close();var d=dinners().find(function(z){return z.r===r});if(!d)return;var H=window.__hqb||{},rc=(S.recipes||[]).find(function(x){return String(x.title).toLowerCase()===String(r).toLowerCase()});
+ var li=d.items.map(function(x){var z=x.src.find(function(y){return y.r===r}),a='',q='',sh=x.src.filter(function(y){return y.r}).length>1;try{a=H.fmtA?H.fmtA(H.srcAmt(z,x.title),z.a):(z.a||'')}catch(_){a=z&&z.a||''}if(z&&z.a==='Side')a='side';try{if(!sh&&H.shortBuy)q=H.shortBuy(hqBuy(x))}catch(_){}
+  return '<li><span class="n">'+esc(cap(x.title))+'</span><span class="a">'+esc(a)+'</span><span class="q'+(sh?' sh2':'')+'">'+esc(sh?'shared':q)+'</span></li>'}).join('');
+ var o=document.createElement('div');o.id='dnsh';o.setAttribute('role','dialog');o.setAttribute('aria-label',strip(r));
+ o.innerHTML='<div class="sh"><div class="grab"></div><div class="hd"><h3>'+esc(strip(r))+'</h3><button type="button" class="x" data-dnx="1" aria-label="Close">✕</button></div><p class="sub">'+d.items.length+' item'+(d.items.length===1?'':'s')+' on your list for this dinner</p><ul>'+li+'</ul><div class="act">'+(rc?'<button type="button" class="o" data-dnrec="'+esc(r)+'">Open recipe</button>':'')+'<button type="button" class="r" data-dnrm="'+esc(r)+'">Remove '+(d.items.length===1?'it':'these '+d.items.length)+'</button></div>'+(d.items.some(function(x){return x.src.filter(function(y){return y.r}).length>1})?'<p class="nt">Shared items stay on your list for your other dinners.</p>':'')+'</div>';
+ document.body.appendChild(o);document.body.style.overflow='hidden'}
+function removeFor(r){var snap=JSON.stringify({g:S.groceries,p:S.pchk||[]}),n=0;
+ S.groceries=(S.groceries||[]).filter(function(x){if(x.done||!x.src||!x.src.some(function(z){return z.r===r}))return true;n++;x.src=x.src.filter(function(z){return z.r!==r});if(x.src.length)return true;delete x.src;return !!(x.qty&&String(x.qty).trim())});
+ S.pchk=(S.pchk||[]).filter(function(x){if(!x.src||!x.src.some(function(z){return z.r===r}))return true;x.src=x.src.filter(function(z){return z.r!==r});return x.src.length>0});
+ save();render();try{undoToast('Removed '+n+' item'+(n===1?'':'s')+' for '+strip(r),function(){var s=JSON.parse(snap);S.groceries=s.g;S.pchk=s.p;save();render()})}catch(_){}}
+window.addEventListener('click',function(e){var t=e.target,b;
+ if(document.getElementById('dnsh')){if(t.id==='dnsh'||t.closest('[data-dnx]')){e.preventDefault();e.stopImmediatePropagation();close();return}
+  if(b=t.closest('[data-dnrm]')){e.preventDefault();e.stopImmediatePropagation();var r=b.getAttribute('data-dnrm');close();removeFor(r);return}
+  if(b=t.closest('[data-dnrec]')){e.preventDefault();e.stopImmediatePropagation();var r2=b.getAttribute('data-dnrec');close();var f=document.createElement('button');f.type='button';f.setAttribute('data-rec',r2);f.style.display='none';document.getElementById('view').appendChild(f);setTimeout(function(){f.click();f.remove()},0);return}
+  return}
+ if(b=t.closest('[data-dnch]')){e.preventDefault();e.stopImmediatePropagation();open(b.getAttribute('data-dnch'))}},true);
+document.addEventListener('keydown',function(e){if(e.key==='Escape')close()});
+var _r=render;render=function(){var x=_r.apply(this,arguments);row();return x};row();
+})();
+</script>
 <script>/* If the first draw failed because the app opened straight onto a screen whose parts load later, draw again now that everything is loaded. */(function(){window.__booted=1;if(!window.__bootRetry)return;try{render()}catch(e){try{(S.errlog=S.errlog||[]).push({k:'boot2',m:String(e&&e.message||e).slice(0,160),at:new Date().toISOString().slice(0,19),tab:tab});save()}catch(_){}try{tab='today';render()}catch(_){}}})();</script>
 <script>(function(){try{var H='9fd7d2c2499204c2a4998657b236d86c1ab1cc1644b9888f0728c3bee577b195',ent=null,i=TABS.findIndex(function(t){return t[0]==='studies'});if(i>-1)ent=TABS[i];var last='',on=false;
 function apply(ok){on=ok;window.__own=ok;if(ok){try{if(localStorage.getItem('hq.beta')!=='0'){localStorage.setItem('hq.beta','1');if(!window.__isBeta)window.__go()}}catch(e){}}var j=TABS.findIndex(function(t){return t[0]==='studies'});if(ok&&j<0&&ent)TABS.push(ent);if(!ok&&j>-1)TABS.splice(j,1);var k=QA_ALL.indexOf('studies');if(!ok&&k>-1)QA_ALL.splice(k,1);if(ok&&k<0)QA_ALL.push('studies');if(!ok&&tab==='studies')tab='today'}
@@ -8716,5 +8781,5 @@ document.addEventListener('touchend',function(){if(!on)return;on=false;var fire=
  if(fire){if(pend||psafe())go();else if(el){el.textContent='Finish what you are typing first'+(window.__psWhy?' ('+window.__psWhy+')':'');setTimeout(function(){el.style.opacity=0},1800)}}},{passive:true});
 })();
 try{var rs=JSON.parse(sessionStorage.getItem('hq.rs')||'null');if(rs){sessionStorage.removeItem('hq.rs');setTimeout(function(){try{(rs.open||[]).forEach(function(k){WOPEN.add(k)});if(rs.tab&&typeof tab!=='undefined')tab=rs.tab;render();window.scrollTo(0,rs.y||0)}catch(e){}},800)}}catch(e){}
-})()</script><div style="position:fixed;top:env(safe-area-inset-top,0);left:50%;transform:translateX(-50%);z-index:99999;background:#b4532a;color:#fff;font:700 9px system-ui;letter-spacing:.08em;padding:1px 8px;border-radius:0 0 8px 8px;pointer-events:none;opacity:.85">BETA 11/23 8:20am</div></body>
+})()</script><div style="position:fixed;top:env(safe-area-inset-top,0);left:50%;transform:translateX(-50%);z-index:99999;background:#b4532a;color:#fff;font:700 9px system-ui;letter-spacing:.08em;padding:1px 8px;border-radius:0 0 8px 8px;pointer-events:none;opacity:.85">BETA 11/23 8:35am</div></body>
 </html>
