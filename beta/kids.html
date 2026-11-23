@@ -6931,7 +6931,7 @@ html #view.lux .mtl{border-left-color:#e3cfc0}
  function strip(){var s=ks(),t=today(),h='',n=0,emp=0;
   for(var i=0;i<7;i++){var d=addD(s,i),v=din(d);if(v)n++;else if(d>=t)emp++;
    var tg=window.dayTags?dayTags(d):{hol:'',ev:[]};
-   h+='<button type="button" class="kd'+(d===t?' t':'')+(d<t?' old':'')+(d===KP?' p':'')+(tg.hol?' hd':'')+(v?(quick(v)?' q':''):' e')+'" data-kd="'+d+'" aria-label="'+e(dl(d,{weekday:'long',month:'long',day:'numeric'}))+(tg.hol?', '+e(tg.hol):'')+(tg.ev.length?', '+tg.ev.map(function(x){return e(x.title)}).join(', '):'')+(v?', dinner '+e(v):', nothing picked')+'"><small>'+e(dl(d,{weekday:'short'}).toUpperCase())+'</small><b>'+(+d.slice(8))+'</b>'+(tg.hol?'<i class="kht" title="'+e(tg.hol)+'">'+tg.ico+'</i>':'')+'<span>'+(v?e(v):'+')+'</span>'+(tg.ev.length?'<i class="kev">'+(tg.ev.length>1?tg.ev.length:'')+'</i>':'')+'</button>'}
+   h+='<button type="button" class="kd'+(d===t?' t':'')+(d<t?' old':'')+(d===KP?' p':'')+(tg.hol?' hd':'')+(v?(quick(v)?' q':''):' e')+'" data-kd="'+d+'" aria-label="'+e(dl(d,{weekday:'long',month:'long',day:'numeric'}))+(tg.hol?', '+e(tg.hol):'')+(tg.ev.length?', '+tg.ev.map(function(x){return e(x.title)}).join(', '):'')+(v?', dinner '+e(v):', nothing picked')+'"><small>'+e(dl(d,{weekday:'short'}).toUpperCase())+'</small><b>'+(+d.slice(8))+'</b>'+(tg.hol?'<i class="kht" title="'+e(tg.hol)+'">'+tg.ico+'</i>':'')+(window.__kdPic?__kdPic(v,d):'')+'<span>'+(v?e(window.__kdNm?__kdNm(v):v):'+')+'</span>'+(tg.ev.length?'<i class="kev">'+(tg.ev.length>1?tg.ev.length:'')+'</i>':'')+'</button>'}
   var o=S.shop||{},T=effTrip(),a0=addD(T,+o.off||0),a1=addD(a0,(o.span||9)-1),ov=!(addD(s,6)<a0||s>a1),sd=S.shopDone===t,added=S.tripAdded===T,pl=0;
   for(var q=a0;q<=a1;q=addD(q,1))if(din(q)&&!quick(din(q)))pl++;
   var act=ov&&!sd?(added?'<span class="kok">✓ On your grocery list</span>':(pl?'<button type="button" class="f" data-a="tripadd" data-ktrip="1">Add To Grocery List</button>':'')):'';
@@ -8905,6 +8905,40 @@ window.addEventListener('click',function(e){var b=e.target.closest&&e.target.clo
 </script>
 <style id="rxlibcss">
 #view .rxl .rxtop{display:flex;gap:8px;align-items:center;margin:0 0 10px}
+/* Meals page, ReciMe-like (Nov 23) */
+html body #view .kd{border:0!important;background:none!important;min-height:0!important;padding:0!important;gap:3px!important;overflow:visible!important}
+html body #view .kd>b{display:none!important}
+html body #view .kd>small{font:700 10px var(--bf,system-ui),system-ui,sans-serif!important;letter-spacing:.06em;color:var(--mut)}
+html body #view .kd.t>small{color:var(--rose,#c27a85)!important}
+#view .kd .kpic{position:relative;display:flex;align-items:center;justify-content:center;width:100%;aspect-ratio:1/1;border-radius:11px;overflow:hidden;font-size:20px;font-style:normal}
+#view .kd .kpic img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+#view .kd .kpic.ke{background:var(--card);border:1.5px dashed color-mix(in srgb,var(--rose,#c27a85) 40%,transparent);color:var(--mut);font-size:17px}
+#view .kd .kpic.kq{background:color-mix(in srgb,var(--line) 60%,var(--card))}
+html body #view .kd.t .kpic{outline:2.5px solid var(--rose,#c27a85);outline-offset:2px}
+html body #view .kd.p .kpic{outline:2.5px solid var(--ink);outline-offset:2px}
+html body #view .kd.old{opacity:.55}
+html body #view .kd>span{font:600 10.5px/1.2 var(--bf,system-ui),system-ui,sans-serif!important;color:var(--ink)!important;display:-webkit-box!important;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;text-align:center;word-break:normal;overflow-wrap:break-word;hyphens:none;max-width:100%;font-size:10px!important}
+html body #view .kd{position:relative}
+html body #view .kd>.kht{position:absolute!important;top:12px;right:-2px;z-index:2;font-size:13px!important;line-height:1;margin:0!important}
+html body #view .kd.e>span{display:none!important}
+html body #view .kd.q>span{color:var(--mut)!important;font-weight:500!important}
+#view .rxl .rxhd{display:flex;align-items:center;gap:8px;margin:0 2px 10px}
+#view .rxl .rxhd h2{flex:1;margin:0;font:700 23px var(--hf,Georgia),Georgia,serif;color:var(--ink);text-transform:none;letter-spacing:0}
+#view .rxl .rxhd h2 small{font:500 13px var(--bf,system-ui),system-ui,sans-serif;color:var(--mut);margin-left:6px}
+html body #view .rxl .rxic{width:38px;height:38px;border-radius:50%!important;border:1px solid var(--line)!important;background:var(--card)!important;display:flex!important;align-items:center;justify-content:center;padding:0!important;margin:0!important;box-shadow:none!important;color:var(--ink)!important;list-style:none;cursor:pointer}
+#view .rxl .rxic svg{width:17px;height:17px}
+html body #view .rxl .rxic.rxpl{background:var(--a,#c48a8f)!important;border-color:transparent!important;color:#fff!important;font:400 24px/1 system-ui!important}
+#view .rxl .rxic.rxpl::-webkit-details-marker{display:none}
+#view .rxl .rxhd .hq-add{position:relative}
+#view .rxl .rxso input{border-radius:999px!important;border:1.5px solid color-mix(in srgb,var(--rose,#c27a85) 50%,transparent)!important}
+html body #view .rxl .rxcan{border:0!important;background:none!important;padding:0 2px!important;margin:0!important;box-shadow:none!important;font:500 14px var(--bf,system-ui),system-ui,sans-serif!important;letter-spacing:0!important;text-transform:none!important;color:var(--mut)!important}
+#view .rxl .rxg{gap:14px 12px;margin-top:12px}
+html body #view .rxl .rxc{border:1px solid var(--line)!important;border-radius:14px!important;box-shadow:none!important}
+#view .rxl .rxg .rxim{height:auto;aspect-ratio:1/1.08;font-size:46px}
+#view .rxl .rxc .rxt{padding:9px 11px 11px;font:500 14.5px/1.3 var(--bf,system-ui),system-ui,sans-serif;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+#view .rxl .rxim .rxv{left:auto;right:8px;bottom:8px;width:26px;height:26px;padding:0 0 0 2px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px}
+#view .rxl .rxim .rxst{right:auto;left:8px;width:24px;height:24px;font-size:12px}
+
 #view .rxl .rxtop input{flex:1;min-width:0;margin:0!important}
 #view .rxl .rxf{display:flex;gap:7px;overflow-x:auto;scrollbar-width:none;margin:0 0 4px;padding-bottom:2px}#view .rxl .rxf::-webkit-scrollbar{display:none}
 html body #view .rxl .rxf button{flex:none;border:1px solid var(--line)!important;background:var(--card)!important;border-radius:999px!important;padding:6px 13px!important;margin:0!important;box-shadow:none!important;font:500 13px var(--bf,system-ui),system-ui,sans-serif!important;letter-spacing:0!important;text-transform:none!important;color:var(--ink)!important;white-space:nowrap}
@@ -8975,7 +9009,8 @@ function gr(x){var h=0,t=String(x.id||x.title);for(var i=0;i<t.length;i++)h=(h*3
 function tm(x){var m=(+x.prep||0)+(+x.cook||0);if(m)return m<60?m+' min':(Math.floor(m/60)+' hr'+(m%60?' '+(m%60)+' min':''));return x.time||''}
 function pic(x){var u=x.photo||x.img;return u?'<img src="'+esc(u)+'" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">':''}
 var LBL={'Snack Or Dessert':'Desserts'};
-function card(x,day){return '<button type="button" class="rxc" data-rxo="'+esc(x.id)+'"><span class="rxim '+gr(x)+'">'+em(x)+pic(x)+(day?'<span class="rxd">'+esc(day)+'</span>':'')+(x.fav?'<span class="rxst">★</span>':'')+(x.video?'<span class="rxv">▶ Video</span>':'')+'</span><span class="rxt">'+esc(nm(x.title))+(day?'':'<small>'+esc([LBL[x.meal]||x.meal,tm(x)].filter(Boolean).join(' · '))+'</small>')+'</span></button>'}
+function card(x,day){return '<button type="button" class="rxc" data-rxo="'+esc(x.id)+'"><span class="rxim '+gr(x)+'">'+em(x)+pic(x)+(x.fav?'<span class="rxst">★</span>':'')+(x.video?'<span class="rxv" aria-label="Has a video">▶</span>':'')+'</span><span class="rxt">'+esc(nm(x.title))+'</span></button>'}
+window.__kdNm=function(v){var t=nm(v).replace(/\s+(?:with|w\/)\s+.*$/i,'').replace(/\s+(?:and|&)\s+\S+/ig,'').trim(),w=t.split(/\s+/);return w.length>3?w.slice(-3).join(' '):t};window.__kdPic=function(v,d){if(!v)return '<i class="kpic ke">+</i>';if(/^(leftovers|take ?out|eat out|out)$/i.test(String(v).trim()))return '<i class="kpic kq">'+(/left/i.test(v)?'🍱':'🥡')+'</i>';var r=S.recipes.find(function(x){return x.title.toLowerCase()===String(v).toLowerCase().trim()});return r?'<i class="kpic '+gr(r)+'">'+em(r)+pic(r)+'</i>':'<i class="kpic rxg0">🍽️</i>'};
 function week(){var out=[],seen={},t=today();for(var k=0;k<7;k++){var d=addD(t,k),n=((S.plan[d]||{}).Dinner||'').trim();if(!n)continue;var r=S.recipes.find(function(x){return x.title.toLowerCase()===n.toLowerCase()});if(!r||seen[r.id])continue;seen[r.id]=1;out.push([r,k===0?'Today':new Date(d+'T12:00').toLocaleDateString('en-US',{weekday:'short'})])}return out}
 function lib(){var L=RL(),cats=MT.filter(function(m){return S.recipes.some(function(r){return r.meal===m})});
  if(RXF==='fav')L=L.filter(function(r){return r.fav});else if(RXF!=='all')L=L.filter(function(r){return r.meal===RXF});
@@ -8985,9 +9020,9 @@ function lib(){var L=RL(),cats=MT.filter(function(m){return S.recipes.some(funct
  var miss=S.recipes.filter(function(r){return r.link&&!r.ingredients}).length;
  var chips='<div class="rxf"><button type="button" data-rxf="all" class="'+(RXF==='all'?'on':'')+'">All</button><button type="button" data-rxf="fav" class="'+(RXF==='fav'?'on':'')+'">★ Favorites</button>'+cats.map(function(m){return '<button type="button" data-rxf="'+esc(m)+'" class="'+(RXF===m?'on':'')+'">'+esc(LBL[m]||m)+'</button>'}).join('')+'</div>';
  var W=(!q.trim()&&RXF==='all')?week():[];
- return '<div class="rxl"><div class="rxtop">'+inp+menu+'</div>'+chips+(miss?'<p class="rxn">'+miss+(miss===1?' recipe needs':' recipes need')+' ingredients · <button type="button" data-a="recall">Get them</button></p>':'')+
-  (W.length?'<div class="rxs">On this week</div><div class="rxwk">'+W.map(function(z){return card(z[0],z[1])}).join('')+'</div>':'')+
-  '<div class="rxs">'+(RXF==='all'?'All recipes':RXF==='fav'?'Favorites':(LBL[RXF]||RXF))+'</div>'+(L.length?'<div class="rxg">'+L.map(function(x){return card(x)}).join('')+'</div>':'<p class="empty">'+(S.recipes.length?'No recipes match.':'No recipes yet. Tap + Add to save your family favorites.')+'</p>')+'</div>'}
+ var so=!!(window.RXS||q.trim());var head=so?'<div class="rxtop rxso">'+inp+'<button type="button" class="rxcan" data-rxsx="1">Cancel</button></div>':'<div class="rxhd"><h2>Recipes<small>'+S.recipes.length+'</small></h2><button type="button" class="rxic" data-rxso="1" aria-label="Search recipes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg></button>'+menu.replace('<summary class="btn">+ Add</summary>','<summary class="rxic rxpl" aria-label="Add a recipe">+</summary>')+'</div>';
+ return '<div class="rxl">'+head+chips+(miss?'<p class="rxn">'+miss+(miss===1?' recipe needs':' recipes need')+' ingredients · <button type="button" data-a="recall">Get them</button></p>':'')+
+  (L.length?'<div class="rxg">'+L.map(function(x){return card(x)}).join('')+'</div>':'<p class="empty">'+(S.recipes.length?'No recipes match.':'No recipes yet. Tap + Add to save your family favorites.')+'</p>')+'</div>'}
 function src(u){return /tiktok/i.test(u)?'TikTok':/instagram/i.test(u)?'Instagram':/youtu/i.test(u)?'YouTube':/facebook|fb\.watch/i.test(u)?'Facebook':'the web'}
 function sheet(x){var vid=x.video,ck=RXCK[x.id]||{},sv=RX_SV(x);
  var top='<div class="rxh '+gr(x)+'">'+em(x)+pic(x)+'<button type="button" class="rxb bk" data-rxx="1" aria-label="Back">‹</button><button type="button" class="rxb fv" data-a="fav" data-i="'+x.id+'" aria-label="Favorite">'+(x.fav?'★':'☆')+'</button><button type="button" class="rxb ed" data-a="redit" data-i="'+x.id+'" aria-label="Edit recipe">✎</button>'+(vid?'<a class="rxpl" href="'+esc(vid)+'" target="_blank" rel="noopener" aria-label="Watch the video">▶</a>':'')+'</div>';
@@ -9008,6 +9043,8 @@ V.meals=function(){var h=prev();if(mtab!=='rec'||(typeof radd!=='undefined'&&rad
  return h.slice(0,i)+lib()+h.slice(j)+(x?sheet(x):'')}catch(e){try{(S.errlog=S.errlog||[]).push('rxlib '+e.message)}catch(_){}return h}};
 var keep=0;var _r=render;render=function(){var o=document.getElementById('rxo');keep=o?o.scrollTop:0;var r=_r.apply(this,arguments);try{var n=document.getElementById('rxo');document.body.classList.toggle('rxlock',!!n);if(n&&keep)n.scrollTop=keep;if(n)n.querySelectorAll('.rxil label span').forEach(function(s){var l=s.closest('label');if(typeof window.__ozHint==='function')window.__ozHint(l)})}catch(_){}return r};
 window.addEventListener('click',function(e){var t=e.target,b;if(tab!=='meals')return;
+ if(b=t.closest('[data-rxso]')){e.preventDefault();e.stopImmediatePropagation();window.RXS=1;render();setTimeout(function(){var i=document.getElementById('rq');if(i){i.focus()}},30);return}
+ if(b=t.closest('[data-rxsx]')){e.preventDefault();e.stopImmediatePropagation();window.RXS=0;try{q=''}catch(_){}render();return}
  if(b=t.closest('[data-rxo]')){e.preventDefault();e.stopImmediatePropagation();RXO=b.getAttribute('data-rxo');RXT='ing';redit=null;render();var o=document.getElementById('rxo');if(o)o.scrollTop=0;return}
  if(b=t.closest('[data-rxx]')){e.preventDefault();e.stopImmediatePropagation();RXO=null;redit=null;render();return}
  if(b=t.closest('[data-rxt]')){e.preventDefault();e.stopImmediatePropagation();RXT=b.getAttribute('data-rxt');render();return}
@@ -9048,5 +9085,5 @@ document.addEventListener('touchend',function(){if(!on)return;on=false;var fire=
  if(fire){if(pend||psafe())go();else if(el){el.textContent='Finish what you are typing first'+(window.__psWhy?' ('+window.__psWhy+')':'');setTimeout(function(){el.style.opacity=0},1800)}}},{passive:true});
 })();
 try{var rs=JSON.parse(sessionStorage.getItem('hq.rs')||'null');if(rs){sessionStorage.removeItem('hq.rs');setTimeout(function(){try{(rs.open||[]).forEach(function(k){WOPEN.add(k)});if(rs.tab&&typeof tab!=='undefined')tab=rs.tab;render();window.scrollTo(0,rs.y||0)}catch(e){}},800)}}catch(e){}
-})()</script><div style="position:fixed;top:env(safe-area-inset-top,0);left:50%;transform:translateX(-50%);z-index:99999;background:#b4532a;color:#fff;font:700 9px system-ui;letter-spacing:.08em;padding:1px 8px;border-radius:0 0 8px 8px;pointer-events:none;opacity:.85">BETA 11/23 10:33am</div></body>
+})()</script><div style="position:fixed;top:env(safe-area-inset-top,0);left:50%;transform:translateX(-50%);z-index:99999;background:#b4532a;color:#fff;font:700 9px system-ui;letter-spacing:.08em;padding:1px 8px;border-radius:0 0 8px 8px;pointer-events:none;opacity:.85">BETA 11/23 10:47am</div></body>
 </html>
