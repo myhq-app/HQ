@@ -1108,7 +1108,8 @@ function vStudies(){
  const all=ST.items.map(x=>({x,e:stEval(x)}));
  const sortKey=(a,b)=>a.e.best-b.e.best||(a.x.seen_at?1:0)-(b.x.seen_at?1:0)||(ST.sites.findIndex(s=>s.id===a.x.site_id)-ST.sites.findIndex(s=>s.id===b.x.site_id))||(a.x.rank||0)-(b.x.rank||0);
  const fits=all.filter(z=>z.e.best<2||!P.length).sort(sortKey);
- const tabs=[['fits','Fits',fits.length],['sites','By Site',all.length]].map(t=>`<button class="stseg${view===t[0]?' on':''}" data-a="stview" data-i="${t[0]}">${t[1]}${t[2]!==''?` <span>${t[2]}</span>`:''}</button>`).join('');
+ const fitN=P.length?all.filter(z=>P.some((p,pi)=>z.e.r[pi]&&z.e.r[pi].r.s!=='no'&&!stHid(z.x,pi))).length:fits.filter(z=>!stHid(z.x,null)).length;
+ const tabs=[['fits','Fits',fitN],['sites','By Site',all.length]].map(t=>`<button class="stseg${view===t[0]?' on':''}" data-a="stview" data-i="${t[0]}">${t[1]}${t[2]!==''?` <span>${t[2]}</span>`:''}</button>`).join('');
  const lc=ST.sites.reduce((m,z)=>z.last_checked&&z.last_checked>m?z.last_checked:m,''),nw=stNew();
  const top=`${ST.err?`<p class="m">${esc(ST.err)}</p>`:''}<div class="sthd"><div class="stsegs">${tabs}</div><details class="stmenu"><summary aria-label="More options">⋯</summary><div class="stmm"><button type="button" data-a="strefresh">${ST.chk?'Checking…':'Check Now'}</button>${nw?'<button type="button" data-a="stseenall">Mark All Seen</button>':''}<button type="button" data-a="stview" data-i="setup">Setup</button></div></details></div><p class="stup">${lc?'Checked '+stAgo(lc):'Not checked yet'}${nw?' · '+nw+' new since you last looked':''}</p>${stScrStrip()}`;
  let body='';
