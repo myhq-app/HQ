@@ -2491,18 +2491,18 @@ body.home #ttl{font-size:25px!important}#ttl .lg{width:32px;height:32px;margin-r
  function nightInfo(d){var p=S.plan[d]||{},L=[p.Dinner].concat(p.More||[]).map(function(v){return String(v||'').trim()}).filter(Boolean);if(!L.length)return{k:'none'};var dn=L[0];
  var one=function(v){var rc=S.recipes.find(function(x){return x.title.toLowerCase()===v.toLowerCase()});if(!rc)return{k:/^(eat out|take out|leftovers)$/i.test(v)?'skip':(window.__isPlain&&__isPlain(v,d)?'norec':'skip'),dn:v};var ing=(typeof ingText==='function'?ingText(rc):(rc.ingredients||'')).split('\n').filter(function(l){return l.trim()}).length;return{k:ing?'ok':'noing',dn:v,rc:rc,n:ing}};
  var m=one(dn),X=L.slice(1).map(one);m.adds=m.k==='ok'||m.k==='norec'||X.some(function(x){return x.k==='ok'||x.k==='norec'});
- if(X.length)m.ex='<div class="rvs">'+X.map(function(x){return '+ '+esc(x.dn)+(x.k==='ok'?' · '+x.n+' ingredient'+(x.n===1?'':'s'):x.k==='norec'?' · goes on your list as is':x.k==='noing'?' · no ingredients saved':'')}).join('<br>')+'</div>';
+ if(X.length)m.ex='<div class="rvs">'+X.map(function(x){return '+ '+esc(x.dn)+(x.k==='ok'?' · '+x.n+' ingredient'+(x.n===1?'':'s'):x.k==='norec'?' · goes in Don’t Forget':x.k==='noing'?' · no ingredients saved':'')}).join('<br>')+'</div>';
  return m}
  window.revRows=function(days){return days.map(function(d){var i=nightInfo(d),dd=new Date(d+'T12:00').toLocaleDateString(undefined,{weekday:'short'})+' '+new Date(d+'T12:00').getDate();
    if(i.k==='none')return '<div class="rvr"><div class="rvh"><em>'+dd+'</em><b style="font-weight:500;color:var(--mut)">Nothing Planned</b></div></div>';
    if(i.k==='skip')return '<div class="rvr"><div class="rvh"><em>'+dd+'</em><b>'+esc(i.dn)+'</b></div><div class="rvs">No shopping needed</div></div>';
    var sd=i.rc?sideFor(i.rc,d):null,chip=i.rc&&i.rc.meal!=='Side'?'<button type="button" class="sdchip" data-sd="'+d+'" data-rv="1">'+sideTxt(i.rc,d)+' ▾</button>':'';
-   var st=i.k==='norec'?'<div class="rvs">No recipe, so it goes on your list as is.</div>':i.k==='noing'?'<div class="rvs warn">This recipe has no ingredients saved yet. <button type="button" class="lnk" data-rec="'+esc(i.rc.title)+'" data-rv="1">Open Recipe</button></div>':'<div class="rvs">'+i.n+' ingredient'+(i.n===1?'':'s')+' · <button type="button" class="lnk" data-rec="'+esc(i.rc.title)+'" data-rv="1">Check Recipe</button></div>';
+   var st=i.k==='norec'?'<div class="rvs">No recipe, so it goes in Don’t Forget at the top of your list.</div>':i.k==='noing'?'<div class="rvs warn">This recipe has no ingredients saved yet. <button type="button" class="lnk" data-rec="'+esc(i.rc.title)+'" data-rv="1">Open Recipe</button></div>':'<div class="rvs">'+i.n+' ingredient'+(i.n===1?'':'s')+' · <button type="button" class="lnk" data-rec="'+esc(i.rc.title)+'" data-rv="1">Check Recipe</button></div>';
    return '<div class="rvr"><div class="rvh"><em>'+dd+'</em><b>'+esc(i.dn)+'</b></div>'+st+(chip?'<div class="rvs">'+chip+'</div>':'')+(i.ex||'')+'</div>'}).join('')};
  window.revSum=function(days){var A=days.map(function(d){return [d,nightInfo(d)]}),ok=A.filter(function(x){return x[1].k==='ok'}),n=ok.reduce(function(t,x){return t+(x[1].n||0)},0),att=A.filter(function(x){return x[1].k==='norec'||x[1].k==='noing'});
   function dd(d){var z=new Date(d+'T12:00');return z.toLocaleDateString(undefined,{weekday:'short'})+' '+z.getDate()}
   var line=ok.length?'<div class="rvsum"><b>'+ok.length+(ok.length===1?' Dinner':' Dinners')+'</b><span>About '+n+' ingredients to add</span></div>':'<div class="rvsum"><b>Nothing To Add</b><span>No planned dinners have ingredients saved</span></div>';
-  var al=att.length?'<div class="rvatt">'+att.map(function(x){var i=x[1];return '<div><b>'+dd(x[0])+' · '+esc(i.dn)+'</b> '+(i.k==='norec'?'has no recipe, so it goes on your list as is.':'has no ingredients saved yet. <button type="button" class="lnk" data-rec="'+esc(i.rc.title)+'" data-rv="1">Open Recipe</button>')+'</div>'}).join('')+'</div>':'';
+  var al=att.length?'<div class="rvatt">'+att.map(function(x){var i=x[1];return '<div><b>'+dd(x[0])+' · '+esc(i.dn)+'</b> '+(i.k==='norec'?'has no recipe, so it goes in Don’t Forget at the top of your list.':'has no ingredients saved yet. <button type="button" class="lnk" data-rec="'+esc(i.rc.title)+'" data-rv="1">Open Recipe</button>')+'</div>'}).join('')+'</div>':'';
   return line+al+'<details class="hq-fold rvmore" data-od="sun:rev"'+(WOPEN.has('sun:rev')?' open':'')+'><summary>See What’s Being Added</summary><div class="rvl">'+revRows(days)+'</div></details>'};
  var RV=null;
  function revDraw(){if(!RV)return;var o=document.getElementById('rvd');if(!o)return;var days=[];for(var d=RV.a;d<RV.b;d=addD(d,1))days.push(d);var planned=days.filter(function(d){return nightInfo(d).adds}).length;
@@ -7325,6 +7325,47 @@ html body form.dbf .dbck input{width:22px!important;height:22px!important;min-he
 html body form.dbf .dbck input{display:grid!important;place-items:center;padding:0!important}html body form.dbf .dbck input:checked::after{font-size:14px;line-height:1;margin:0}
 html body .sxw form.dbf .btn{letter-spacing:.02em!important;text-transform:none!important;margin-top:4px}
 </style>
+<style id="ndcss">
+html body #view .ndc{background:#fbf1ee;border:1.5px solid #e8c9cc;border-radius:16px;padding:14px;margin:10px 0}
+html body #view .ndc>b{display:block;font:700 19px var(--bf,Lora),Georgia,serif;color:var(--ink)}
+html body #view .ndc>p{font:14px/1.4 var(--bf,Lora),Georgia,serif;color:var(--mut);margin:4px 0 6px}
+html body #view .ndr{display:flex;align-items:center;gap:8px;padding:9px 0;border-top:1px solid #ecd6d6}
+html body #view .ndr:first-of-type{border-top:0}
+html body #view .ndr>span{flex:1;min-width:0;font:500 16px Figtree,Inter,system-ui,sans-serif;color:var(--ink)}
+html body #view .ndr>span small{display:block;font:500 11.5px Figtree,Inter,system-ui,sans-serif;color:var(--mut)}
+html body #view .ndr button{font:700 11px var(--bf,Lora),Georgia,serif!important;letter-spacing:.05em!important;text-transform:none!important;border:1px solid #d8c4bb!important;border-radius:9px!important;padding:8px 11px!important;background:#fbf6f3!important;color:var(--ink)!important;cursor:pointer}
+html body #view .ndr button.p{background:#f0c9cd!important;border-color:#e3aab1!important}
+html body #view .ndf{display:flex;gap:6px;margin:2px 0 2px}
+html body #view .ndf input{flex:1;min-width:0;height:42px;border:1.5px solid var(--a);border-radius:10px;background:#fff;padding:0 10px;font:15px Figtree,Inter,system-ui,sans-serif;color:var(--ink)}
+html body #view .ndf button{height:42px;border:0!important;border-radius:10px!important;background:var(--a)!important;color:#fff!important;font:600 13px Figtree,Inter,system-ui,sans-serif!important;letter-spacing:0!important;text-transform:none!important;padding:0 14px!important;cursor:pointer}
+html body #view .ndh{font:12px Figtree,Inter,system-ui,sans-serif;color:var(--mut);margin:2px 0 4px}
+</style>
+<script>/* "Don't Forget": dishes on upcoming menus that have no recipe (Nov 23) */
+(function(){
+ function e(x){return String(x==null?'':x).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+ function rec(v){var l=String(v||'').toLowerCase().trim();return (S.recipes||[]).find(function(x){return String(x.title).toLowerCase()===l})}
+ function plain(v,d){v=String(v||'').trim();if(!v||rec(v))return false;if(/^(leftovers|take ?out|eat out|out)$/i.test(v))return false;try{var tg=window.dayTags?dayTags(d):null;if(tg&&tg.hol&&v.toLowerCase().indexOf(String(tg.hol).toLowerCase())===0)return false}catch(_){}return true}
+ function key(d,v){return d+'|'+String(v).toLowerCase()}
+ function list(){var t=today(),Q=S.ndq||[],keep=Q.filter(function(x){if(x.d<addD(t,-1))return false;var L=window.__dishes?__dishes(x.d):[];return L.some(function(v){return v.toLowerCase()===String(x.v).toLowerCase()})});if(keep.length!==Q.length){S.ndq=keep}return keep.slice().sort(function(a,b){return a.d<b.d?-1:1})}
+ function when(d){var t=today(),wd=new Date(d+'T12:00').toLocaleDateString('en-US',{weekday:'short'}),tg={};try{tg=window.dayTags?dayTags(d):{}}catch(_){}return (tg&&tg.hol?tg.hol+' · ':'')+(d===t?'Tonight':d===addD(t,1)?'Tomorrow':wd)}
+ function card(){var L=list();if(!L.length)return '';var op=window.__ndOpen||'';
+  return '<div class="ndc"><b>Don’t Forget</b><p>On your menu with no recipe. Buy it ready-made, or add what you need to make it.</p>'+L.map(function(x){var k=key(x.d,x.v);
+   if(k===op)return '<div class="ndr" style="padding-bottom:4px"><span>'+e(x.v)+'<small>What do you need for it?</small></span></div><form class="ndf" data-ndk="'+e(k)+'"><input type="text" enterkeyhint="done" autocomplete="off" placeholder="cornmeal, eggs, buttermilk" aria-label="What you need for '+e(x.v)+'"><button type="submit">Add</button></form><p class="ndh">Separate with commas. Skip what you already have.</p>';
+   return '<div class="ndr"><span>'+e(x.v)+'<small>'+e(when(x.d))+'</small></span><button type="button" class="p" data-ndbuy="'+e(k)+'">Buy It</button><button type="button" data-ndmake="'+e(k)+'">Make It</button></div>'}).join('')+'</div>'}
+ var pg=V.groceries;if(pg)V.groceries=function(){var h=pg.apply(this,arguments);try{if(typeof gtab!=='undefined'&&gtab!=='list')return h;var c=card();if(!c)return h;
+  var i=h.indexOf('<div class="pchk">');if(i<0)i=h.indexOf('<h3>');if(i<0)return h+c;return h.slice(0,i)+c+h.slice(i)}catch(_){return h}};
+ function parse(k){var i=k.indexOf('|');return {d:k.slice(0,i),v:k.slice(i+1)}}
+ function title(k){var p=parse(k),L=window.__dishes?__dishes(p.d):[];return L.find(function(x){return x.toLowerCase()===p.v})||p.v}
+ function finish(k){S.ndq=(S.ndq||[]).filter(function(x){return key(x.d,x.v)!==k});window.__ndOpen='';save();render()}
+ function go(f){var k=f.getAttribute('data-ndk'),i=f.querySelector('input'),v=String(i&&i.value||'').trim();if(!v)return;var p=parse(k),t=title(k),lines=v.split(/\s*[,\n;]\s*/).filter(Boolean),n=0;
+  try{n=addIng({title:t,ingredients:lines.join('\n')},p.d,effTrip())}catch(_){}finish(k);toast('Added '+lines.length+(lines.length===1?' item':' items')+' for '+t)}
+ document.addEventListener('submit',function(ev){var f=ev.target;if(!f||!f.classList||!f.classList.contains('ndf'))return;ev.preventDefault();ev.stopImmediatePropagation();go(f)},true);
+ document.addEventListener('click',function(ev){var b=ev.target.closest&&ev.target.closest('[data-ndbuy],[data-ndmake],.ndf button');if(!b)return;ev.preventDefault();ev.stopImmediatePropagation();
+  if(b.matches('.ndf button')){go(b.closest('.ndf'));return}
+  if(b.hasAttribute('data-ndmake')){window.__ndOpen=b.getAttribute('data-ndmake');render();setTimeout(function(){var n=document.querySelector('#view .ndf input');if(n)n.focus({preventScroll:true})},30);return}
+  var k=b.getAttribute('data-ndbuy'),p=parse(k),t=title(k);var lb=t;try{var tg=window.dayTags?dayTags(p.d):null;lb=tg&&tg.hol?tg.hol:new Date(p.d+'T12:00').toLocaleDateString('en-US',{weekday:'long'})+' dinner'}catch(_){}try{addIng({title:lb,ingredients:t},p.d,effTrip())}catch(_){S.groceries.push({id:uid(),title:t,src:[{r:t,d:p.d}]})}finish(k);toast(t+' is on your list')},true);
+})();
+</script>
 <script>/* If the first draw failed because the app opened straight onto a screen whose parts load later, draw again now that everything is loaded. */(function(){window.__booted=1;if(!window.__bootRetry)return;try{render()}catch(e){try{(S.errlog=S.errlog||[]).push({k:'boot2',m:String(e&&e.message||e).slice(0,160),at:new Date().toISOString().slice(0,19),tab:tab});save()}catch(_){}try{tab='today';render()}catch(_){}}})();</script>
 <script>(function(){try{var H='9fd7d2c2499204c2a4998657b236d86c1ab1cc1644b9888f0728c3bee577b195',ent=null,i=TABS.findIndex(function(t){return t[0]==='studies'});if(i>-1)ent=TABS[i];var last='',on=false;
 function apply(ok){on=ok;window.__own=ok;if(ok){try{if(localStorage.getItem('hq.beta')!=='0'){localStorage.setItem('hq.beta','1');if(!window.__isBeta)window.__go()}}catch(e){}}var j=TABS.findIndex(function(t){return t[0]==='studies'});if(ok&&j<0&&ent)TABS.push(ent);if(!ok&&j>-1)TABS.splice(j,1);var k=QA_ALL.indexOf('studies');if(!ok&&k>-1)QA_ALL.splice(k,1);if(ok&&k<0)QA_ALL.push('studies');if(!ok&&tab==='studies')tab='today'}
@@ -7376,8 +7417,9 @@ html body #view .kmnor{font:12.5px Figtree,Inter,system-ui,sans-serif;color:var(
 </script>
 <script>/* Dishes with no recipe (cornbread) go on the grocery list with the rest of the dinner (Nov 23) */
 window.__isPlain=function(v,d){v=String(v||'').trim();if(!v)return false;var l=v.toLowerCase();if((S.recipes||[]).some(function(x){return String(x.title).toLowerCase()===l}))return false;if(/^(leftovers|take ?out|eat out|out)$/i.test(v))return false;try{var tg=window.dayTags?dayTags(d):null;if(tg&&tg.hol&&l.indexOf(String(tg.hol).toLowerCase())===0)return false}catch(_){}return true};
-window.__plainOn=function(v){var l=String(v||'').trim().toLowerCase();return (S.groceries||[]).concat(S.pchk||[]).some(function(g){return !g.done&&String(g.title).toLowerCase()===l})};
-window.__plainAdd=function(v,d,T1){if(window.__plainOn(v))return 0;var lb=v;try{var tg=window.dayTags?dayTags(d):null;lb=tg&&tg.hol?tg.hol:new Date(d+'T12:00').toLocaleDateString('en-US',{weekday:'long'})+' dinner'}catch(_){}try{return addIng({title:lb,ingredients:String(v).trim()},d,T1||effTrip())}catch(_){return 0}};
+window.__plainOn=function(v){var l=String(v||'').trim().toLowerCase();return (S.groceries||[]).concat(S.pchk||[]).some(function(g){return !g.done&&String(g.title).toLowerCase()===l})||(S.ndq||[]).some(function(x){return String(x.v).toLowerCase()===l})};
+/* a dish with no recipe waits in "Don't Forget" at the top of the grocery list until you pick Buy It or Make It */
+window.__plainAdd=function(v,d,T1){if(window.__plainOn(v))return 0;S.ndq=(S.ndq||[]).concat([{d:d,v:String(v).trim()}]);return 1};
 </script>
 <style id="kmncss">
 html body #view .kd .kpic .kdx{position:absolute;right:3px;bottom:3px;z-index:3;background:var(--a);color:#fff;font:700 9px/1 Figtree,Inter,system-ui,sans-serif;font-style:normal;border-radius:999px;padding:3px 5px;border:1.5px solid #fff}
