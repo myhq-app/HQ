@@ -7366,6 +7366,28 @@ html body #view .ndh{font:12px Figtree,Inter,system-ui,sans-serif;color:var(--mu
   var k=b.getAttribute('data-ndbuy'),p=parse(k),t=title(k);var lb=t;try{var tg=window.dayTags?dayTags(p.d):null;lb=tg&&tg.hol?tg.hol:new Date(p.d+'T12:00').toLocaleDateString('en-US',{weekday:'long'})+' dinner'}catch(_){}try{addIng({title:lb,ingredients:t},p.d,effTrip())}catch(_){S.groceries.push({id:uid(),title:t,src:[{r:t,d:p.d}]})}finish(k);toast(t+' is on your list')},true);
 })();
 </script>
+<script>/* Shorter names, round 2 (Nov 23): "My Updated Honeybaked Ham" -> "Honeybaked Ham", "Peach Cobbler Hack" -> "Peach Cobbler" */
+(function(){
+ function more(t){var o=String(t||''),x=o;
+  x=x.replace(/^\s*(?:my|our)\s+(?:(?:new|updated|own|easy|simple|version of|take on|twist on)\s+)+/i,'');
+  x=x.replace(/^\s*(?:updated|new and improved|improved)\s+/i,'');
+  x=x.replace(/\s+(?:hack|hacks|recipe|recipes|dupe|remix|copycat)(\s*[\p{Extended_Pictographic}️‍]*)\s*$/iu,'$1');
+  x=x.replace(/\s+/g,' ').trim();
+  return x.replace(/[\p{Extended_Pictographic}️‍]/gu,'').trim().length>=3?x:o}
+ window.hqShortName=more;
+ if(typeof tidyTitle==='function'){var _t=tidyTitle;tidyTitle=function(t){return _t(more(t))}}
+ /* one time: tidy names already saved, and every place they are used */
+ function fix(){try{if(!S||S.ttlFix2||!Array.isArray(S.recipes))return;var ch=0,map={};
+  S.recipes.forEach(function(r){var nt=more(r.title);if(nt===r.title)return;if(S.recipes.some(function(z){return z!==r&&String(z.title).toLowerCase()===nt.toLowerCase()}))return;map[r.title]=nt;r.title=nt;ch++});
+  Object.keys(S.plan||{}).forEach(function(k){var p=S.plan[k];if(!p)return;if(p.Dinner){if(map[p.Dinner])p.Dinner=map[p.Dinner];else{var s1=more(p.Dinner);if(s1!==p.Dinner&&!(S.recipes||[]).some(function(r){return r.title===p.Dinner})){p.Dinner=s1;ch++}}}
+   if(Array.isArray(p.More))p.More=p.More.map(function(v){if(map[v])return map[v];if((S.recipes||[]).some(function(r){return r.title===v}))return v;var s2=more(v);if(s2!==v)ch++;return s2})});
+  (S.groceries||[]).concat(S.pchk||[]).forEach(function(g){(g.src||[]).forEach(function(z){if(map[z.r])z.r=map[z.r]})});
+  if(Array.isArray(S.later))S.later=S.later.map(function(x){return map[x]||x});
+  if(Array.isArray(S.ndq))S.ndq.forEach(function(x){var s3=more(x.v);if(s3!==x.v)x.v=s3});
+  S.ttlFix2=1;save();if(ch)render()}catch(_){}}
+ setTimeout(fix,1500);var _r=render;render=function(){var x=_r.apply(this,arguments);if(S&&!S.ttlFix2)setTimeout(fix,0);return x};
+})();
+</script>
 <script>/* If the first draw failed because the app opened straight onto a screen whose parts load later, draw again now that everything is loaded. */(function(){window.__booted=1;if(!window.__bootRetry)return;try{render()}catch(e){try{(S.errlog=S.errlog||[]).push({k:'boot2',m:String(e&&e.message||e).slice(0,160),at:new Date().toISOString().slice(0,19),tab:tab});save()}catch(_){}try{tab='today';render()}catch(_){}}})();</script>
 <script>(function(){try{var H='9fd7d2c2499204c2a4998657b236d86c1ab1cc1644b9888f0728c3bee577b195',ent=null,i=TABS.findIndex(function(t){return t[0]==='studies'});if(i>-1)ent=TABS[i];var last='',on=false;
 function apply(ok){on=ok;window.__own=ok;if(ok){try{if(localStorage.getItem('hq.beta')!=='0'){localStorage.setItem('hq.beta','1');if(!window.__isBeta)window.__go()}}catch(e){}}var j=TABS.findIndex(function(t){return t[0]==='studies'});if(ok&&j<0&&ent)TABS.push(ent);if(!ok&&j>-1)TABS.splice(j,1);var k=QA_ALL.indexOf('studies');if(!ok&&k>-1)QA_ALL.splice(k,1);if(ok&&k<0)QA_ALL.push('studies');if(!ok&&tab==='studies')tab='today'}
@@ -7405,7 +7427,7 @@ html body #view .kmnor{font:12.5px Figtree,Inter,system-ui,sans-serif;color:var(
  function go(f){
   var d=f.getAttribute('data-kadd'),i=f.querySelector('input'),v=String(i&&i.value||'').trim();if(!v||!d)return;
   var R=S.recipes||[],q=nm(v),hit=R.find(function(r){return nm(r.title)===q});if(!hit){var c=R.filter(function(r){return nm(r.title).indexOf(q)>=0});if(c.length===1)hit=c[0]}
-  var t=hit?hit.title:v.replace(/\b\w/g,function(c){return c.toUpperCase()});
+  var t=hit?hit.title:(window.hqShortName?hqShortName(v):v).replace(/\b\w/g,function(c){return c.toUpperCase()});
   var p=S.plan[d]=S.plan[d]||{};S.hand=S.hand||{};S.hand[d]=1;var L=[p.Dinner].concat(p.More||[]).filter(Boolean).map(function(x){return String(x).toLowerCase()});
   if(L.indexOf(t.toLowerCase())<0){var ph=!p.Dinner||/^(leftovers|take ?out|eat out|out)$/i.test(p.Dinner);try{var tg=window.dayTags?dayTags(d):null;if(tg&&tg.hol&&String(p.Dinner||'').toLowerCase().indexOf(String(tg.hol).toLowerCase())===0&&!R.some(function(r){return r.title===p.Dinner}))ph=true}catch(_){}
    if(ph)p.Dinner=t;else p.More=(p.More||[]).concat(t)}
