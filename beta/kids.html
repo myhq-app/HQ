@@ -1016,7 +1016,7 @@ const whenLabel = (d, tz, now) => { now = now || new Date(); tz = tz || 'America
 let ST={sites:[],items:[],loaded:false,busy:false,chk:false,at:0,err:'',rem:[]};
 async function stLoad(force){if(!SBS||window.claude||ST.busy)return;if(!force&&ST.loaded&&Date.now()-ST.at<60000)return;ST.busy=true;try{const r=await Promise.all([sbTbl('GET','study_sites?select=*&order=sort'),sbTbl('GET','study_items?select=*&gone_at=is.null&order=rank.asc,first_seen.desc'),sbTbl('GET','call_reminders?select=item_id,due_at&sent_at=is.null').catch(()=>[])]);ST.sites=r[0]||[];ST.items=r[1]||[];ST.rem=r[2]||[];ST.err=''}catch(e){ST.err='Could not load studies. Check your connection and try again.'}ST.busy=false;ST.loaded=true;ST.at=Date.now();render()}
 const tbdg=k=>{const t=today();let n=0,w='';if(k==='g:fin'||k==='bills')n+=(S.bills||[]).filter(x=>!x.done&&x.due&&x.due<=t).length;if(k==='g:fin'||k==='studies'){if(ST.loaded)n+=stNew()}if(k==='g:home'||k==='tasks')n+=(S.tasks||[]).filter(x=>!x.done&&x.due&&x.due<=t).length;return n?`<em class="bdg" aria-label="${n} need attention">${n}</em>`:''};
-const stNew=()=>ST.items.filter(x=>!x.seen_at).length;
+const stNew=()=>{const L=S.stLook?new Date(S.stLook):null,no=Object.keys(S.stNo||{}).map(k=>k.split(':')[1]);return ST.items.filter(x=>!x.gone_at&&!x.seen_at&&!no.includes(String(x.id))&&(!L||new Date(x.first_seen)>L)).length};/* new = since you last opened Studies, not marked 'not for me' (Nov 23) */
 const stInfo=()=>window.claude?'Website app':!SBS?'Sign in to use':!ST.loaded?'Open to load':stNew()?stNew()+' new':ST.sites.length?'Nothing new':'Add a site';
 const stAgo=ts=>{const m=Math.max(0,Math.round((Date.now()-new Date(ts))/6e4));return m<2?'just now':m<60?m+' min ago':m<1440?Math.round(m/60)+' hr ago':Math.round(m/1440)+' days ago'};
 const stPay=t=>{const m=String(t||'').match(/\$\s*([\d,]+)/);return m?m[1].replace(/,/g,''):''};
@@ -8810,6 +8810,10 @@ function note(){try{if(tab!=='income')return;var n=S.cashNote,H=window.HQSIM;if(
 var _r=render;render=function(){var x=_r.apply(this,arguments);note();return x};
 })();
 </script>
+<script>
+/* Remember when the Studies page was last opened, so "new since you looked" means exactly that (Nov 23). */
+(function(){var _r=render;render=function(){var x=_r.apply(this,arguments);try{if(tab==='studies'&&ST&&ST.loaded){var now=Date.now(),last=S.stLook?new Date(S.stLook).getTime():0;if(now-last>60000){S.stLook=new Date(now).toISOString();save()}}}catch(_){}return x}})();
+</script>
 <script>/* If the first draw failed because the app opened straight onto a screen whose parts load later, draw again now that everything is loaded. */(function(){window.__booted=1;if(!window.__bootRetry)return;try{render()}catch(e){try{(S.errlog=S.errlog||[]).push({k:'boot2',m:String(e&&e.message||e).slice(0,160),at:new Date().toISOString().slice(0,19),tab:tab});save()}catch(_){}try{tab='today';render()}catch(_){}}})();</script>
 <script>(function(){try{var H='9fd7d2c2499204c2a4998657b236d86c1ab1cc1644b9888f0728c3bee577b195',ent=null,i=TABS.findIndex(function(t){return t[0]==='studies'});if(i>-1)ent=TABS[i];var last='',on=false;
 function apply(ok){on=ok;window.__own=ok;if(ok){try{if(localStorage.getItem('hq.beta')!=='0'){localStorage.setItem('hq.beta','1');if(!window.__isBeta)window.__go()}}catch(e){}}var j=TABS.findIndex(function(t){return t[0]==='studies'});if(ok&&j<0&&ent)TABS.push(ent);if(!ok&&j>-1)TABS.splice(j,1);var k=QA_ALL.indexOf('studies');if(!ok&&k>-1)QA_ALL.splice(k,1);if(ok&&k<0)QA_ALL.push('studies');if(!ok&&tab==='studies')tab='today'}
@@ -8834,5 +8838,5 @@ document.addEventListener('touchend',function(){if(!on)return;on=false;var fire=
  if(fire){if(pend||psafe())go();else if(el){el.textContent='Finish what you are typing first'+(window.__psWhy?' ('+window.__psWhy+')':'');setTimeout(function(){el.style.opacity=0},1800)}}},{passive:true});
 })();
 try{var rs=JSON.parse(sessionStorage.getItem('hq.rs')||'null');if(rs){sessionStorage.removeItem('hq.rs');setTimeout(function(){try{(rs.open||[]).forEach(function(k){WOPEN.add(k)});if(rs.tab&&typeof tab!=='undefined')tab=rs.tab;render();window.scrollTo(0,rs.y||0)}catch(e){}},800)}}catch(e){}
-})()</script><div style="position:fixed;top:env(safe-area-inset-top,0);left:50%;transform:translateX(-50%);z-index:99999;background:#b4532a;color:#fff;font:700 9px system-ui;letter-spacing:.08em;padding:1px 8px;border-radius:0 0 8px 8px;pointer-events:none;opacity:.85">BETA 11/23 8:36am</div></body>
+})()</script><div style="position:fixed;top:env(safe-area-inset-top,0);left:50%;transform:translateX(-50%);z-index:99999;background:#b4532a;color:#fff;font:700 9px system-ui;letter-spacing:.08em;padding:1px 8px;border-radius:0 0 8px 8px;pointer-events:none;opacity:.85">BETA 11/23 8:50am</div></body>
 </html>

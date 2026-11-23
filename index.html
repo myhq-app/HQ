@@ -1019,7 +1019,7 @@ const whenLabel = (d, tz, now) => { now = now || new Date(); tz = tz || 'America
 let ST={sites:[],items:[],loaded:false,busy:false,chk:false,at:0,err:'',rem:[]};
 async function stLoad(force){if(!SBS||window.claude||ST.busy)return;if(!force&&ST.loaded&&Date.now()-ST.at<60000)return;ST.busy=true;try{const r=await Promise.all([sbTbl('GET','study_sites?select=*&order=sort'),sbTbl('GET','study_items?select=*&gone_at=is.null&order=rank.asc,first_seen.desc'),sbTbl('GET','call_reminders?select=item_id,due_at&sent_at=is.null').catch(()=>[])]);ST.sites=r[0]||[];ST.items=r[1]||[];ST.rem=r[2]||[];ST.err=''}catch(e){ST.err='Could not load studies. Check your connection and try again.'}ST.busy=false;ST.loaded=true;ST.at=Date.now();render()}
 const tbdg=k=>{const t=today();let n=0,w='';if(k==='g:fin'||k==='bills')n+=(S.bills||[]).filter(x=>!x.done&&x.due&&x.due<=t).length;if(k==='g:fin'||k==='studies'){if(ST.loaded)n+=stNew()}if(k==='g:home'||k==='tasks')n+=(S.tasks||[]).filter(x=>!x.done&&x.due&&x.due<=t).length;return n?`<em class="bdg" aria-label="${n} need attention">${n}</em>`:''};
-const stNew=()=>ST.items.filter(x=>!x.seen_at).length;
+const stNew=()=>{const L=S.stLook?new Date(S.stLook):null,no=Object.keys(S.stNo||{}).map(k=>k.split(':')[1]);return ST.items.filter(x=>!x.gone_at&&!x.seen_at&&!no.includes(String(x.id))&&(!L||new Date(x.first_seen)>L)).length};/* new = since you last opened Studies, not marked 'not for me' (Nov 23) */
 const stInfo=()=>window.claude?'Website app':!SBS?'Sign in to use':!ST.loaded?'Open to load':stNew()?stNew()+' new':ST.sites.length?'Nothing new':'Add a site';
 const stAgo=ts=>{const m=Math.max(0,Math.round((Date.now()-new Date(ts))/6e4));return m<2?'just now':m<60?m+' min ago':m<1440?Math.round(m/60)+' hr ago':Math.round(m/1440)+' days ago'};
 const stPay=t=>{const m=String(t||'').match(/\$\s*([\d,]+)/);return m?m[1].replace(/,/g,''):''};
@@ -7303,6 +7303,10 @@ setTimeout(repair,5000);setTimeout(repair,15000);
 (function(){function fix(){try{if(S.mcFix1||!Array.isArray(S.groceries))return;var M={'4y1bui0':['10','10 2/3 cups'],'3knkdes':['4','4 2/3 cups'],'fq654mx':['1','1 1/3 stick'],'rkkxzec':['2','2 2/3 cups']},n=0;
  S.groceries.forEach(function(g){var m=M[g.id];if(!m||g.done||!g.src)return;g.src.forEach(function(z){if(z.r==='Mac And Cheese'&&String(z.a)===m[0]){z.a=m[1];n++}})});S.mcFix1=1;save();if(n)render()}catch(_){}}
 setTimeout(fix,5000);setTimeout(fix,15000)})();
+</script>
+<script>
+/* Remember when the Studies page was last opened, so "new since you looked" means exactly that (Nov 23). */
+(function(){var _r=render;render=function(){var x=_r.apply(this,arguments);try{if(tab==='studies'&&ST&&ST.loaded){var now=Date.now(),last=S.stLook?new Date(S.stLook).getTime():0;if(now-last>60000){S.stLook=new Date(now).toISOString();save()}}}catch(_){}return x}})();
 </script>
 <script>/* If the first draw failed because the app opened straight onto a screen whose parts load later, draw again now that everything is loaded. */(function(){window.__booted=1;if(!window.__bootRetry)return;try{render()}catch(e){try{(S.errlog=S.errlog||[]).push({k:'boot2',m:String(e&&e.message||e).slice(0,160),at:new Date().toISOString().slice(0,19),tab:tab});save()}catch(_){}try{tab='today';render()}catch(_){}}})();</script>
 <script>(function(){try{var H='9fd7d2c2499204c2a4998657b236d86c1ab1cc1644b9888f0728c3bee577b195',ent=null,i=TABS.findIndex(function(t){return t[0]==='studies'});if(i>-1)ent=TABS[i];var last='',on=false;
