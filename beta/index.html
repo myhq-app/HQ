@@ -9063,6 +9063,24 @@ setTimeout(fill,6000);setInterval(function(){if(!RUN)fill()},10*60*1000);window.
 })();
 </script>
 <style id="kxcss">
+#view .kx4{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:10px;align-items:start;padding-top:2px}
+#view .kx4m{background:var(--card,#fffaf8);border:1px solid #efdcdc;border-radius:22px;padding:13px 12px 11px;box-shadow:0 14px 30px -20px rgba(60,30,30,.6);min-width:0}
+#view .kx4h{display:flex;width:100%;justify-content:space-between;align-items:baseline;border:0;background:none;padding:0;cursor:pointer;color:var(--ink)}
+#view .kx4h b{font:italic 600 21px var(--hf,'Playfair Display'),Georgia,serif}#view .kx4h i{font:500 12px system-ui;font-style:normal;color:var(--mut)}
+#view .kx4k{font:600 9.5px Figtree,Inter,system-ui,sans-serif;letter-spacing:.16em;color:#a9785a;margin:3px 0 6px}
+#view .kx4n{display:flex;width:100%;align-items:center;gap:9px;padding:6px 0;border:0;border-top:1px solid #f2e4e4;background:none;text-align:left;cursor:pointer;color:var(--ink);position:relative;min-width:0}
+#view .kx4n .kpic{width:40px;height:40px;border-radius:10px;flex:none;display:flex;align-items:center;justify-content:center;font-size:19px;font-style:normal;position:relative;overflow:hidden;margin:0}
+#view .kx4n .kpic img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+#view .kx4n .kpic.kq,#view .kx4n .kpic.ke{background:#f3eaea}
+#view .kx4n.t .kpic{outline:2px solid var(--a);outline-offset:1.5px}
+#view .kx4hol{position:absolute;left:30px;top:1px;z-index:2;width:17px;height:17px;border-radius:50%;background:#fff;font-size:10px;display:flex;align-items:center;justify-content:center;box-shadow:0 1px 3px rgba(0,0,0,.15)}
+#view .kx4n span{min-width:0;flex:1}
+#view .kx4n small{display:block;font:700 9px Figtree,Inter,system-ui,sans-serif;letter-spacing:.1em;color:var(--mut)}#view .kx4n.t small{color:var(--a)}
+#view .kx4n p{margin:1px 0 0;font:14px/1.2 var(--bf,Lora),Georgia,serif;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}#view .kx4n p.q{font-style:italic;color:var(--mut)}
+#view .kx4s{display:flex;gap:7px;margin-top:8px}
+#view .kx4q{flex:1;display:flex;align-items:center;gap:6px;background:#f4f1f8;border:1px solid #e2dcee;border-radius:12px;padding:9px 10px;font:12.5px Figtree,Inter,system-ui,sans-serif;color:#857ca0;cursor:pointer;min-width:0}
+#view .kx4p{width:38px;border:0;border-radius:12px;background:var(--a);color:#fff;font:20px system-ui;cursor:pointer}
+
 #view .kxw{padding-top:2px}
 #view .kxmc{background:var(--card,#fffaf8);border-radius:22px;overflow:hidden;border:1px solid #efdcdc;box-shadow:0 14px 30px -20px rgba(60,30,30,.6)}
 #view .kxhero{height:170px;position:relative;color:#fff;cursor:pointer;background:linear-gradient(135deg,#e9c4c0,#c9837a);overflow:hidden}
@@ -9144,27 +9162,21 @@ html body #view .kwf .kok{font:600 13px Figtree,Inter,system-ui,sans-serif;color
  function sun(){var d=new Date(today()+'T12:00');d.setDate(d.getDate()-d.getDay());return iso(d)}
  function kitHtml(){var t=today(),P=S.plan||{},RS=S.recipes||[];
   function dn(d){return((P[d]||{}).Dinner||'').trim()}function q(v){return /^(leftovers|take ?out|eat out|out)$/i.test(v)}
-  function rec(v){var l=String(v).toLowerCase();return RS.find(function(x){return String(x.title).toLowerCase()===l})}
-  function wd(d,o){return new Date(d+'T12:00').toLocaleDateString('en-US',o||{weekday:'long'})}
-  var hd=null;for(var k=0;k<8;k++){var d=addDays(t,k),v=dn(d);if(v&&!q(v)){hd=d;break}}
-  var tv=dn(t),chip=hd===t?'':'<span class="kxchip">Tonight: '+e(tv?tv:'Not picked')+(tv?(/left/i.test(tv)?' 🍱':q(tv)?' 🥡':''):'')+'</span>';
-  var hero;if(hd){var hv=dn(hd),hr=rec(hv);hero='<div class="kxhero" data-kxm="1">'+(window.__kdPic?__kdPic(hv,hd):'')+'<span class="kxlbl">MEALS</span>'+chip+'<div class="kxhn"><small>'+(hd===t?'TONIGHT':hd===addDays(t,1)?'NEXT UP · TOMORROW':'NEXT UP · '+e(wd(hd).toUpperCase()))+'</small><b>'+e(hr?String(hr.title).replace(/\s*\p{Extended_Pictographic}+\s*$/u,''):hv)+'</b></div></div>'}
-  else hero='<div class="kxhero kxe" data-kxm="1"><span class="kxlbl">MEALS</span>'+chip+'<div class="kxhn"><small>THIS WEEK</small><b>Nothing planned yet</b></div></div>';
-  var st=hd||t,up='';for(var j=1;j<=4;j++){var d2=addDays(st,j),v2=dn(d2),tg={};try{tg=window.dayTags?dayTags(d2):{}}catch(_){}
-   up+='<button type="button" class="kxu" data-kxm="1">'+(window.__kdPic?__kdPic(v2,d2):'')+(tg&&tg.hol?'<b class="kxhol">'+e(tg.ico)+'</b>':'')+'<small>'+e(wd(d2,{weekday:'short'}).toUpperCase())+'</small><p class="'+(!v2||q(v2)?'q':'')+'">'+e(v2?(window.__kdNm?__kdNm(v2):v2):'Open')+'</p></button>'}
-  var s=sun(),n=0;for(var k2=0;k2<7;k2++)if(dn(addDays(s,k2)))n++;
-  var meals='<div class="kxmc">'+hero+'<div class="kxup">'+up+'</div><div class="kxmf"><span>'+n+' of 7 picked this week</span><button type="button" data-kxm="1">See week ›</button></div></div>';
-  var hasP=function(x){return !!(x.photo||x.img)},pool=RS.filter(function(x){return x.fav&&hasP(x)}).concat(RS.filter(function(x){return !x.fav&&hasP(x)}),RS.filter(function(x){return !hasP(x)})).slice(0,3);
-  var col=pool.map(function(x){return '<button type="button" class="kxri" data-kxr="'+e(x.id)+'">'+(window.__kdPic?__kdPic(x.title):'')+(x.video?'<em>▶</em>':'')+'</button>'}).join('');
-  var recs='<div class="kxrec"><button type="button" class="kxrh" data-kxm="1"><b>Recipes</b><small>'+RS.length+' ›</small></button>'+(col?'<div class="kxcol">'+col+'</div>':'<p class="kxem">Save your first recipe.</p>')+'<button type="button" class="kxsr" data-kxs="1">🔍 Find a recipe</button></div>';
-  var G=(S.groceries||[]).filter(function(x){return !x.done}),T=effTrip(),gl=G.slice(0,6).map(function(x){return '<li><u></u>'+e(x.title||x.name||'')+'</li>'}).join('');
-  var gro='<div class="kxrc" data-tab="groceries"><button type="button" class="kxgh" data-tab="groceries"><b>Grocery List</b><i>›</i></button><div class="kxk">'+e(T===t?'Shopping today':wd(T,{weekday:'short'}).toUpperCase()+' TRIP')+' · '+G.length+(G.length===1?' ITEM':' ITEMS')+'</div>'+(gl?'<ul>'+gl+'</ul>':'<p class="kxem">Your list is empty.</p>')+'<div class="kxmore"><span>'+(G.length>6?'+ '+(G.length-6)+' more':'')+'</span>'+(G.length?'<button type="button" data-wm="open" data-st="'+e(S.shopStore||'walmart')+'">Shop ›</button>':'')+'</div></div>';
-  return '<div class="kxw">'+meals+'<div class="kxb">'+recs+gro+'</div></div>'}
- window.addEventListener('click',function(ev){if(tab!=='kit')return;var b=ev.target.closest&&ev.target.closest('[data-kxm],[data-kxr],[data-kxs]');if(!b)return;ev.preventDefault();ev.stopImmediatePropagation();
+  function wd(d,o){return new Date(d+'T12:00').toLocaleDateString('en-US',o||{weekday:'short'})}
+  var s=sun(),n=0;for(var k=0;k<7;k++)if(dn(addDays(s,k)))n++;
+  var rows='';for(var j=0;j<5;j++){var d=addDays(t,j),v=dn(d),tg={};try{tg=window.dayTags?dayTags(d):{}}catch(_){}
+   rows+='<button type="button" class="kx4n'+(j===0?' t':'')+'" data-kxd="'+d+'">'+(window.__kdPic?__kdPic(v,d):'')+(tg&&tg.hol?'<b class="kx4hol">'+e(tg.ico)+'</b>':'')+'<span><small>'+(j===0?'TONIGHT':e(wd(d).toUpperCase()))+'</small><p class="'+(!v||q(v)?'q':'')+'">'+e(v?(window.__kdNm?__kdNm(v):v):'Pick a dinner')+'</p></span></button>'}
+  var meals='<div class="kx4m"><button type="button" class="kx4h" data-kxm="1"><b>Meals</b><i>›</i></button><div class="kx4k">'+n+' OF 7 PICKED THIS WEEK</div>'+rows+'<div class="kx4s"><button type="button" class="kx4q" data-kxs="1">🔍 '+RS.length+' recipes</button><button type="button" class="kx4p" data-kxp="1" aria-label="Add a recipe">+</button></div></div>';
+  var G=(S.groceries||[]).filter(function(x){return !x.done}),T=effTrip(),gl=G.slice(0,7).map(function(x){return '<li><u></u>'+e(x.title||x.name||'')+'</li>'}).join('');
+  var gro='<div class="kxrc" data-tab="groceries"><button type="button" class="kxgh" data-tab="groceries"><b>Grocery List</b><i>›</i></button><div class="kxk">'+e(T===t?'Shopping today':wd(T).toUpperCase()+' TRIP')+' · '+G.length+(G.length===1?' ITEM':' ITEMS')+'</div>'+(gl?'<ul>'+gl+'</ul>':'<p class="kxem">Your list is empty.</p>')+'<div class="kxmore"><span>'+(G.length>7?'+ '+(G.length-7)+' more':'')+'</span>'+(G.length?'<button type="button" data-wm="open" data-st="'+e(S.shopStore||'walmart')+'">Shop ›</button>':'')+'</div></div>';
+  return '<div class="kx4">'+meals+gro+'</div>'}
+ window.addEventListener('click',function(ev){if(tab!=='kit')return;var b=ev.target.closest&&ev.target.closest('[data-kxm],[data-kxr],[data-kxs],[data-kxd],[data-kxp]');if(!b)return;ev.preventDefault();ev.stopImmediatePropagation();
   tab='meals';try{mtab='rec'}catch(_){}try{location.hash='meals'}catch(_){}
   var r=b.getAttribute('data-kxr');if(r){try{WOPEN.add('r:'+r)}catch(_){}}
   if(b.hasAttribute('data-kxs'))window.RXS=1;
-  render();window.scrollTo(0,0);if(b.hasAttribute('data-kxs'))setTimeout(function(){var i=document.getElementById('rq');if(i)i.focus()},40)},true);
+  render();window.scrollTo(0,0);if(b.hasAttribute('data-kxs'))setTimeout(function(){var i=document.getElementById('rq');if(i)i.focus()},40);
+  if(b.hasAttribute('data-kxp'))setTimeout(function(){var m=document.querySelector('#view .rxhd details');if(m){m.open=true;m.scrollIntoView({block:'center'})}},40);
+  var dd=b.getAttribute('data-kxd');if(dd){var n=0;(function go(){var k=document.querySelector('#view .kd[data-kd="'+dd+'"]');if(k){k.click();setTimeout(function(){var p=document.querySelector('#view .kpa');if(p)p.scrollIntoView({block:'center',behavior:'smooth'})},80);return}if(++n>3)return;var nx=document.querySelector('#view [data-knav="'+(dd<today()?'-7':'7')+'"]');if(nx){nx.click();setTimeout(go,60)}})()}},true);
  var hv=hubView;hubView=function(t){if(t==='kit'){var c='#b5707c';try{var x=TBS().find(function(z){return z[0]==='g:shop'});if(x)c=x[2]}catch(_){}return{title:'Kitchen',color:c,parent:'today',html:kitHtml()}}return hv.apply(this,arguments)};
  var _r=render;render=function(){if(tab==='g:shop')tab='kit';var x=_r.apply(this,arguments);try{if(tab==='kit'){var n=document.getElementById('nav');if(n){n.className='';n.innerHTML=''}}if(tab==='groceries'||tab==='meals'){var tt=document.getElementById('ttl');if(tt)tt.textContent=tab==='meals'?'Meals':'Grocery List'}}catch(_){}return x};
  var SEG=/<div class="calseg"><button type="button" data-tab="groceries"[\s\S]*?<\/div>/,BK='<button type="button" class="kbk3" data-tab="kit">‹ Kitchen</button>';
@@ -9209,5 +9221,5 @@ document.addEventListener('touchend',function(){if(!on)return;on=false;var fire=
  if(fire){if(pend||psafe())go();else if(el){el.textContent='Finish what you are typing first'+(window.__psWhy?' ('+window.__psWhy+')':'');setTimeout(function(){el.style.opacity=0},1800)}}},{passive:true});
 })();
 try{var rs=JSON.parse(sessionStorage.getItem('hq.rs')||'null');if(rs){sessionStorage.removeItem('hq.rs');setTimeout(function(){try{(rs.open||[]).forEach(function(k){WOPEN.add(k)});if(rs.tab&&typeof tab!=='undefined')tab=rs.tab;render();window.scrollTo(0,rs.y||0)}catch(e){}},800)}}catch(e){}
-})()</script><div style="position:fixed;top:env(safe-area-inset-top,0);left:50%;transform:translateX(-50%);z-index:99999;background:#b4532a;color:#fff;font:700 9px system-ui;letter-spacing:.08em;padding:1px 8px;border-radius:0 0 8px 8px;pointer-events:none;opacity:.85">BETA 11/23 1:51pm</div></body>
+})()</script><div style="position:fixed;top:env(safe-area-inset-top,0);left:50%;transform:translateX(-50%);z-index:99999;background:#b4532a;color:#fff;font:700 9px system-ui;letter-spacing:.08em;padding:1px 8px;border-radius:0 0 8px 8px;pointer-events:none;opacity:.85">BETA 11/23 1:52pm</div></body>
 </html>
