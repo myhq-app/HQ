@@ -8829,6 +8829,80 @@ function clean(t){var o=String(t||''),x=o;
  return x.replace(/[\p{Extended_Pictographic}️‍]/gu,'').trim().length>=3?x:o}
 window.hqCleanTitle=clean;tidyTitle=function(t){return _t(clean(t))}})();
 </script>
+<style id="re2css">
+#view .re2{padding-top:4px}
+#view .re2top{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+#view .re2top b{font:600 12px var(--bf,system-ui),system-ui,sans-serif;letter-spacing:.12em;text-transform:uppercase;color:var(--mut)}
+html body #view .re2top .btn{padding:8px 18px!important;font:600 14px var(--bf,system-ui),system-ui,sans-serif!important;letter-spacing:0!important;text-transform:none!important;margin:0!important}
+#view .re2nm{display:flex;gap:12px;align-items:center}
+#view .re2ph{position:relative;width:64px;height:64px;flex:none;border-radius:14px;border:1.5px dashed color-mix(in srgb,var(--rose,#c27a85) 45%,transparent);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font:11px var(--bf,system-ui),system-ui,sans-serif;color:var(--mut);overflow:hidden;cursor:pointer;margin:0!important;padding:0!important}
+#view .re2ph svg{width:20px;height:20px;opacity:.7}
+#view .re2ph img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+#view .re2ph input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+html body #view .re2 input.re2ti{flex:1;min-width:0;border:0!important;border-bottom:1.5px solid var(--line)!important;border-radius:0!important;background:none!important;box-shadow:none!important;padding:6px 0!important;font:600 20px var(--hf,Georgia),Georgia,serif!important;color:var(--ink)!important}
+html body #view .re2 .re2rp{display:block;margin:6px 0 0;font-size:12px!important;color:var(--mut)!important}
+#view .re2ch{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+html body #view .re2ch button{border:1px solid var(--line)!important;background:var(--card)!important;border-radius:999px!important;padding:5px 11px!important;margin:0!important;box-shadow:none!important;font:500 12.5px var(--bf,system-ui),system-ui,sans-serif!important;letter-spacing:0!important;text-transform:none!important;color:var(--ink)!important}
+html body #view .re2ch button.ed{border-style:dashed!important;color:var(--mut)!important}
+html body #view .re2ch button.on{background:color-mix(in srgb,var(--rose,#c27a85) 12%,var(--card))!important;border-color:color-mix(in srgb,var(--rose,#c27a85) 45%,transparent)!important}
+#view .re2det{margin-top:10px;padding:12px;border:1px solid var(--line);border-radius:14px;background:color-mix(in srgb,var(--line) 25%,var(--card));display:grid;grid-template-columns:1fr 1fr;gap:10px}
+html body #view .re2det label{display:flex;flex-direction:column;gap:4px;margin:0!important;font:600 11px var(--bf,system-ui),system-ui,sans-serif!important;letter-spacing:.06em;text-transform:uppercase;color:var(--mut)!important}
+html body #view .re2det select,html body #view .re2det input{font:15px var(--bf,system-ui),system-ui,sans-serif!important;padding:8px 10px!important;border-radius:10px!important;min-height:0!important;height:auto!important;text-transform:none!important;letter-spacing:0!important}
+#view .re2det .full{grid-column:1/-1}
+html body #view .re2det .sides{grid-column:1/-1;margin:0!important}
+html body #view .re2det .sides b{font:600 11px var(--bf,system-ui),system-ui,sans-serif;letter-spacing:.06em;text-transform:uppercase;color:var(--mut)}
+html body #view .re2det .sides .btn{padding:5px 11px!important;font:500 12.5px var(--bf,system-ui),system-ui,sans-serif!important;letter-spacing:0!important;text-transform:none!important}
+#view .re2lab{display:flex;align-items:center;justify-content:space-between;margin:18px 2px 6px;font:700 11px var(--bf,system-ui),system-ui,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:var(--rose,#c27a85)}
+#view .re2lab em{font-style:normal;letter-spacing:0;text-transform:none;font-weight:500;font-size:12.5px;color:var(--mut)}
+html body #view .re2lab label{display:flex;align-items:center;gap:6px;margin:0!important;font:500 12.5px var(--bf,system-ui),system-ui,sans-serif!important;letter-spacing:0!important;text-transform:none!important;color:var(--mut)!important}
+html body #view .re2lab input{width:58px!important;padding:5px 8px!important;font:600 14px var(--bf,system-ui),system-ui,sans-serif!important;text-align:center;border-radius:9px!important;min-height:0!important}
+html body #view .re2 textarea{width:100%;border:1px solid var(--line)!important;border-radius:14px!important;background:var(--card)!important;padding:10px 12px!important;font:15px/1.65 var(--bf,system-ui),system-ui,sans-serif!important;color:var(--ink)!important;resize:vertical}
+html body #view .re2 .re2del{display:block;margin:18px auto 4px;border:0!important;background:none!important;box-shadow:none!important;font:500 13px var(--bf,system-ui),system-ui,sans-serif!important;letter-spacing:0!important;text-transform:none!important;color:#b4545f!important;padding:6px!important}
+/* view */
+#view .rv2 .rv2m{display:flex;flex-wrap:wrap;gap:6px;margin:2px 0 10px}
+#view .rv2 .rv2m span{font:500 12.5px var(--bf,system-ui),system-ui,sans-serif;color:var(--mut);border:1px solid var(--line);border-radius:999px;padding:3px 10px;background:var(--card)}
+#view .rv2 .rv2a{display:flex;gap:8px;margin:0 0 4px}
+html body #view .rv2 .rv2a .btn{flex:1;margin:0!important;padding:10px 0!important;font:600 14px var(--bf,system-ui),system-ui,sans-serif!important;letter-spacing:0!important;text-transform:none!important;border-radius:12px!important}
+#view .rv2 .rv2l{display:flex;gap:16px;margin:6px 2px 4px}
+html body #view .rv2 .rv2l a,html body #view .rv2 .rv2l button{border:0!important;background:none!important;padding:0!important;margin:0!important;box-shadow:none!important;font:500 13px var(--bf,system-ui),system-ui,sans-serif!important;letter-spacing:0!important;text-transform:none!important;color:var(--ink)!important;text-decoration:underline;text-decoration-color:var(--line);text-underline-offset:3px}
+#view .rv2 .rv2h{display:flex;align-items:center;justify-content:space-between;margin:14px 2px 4px}
+#view .rv2 .rv2h .ringh{margin:0!important}
+#view .rv2 .rv2s{display:flex;align-items:center;gap:6px;font:500 12.5px var(--bf,system-ui),system-ui,sans-serif;color:var(--mut)}
+html body #view .rv2 .rv2s .btn{width:26px;height:26px;min-height:0!important;padding:0!important;margin:0!important;border-radius:50%!important;font:600 14px system-ui!important;display:inline-flex;align-items:center;justify-content:center}
+#view .rv2 .rv2s b{font:600 13.5px var(--bf,system-ui),system-ui,sans-serif;color:var(--ink);min-width:18px;text-align:center}
+</style>
+<script>
+/* Cleaner recipe screens (Nov 23). Edit: photo + name, small chips for the details (tap to change),
+   then ingredients and steps. View: chips, two buttons, small links, ingredients with servings, steps. */
+(function(){if(typeof recBody!=='function')return;var old=recBody;window.RE2D=window.RE2D||{};
+var CAM='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h3l2-3h6l2 3h3v12H4z"/><circle cx="12" cy="13" r="3.5"/></svg>';
+function tm(x){var m=(+x.prep||0)+(+x.cook||0);if(!m)return x.time||'';return m<60?m+' min':(Math.floor(m/60)+' hr'+(m%60?' '+(m%60)+' min':''))}
+function rows(t,mn,mx){var n=String(t||'').split('\n').reduce(function(a,l){return a+Math.max(1,Math.ceil(l.length/34))},0);return Math.max(mn,Math.min(mx,n+1))}
+function edit(x){var o=!!RE2D[x.id],ty=x.type||typeOf(Object.assign({},x,{type:''})),ef=effOf(x),hd=x.hands==='off'?'Cooks on its own':x.hands==='on'?'Stovetop':'',t=tm(x);
+ var chips=[x.meal||'Category',ty,(ef==='Big'?'Big':ef)+' cook',t,hd].filter(Boolean).map(function(c){return '<button type="button" data-re2d="'+esc(x.id)+'" class="'+(o?'on':'')+'">'+esc(c)+'</button>'}).join('')+'<button type="button" class="ed'+(o?' on':'')+'" data-re2d="'+esc(x.id)+'">'+(o?'Hide details':'✎ Details')+'</button>';
+ var F=function(f){return 'data-a="fld" data-k="recipes" data-i="'+x.id+'" data-f="'+f+'"'};
+ var det=o?'<div class="re2det"><label>Category<select '+F('meal')+'>'+MT.map(function(m){return '<option'+(m===x.meal?' selected':'')+'>'+m+'</option>'}).join('')+'</select></label><label>Type<select '+F('type')+'><option value="">Automatic ('+esc(typeOf(Object.assign({},x,{type:''})))+')</option>'+TYPES.map(function(m){return '<option'+(m===x.type?' selected':'')+'>'+m+'</option>'}).join('')+'</select></label>'+
+  '<label>How big a cook<select '+F('effort')+'>'+['Easy','Medium','Big'].map(function(v){return '<option value="'+v+'"'+(v===ef?' selected':'')+'>'+(v==='Big'?'Big cook':v)+'</option>'}).join('')+'</select></label><label>Cooks<select '+F('hands')+'><option value="">Automatic</option><option value="off"'+(x.hands==='off'?' selected':'')+'>On its own</option><option value="on"'+(x.hands==='on'?' selected':'')+'>I have to be there</option></select></label>'+
+  '<label>Prep minutes<input type="number" inputmode="numeric" min="0" max="600" '+F('prep')+' value="'+esc(x.prep||'')+'" placeholder="15"></label><label>Cook minutes<input type="number" inputmode="numeric" min="0" max="900" '+F('cook')+' value="'+esc(x.cook||'')+'" placeholder="45"></label>'+
+  (x.meal==='Dinner'?'<div class="sides"><b>Usual side</b><div class="bar" style="margin:6px 0">'+sideList(x).map(function(z){return '<button type="button" class="btn '+(x.side===z[0]?'':'ghost')+'" data-a="rside" data-i="'+x.id+'" data-v="'+esc(z[0])+'">'+esc(z[0])+'</button>'}).join('')+(function(c){return '<input class="sidein '+(c?'sel':'')+'" '+F('side')+' placeholder="+ Your own" aria-label="Add your own side" size="'+Math.max(9,(c||'').length+2)+'" value="'+esc(c)+'">'})(x.side&&!sideList(x).some(function(z){return z[0]===x.side})?x.side:'')+'</div></div>':'')+'</div>':'';
+ return '<div class="re2"><div class="re2top"><b>Edit recipe</b><button class="btn" data-a="redone">Done</button></div>'+
+  '<div class="re2nm"><label class="re2ph" aria-label="'+(x.photo?'Change photo':'Add photo')+'">'+(x.photo?'<img src="'+x.photo+'" alt="">':CAM+'<span>Photo</span>')+'<input type="file" accept="image/*" data-a="rphoto" data-i="'+x.id+'"></label><input class="re2ti" '+F('title')+' value="'+esc(x.title)+'" placeholder="Recipe name" aria-label="Recipe name"></div>'+
+  (x.photo?'<button type="button" class="lnk re2rp" data-a="rphotox" data-i="'+x.id+'">Remove photo</button>':'')+
+  '<div class="re2ch">'+chips+'</div>'+det+
+  '<div class="re2lab">Ingredients<label>Serves <input type="number" min="1" inputmode="numeric" '+F('servings')+' value="'+esc(x.servings||'')+'" aria-label="Servings"></label></div><textarea rows="'+rows(x.ingredients,4,16)+'" '+F('ingredients')+' aria-label="Ingredients, one per line" placeholder="One per line">'+esc(x.ingredients||'')+'</textarea>'+
+  '<div class="re2lab">Steps<em>one per line</em></div><textarea rows="'+rows(x.steps,4,14)+'" '+F('steps')+' aria-label="Steps, one per line" placeholder="One step per line">'+esc(x.steps||'')+'</textarea>'+
+  '<button type="button" class="re2del" data-a="del" data-k="recipes" data-i="'+x.id+'">Delete recipe</button></div>'}
+function view(x){var sd=x.meal==='Dinner'?sideFor(x,today()):null,t=tm(x),sv=RSV[x.id]||x.servings;
+ var meta=[x.meal,t,x.servings?'serves '+x.servings:'',sd?'side: '+sd[0]:''].filter(Boolean).map(function(c){return '<span>'+esc(c)+'</span>'}).join('');
+ var btn=(x.ingredients||x.steps?'<button class="btn" data-a="cook" data-i="'+x.id+'">Cook mode</button>':'')+(x.ingredients?'<button class="btn ghost" data-a="recgroc" data-i="'+x.id+'">Add to groceries</button>':'');
+ var lk=(x.link&&!x.ingredients?'<button type="button" data-a="recimp" data-i="'+x.id+'">Get ingredients &amp; steps</button>':'')+(x.link?'<a href="'+esc(x.link)+'" target="_blank" rel="noopener">Open in ReciMe</a>':'');
+ return '<div class="rv2">'+(x.photo?'<img class="rbig rsm" src="'+x.photo+'" alt="">':'')+(meta?'<div class="rv2m">'+meta+'</div>':'')+(btn?'<div class="rv2a">'+btn+'</div>':'')+(lk?'<div class="rv2l">'+lk+'</div>':'')+
+  (x.ingredients?'<div class="rv2h"><div class="ringh">Ingredients</div>'+((+x.servings)?'<span class="rv2s"><button class="btn ghost" data-a="rsv" data-i="'+x.id+'" data-v="-1" aria-label="Fewer servings">−</button><b>'+sv+'</b><button class="btn ghost" data-a="rsv" data-i="'+x.id+'" data-v="1" aria-label="More servings">+</button>servings</span>':'')+'</div><div class="ring">'+ingList(x)+'</div>':'')+
+  (x.steps?'<details class="rstp" data-od="rs:'+x.id+'"'+(WOPEN.has('rs:'+x.id)?' open':'')+'><summary>Steps ('+ckSteps(x).length+')</summary><p class="pre ring">'+esc(x.steps)+'</p></details>':'')+'</div>'}
+recBody=function(x){try{return redit===x.id?edit(x):view(x)}catch(e){try{(S.errlog=S.errlog||[]).push('re2 '+e.message)}catch(_){}return old(x)}};
+window.addEventListener('click',function(e){var b=e.target.closest&&e.target.closest('[data-re2d]');if(!b)return;e.preventDefault();e.stopImmediatePropagation();var id=b.getAttribute('data-re2d');RE2D[id]=!RE2D[id];render()},true);
+})();
+</script>
 <script>/* If the first draw failed because the app opened straight onto a screen whose parts load later, draw again now that everything is loaded. */(function(){window.__booted=1;if(!window.__bootRetry)return;try{render()}catch(e){try{(S.errlog=S.errlog||[]).push({k:'boot2',m:String(e&&e.message||e).slice(0,160),at:new Date().toISOString().slice(0,19),tab:tab});save()}catch(_){}try{tab='today';render()}catch(_){}}})();</script>
 <script>(function(){try{var H='9fd7d2c2499204c2a4998657b236d86c1ab1cc1644b9888f0728c3bee577b195',ent=null,i=TABS.findIndex(function(t){return t[0]==='studies'});if(i>-1)ent=TABS[i];var last='',on=false;
 function apply(ok){on=ok;window.__own=ok;if(ok){try{if(localStorage.getItem('hq.beta')!=='0'){localStorage.setItem('hq.beta','1');if(!window.__isBeta)window.__go()}}catch(e){}}var j=TABS.findIndex(function(t){return t[0]==='studies'});if(ok&&j<0&&ent)TABS.push(ent);if(!ok&&j>-1)TABS.splice(j,1);var k=QA_ALL.indexOf('studies');if(!ok&&k>-1)QA_ALL.splice(k,1);if(ok&&k<0)QA_ALL.push('studies');if(!ok&&tab==='studies')tab='today'}
@@ -8853,5 +8927,5 @@ document.addEventListener('touchend',function(){if(!on)return;on=false;var fire=
  if(fire){if(pend||psafe())go();else if(el){el.textContent='Finish what you are typing first'+(window.__psWhy?' ('+window.__psWhy+')':'');setTimeout(function(){el.style.opacity=0},1800)}}},{passive:true});
 })();
 try{var rs=JSON.parse(sessionStorage.getItem('hq.rs')||'null');if(rs){sessionStorage.removeItem('hq.rs');setTimeout(function(){try{(rs.open||[]).forEach(function(k){WOPEN.add(k)});if(rs.tab&&typeof tab!=='undefined')tab=rs.tab;render();window.scrollTo(0,rs.y||0)}catch(e){}},800)}}catch(e){}
-})()</script><div style="position:fixed;top:env(safe-area-inset-top,0);left:50%;transform:translateX(-50%);z-index:99999;background:#b4532a;color:#fff;font:700 9px system-ui;letter-spacing:.08em;padding:1px 8px;border-radius:0 0 8px 8px;pointer-events:none;opacity:.85">BETA 11/23 9:42am</div></body>
+})()</script><div style="position:fixed;top:env(safe-area-inset-top,0);left:50%;transform:translateX(-50%);z-index:99999;background:#b4532a;color:#fff;font:700 9px system-ui;letter-spacing:.08em;padding:1px 8px;border-radius:0 0 8px 8px;pointer-events:none;opacity:.85">BETA 11/23 9:47am</div></body>
 </html>
