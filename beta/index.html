@@ -8554,6 +8554,16 @@ html body .gsrc2 .grp{display:inline-flex;align-items:center;gap:4px;border:1px 
 .gsrc2 .grp svg{width:12px;height:12px;flex:none;opacity:.7}
 .gsrc2 .grp em{font-style:normal;color:var(--mut);margin-left:2px;flex:none}
 .gsrc2 .grp .grn{min-width:0;overflow:hidden;text-overflow:ellipsis}
+.gsrc3{margin-top:2px;position:static}
+#view .row:has(.gq3){position:relative}
+#view .gname:has(.gq3){padding-right:84px}
+#view .gname .gsl3{margin-right:-84px}
+html body .gsl3 .grl{text-align:left!important;white-space:normal!important}
+.gsrc3 .gq3{position:absolute;right:44px;top:12px;font:600 15px var(--bf,system-ui),system-ui,sans-serif;color:#4a3f78!important;white-space:nowrap;letter-spacing:-.01em}
+.gsl3{display:flex;flex-wrap:wrap;align-items:center;gap:2px 6px;font:12.5px var(--bf,system-ui),system-ui,sans-serif;color:var(--mut);line-height:1.45}
+.gsl3 svg{width:12px;height:12px;opacity:.55;flex:none}
+.gsl3 .gna{color:var(--mut)}.gsl3 .gdot{font-style:normal;opacity:.6}
+html body .gsl3 .grl{border:0!important;background:none!important;padding:0!important;margin:0!important;box-shadow:none!important;font:inherit!important;color:var(--ink)!important;text-decoration:underline!important;text-decoration-color:color-mix(in srgb,var(--rose,#c27a85) 40%,transparent)!important;text-underline-offset:3px;cursor:pointer;min-height:0!important}
 .ringl li .ozh,#grs li .ozh{font:500 12px var(--bf,system-ui),system-ui,sans-serif;color:#5b4c86;margin-left:6px;white-space:nowrap}
 </style>
 <script>
@@ -8598,7 +8608,7 @@ function prof(name){var l=String(name||'').toLowerCase();for(var i=0;i<P.length;
 function oz(a,p){if(!a||!p||p.k)return null;var n=a.n;switch(a.u){case 'cup':return n*p.c;case 'tbsp':return n*p.c/16;case 'tsp':return n*p.c/48;case 'oz':case 'floz':return n;case 'lb':return n*16;case 'pint':return n*16;case 'quart':return n*32;case 'can':return p.pk&&p.pk[0]?n*p.pk[0][0]:null}return null}
 var W=['zero','one','two','three','four','five','six','seven','eight','nine','ten'];
 function pl(w,n){return n===1?w:(/(box)$/.test(w)?w+'es':w+'s')}
-function nice(v){var r=Math.round(v*4)/4,i=Math.floor(r),f=r-i,fs=f===.25?'¼':f===.5?'½':f===.75?'¾':'';return (i?String(i):'')+(fs||(!i?'0':''))}
+function nice(v){var i=Math.floor(v+1e-9),f=v-i,fs='';if(Math.abs(f-1/3)<.04)fs='⅓';else if(Math.abs(f-2/3)<.04)fs='⅔';else{var q=Math.round(f*4)/4;if(q===1){i++;q=0}fs=q===.25?'¼':q===.5?'½':q===.75?'¾':''}return (i?String(i):'')+(fs||(!i?'0':''))}
 function ozTxt(v,fl){if(v>=24&&!fl){var lb=v/16;return Math.abs(lb-Math.round(lb))<.08?Math.round(lb)+' lb':nice(lb)+' lb'}return (v<10?nice(v):Math.round(v))+' oz'}
 function buy(total,p){if(!(total>0))return '';/* loosely measured things (pasta, shredded cheese, rice...) get a 10% cushion so you're never short */
  var pk=p.pk,T=total*0.99;var one=pk.find(function(x){return x[0]>=T});
@@ -8617,7 +8627,16 @@ window.hqBuy=function(x){var p=prof(x.title),src=x.src||[],need=[],tot=0,ok=!!p;
  var b='';if(ok&&tot>0){if(p.k==='butter')b=tot<=4.05?'1 box (4 sticks)':Math.ceil(tot/4-0.01)+' boxes (4 sticks each)';else if(p.k==='egg')b=tot<=12?'1 dozen':Math.ceil(tot/12)+' dozen';else b=buy(tot,p)}
  return {buy:b,need:need,tot:tot,p:p,ok:ok}};
 var BK='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2z"/><path d="M4 19V5M8 7h7"/></svg>';
-var _g=gSrc;gSrc=function(x){try{if(!x||!x.src||!x.src.length)return _g(x);var B=hqBuy(x),one=B.need.length===1;
+/* short store amount for the right side: weight for cheese, packages for the rest */
+function shortBuy(B){if(!B.ok||!(B.tot>0)||!B.p)return '';var p=B.p,t=B.tot;
+ if(p.k==='butter')return t<=4.05?'1 box':Math.ceil(t/4-0.01)+' boxes';if(p.k==='egg')return t<=12?'1 dozen':Math.ceil(t/12)+' dozen';
+ if(p.bag){if(t<=15.5)return Math.ceil(t)+' oz';return nice(Math.ceil(t/16*4-0.05)/4)+' lb'}
+ var pk=p.pk,T=t*0.99,one=pk.find(function(x){return x[0]>=T}),L=one||pk[pk.length-1],c=one?1:Math.ceil(T/L[0]),lbl=L[1];
+ var named=/^(pint|quart|half gallon|gallon)$/.test(lbl);return c+' '+pl(lbl,c)+(!named&&pk.length>1?' ('+L[2]+')':'')}
+var _g=gSrc;gSrc=function(x){try{if(!x||!x.src||!x.src.length)return _g(x);var B=hqBuy(x),sb=shortBuy(B);
+ var parts=B.need.map(function(n){var a=fmtA(n.a,n.raw);return (a?'<span class="gna">'+esc(a)+'</span> ':'')+'<button type="button" class="gsl grl" data-rec="'+esc(n.r)+'" aria-label="See the '+esc(n.r)+' recipe">'+esc(String(n.r).replace(/\s*[\u{1F300}-\u{1FAFF}☀-➿]️?\s*/gu,' ').trim())+'</button>'});
+ return '<div class="gsrc gsrc3">'+(sb?'<b class="gq3">'+esc(sb)+'</b>':'')+'<div class="gsl3">'+BK+parts.join('<i class="gdot">·</i>')+'</div></div>'}catch(e){return _g(x)}};
+var _gOld=function(x){try{if(!x||!x.src||!x.src.length)return _g(x);var B=hqBuy(x),one=B.need.length===1;
  var conv=function(n){if(!B.p||!n.a||B.p.k)return '';var v=oz(n.a,B.p);return v&&n.a.u!=='oz'&&n.a.u!=='lb'?' (about '+ozTxt(v,B.p.fl)+')':''};
  var needTxt=one?'Needs '+fmtA(B.need[0].a,B.need[0].raw)+conv(B.need[0]):'Needs '+B.need.map(function(n){return fmtA(n.a,n.raw)}).filter(Boolean).join(' + ');
  return '<div class="gsrc gsrc2">'+(B.buy?'<span class="gbuy">Buy '+esc(B.buy)+'</span>':'')+B.need.map(function(n){return '<button type="button" class="grp gsl" data-rec="'+esc(n.r)+'" aria-label="See the '+esc(n.r)+' recipe">'+BK+'<span class="grn">'+esc(n.r)+'</span>'+(!one&&n.raw?'<em>'+esc(fmtA(n.a,n.raw))+'</em>':'')+'</button>'}).join('')+(B.need.some(function(n){return n.raw})?'<span class="gneed">'+esc(needTxt)+'</span>':'')+'</div>'}catch(e){return _g(x)}};
@@ -8676,5 +8695,5 @@ document.addEventListener('touchend',function(){if(!on)return;on=false;var fire=
  if(fire){if(pend||psafe())go();else if(el){el.textContent='Finish what you are typing first'+(window.__psWhy?' ('+window.__psWhy+')':'');setTimeout(function(){el.style.opacity=0},1800)}}},{passive:true});
 })();
 try{var rs=JSON.parse(sessionStorage.getItem('hq.rs')||'null');if(rs){sessionStorage.removeItem('hq.rs');setTimeout(function(){try{(rs.open||[]).forEach(function(k){WOPEN.add(k)});if(rs.tab&&typeof tab!=='undefined')tab=rs.tab;render();window.scrollTo(0,rs.y||0)}catch(e){}},800)}}catch(e){}
-})()</script><div style="position:fixed;top:env(safe-area-inset-top,0);left:50%;transform:translateX(-50%);z-index:99999;background:#b4532a;color:#fff;font:700 9px system-ui;letter-spacing:.08em;padding:1px 8px;border-radius:0 0 8px 8px;pointer-events:none;opacity:.85">BETA 11/23 7:15am</div></body>
+})()</script><div style="position:fixed;top:env(safe-area-inset-top,0);left:50%;transform:translateX(-50%);z-index:99999;background:#b4532a;color:#fff;font:700 9px system-ui;letter-spacing:.08em;padding:1px 8px;border-radius:0 0 8px 8px;pointer-events:none;opacity:.85">BETA 11/23 7:40am</div></body>
 </html>
