@@ -780,7 +780,7 @@ async function recImport(r,quiet){if(!r||!r.link||(r.ingredients&&r.steps))retur
  const fail=m=>{const x=find('recipes',r.id);if(x){x.impFail=Date.now();delete x.noted;save()}if(!quiet)toast(m||'Could not read that recipe. You can type it in with the pencil.');return false};
  try{if(!quiet)toast('Reading the recipe…');const res=await fetch(SBU+'/functions/v1/recipe-import',{method:'POST',headers:{apikey:SBK,Authorization:'Bearer '+tok,'Content-Type':'application/json'},body:JSON.stringify({url:r.link})});const j=await res.json().catch(()=>({}));
   if(!res.ok||j.error)return fail(j.error);
-  const x=find('recipes',r.id);if(!x)return false;if(!x.ingredients&&j.ingredients&&j.ingredients.length)x.ingredients=j.ingredients.join('\n');
+  const x=find('recipes',r.id);if(!x)return false;if(j.image&&!x.img)x.img=j.image;if(j.video&&!x.video)x.video=j.video;if(!x.ingredients&&j.ingredients&&j.ingredients.length)x.ingredients=j.ingredients.join('\n');
   if(!x.steps&&j.steps&&j.steps.length)x.steps=j.steps.map((t,i)=>(i+1)+'. '+t).join('\n');
   if(!x.time&&j.time)x.time=j.time;if(!x.servings&&j.servings)x.servings=j.servings;
   if(x.auto&&j.title){x.title=tidyTitle(j.title)||x.title;x.auto=0}
@@ -8657,7 +8657,7 @@ var _gOld=function(x){try{if(!x||!x.src||!x.src.length)return _g(x);var B=hqBuy(
  return '<div class="gsrc gsrc2">'+(B.buy?'<span class="gbuy">Buy '+esc(B.buy)+'</span>':'')+B.need.map(function(n){return '<button type="button" class="grp gsl" data-rec="'+esc(n.r)+'" aria-label="See the '+esc(n.r)+' recipe">'+BK+'<span class="grn">'+esc(n.r)+'</span>'+(!one&&n.raw?'<em>'+esc(fmtA(n.a,n.raw))+'</em>':'')+'</button>'}).join('')+(B.need.some(function(n){return n.raw})?'<span class="gneed">'+esc(needTxt)+'</span>':'')+'</div>'}catch(e){return _g(x)}};
 /* ≈ ounces next to recipe lines (recipe page and the popup on the grocery list) */
 function hint(li){if(!li||li.querySelector('.ozh'))return;var t=li.textContent.trim(),sp;try{sp=ingSplit(t)}catch(_){return}if(!sp||!sp.amt)return;var p=prof(sp.name),a=amt(sp.amt);if(!p||!a||p.k||a.u==='oz'||a.u==='lb'||!a.u)return;var v=oz(a,p);if(!(v>0))return;var s=document.createElement('span');s.className='ozh';s.textContent=(p.fl?'':'≈ ')+ozTxt(v,p.fl);li.appendChild(s)}
-function sweep(){try{document.querySelectorAll('.ringl li, #grs li').forEach(hint)}catch(_){}}
+window.__ozHint=hint;function sweep(){try{document.querySelectorAll('.ringl li, #grs li').forEach(hint)}catch(_){}}
 var _r=render;render=function(){var x=_r.apply(this,arguments);sweep();return x};
 try{new MutationObserver(function(ms){for(var i=0;i<ms.length;i++)for(var j=0;j<ms[i].addedNodes.length;j++){var n=ms[i].addedNodes[j];if(n.id==='grs'){setTimeout(sweep,0);return}}}).observe(document.body,{childList:true})}catch(_){}
 })();
@@ -8903,6 +8903,127 @@ recBody=function(x){try{return redit===x.id?edit(x):view(x)}catch(e){try{(S.errl
 window.addEventListener('click',function(e){var b=e.target.closest&&e.target.closest('[data-re2d]');if(!b)return;e.preventDefault();e.stopImmediatePropagation();var id=b.getAttribute('data-re2d');RE2D[id]=!RE2D[id];render()},true);
 })();
 </script>
+<style id="rxlibcss">
+#view .rxl .rxtop{display:flex;gap:8px;align-items:center;margin:0 0 10px}
+#view .rxl .rxtop input{flex:1;min-width:0;margin:0!important}
+#view .rxl .rxf{display:flex;gap:7px;overflow-x:auto;scrollbar-width:none;margin:0 0 4px;padding-bottom:2px}#view .rxl .rxf::-webkit-scrollbar{display:none}
+html body #view .rxl .rxf button{flex:none;border:1px solid var(--line)!important;background:var(--card)!important;border-radius:999px!important;padding:6px 13px!important;margin:0!important;box-shadow:none!important;font:500 13px var(--bf,system-ui),system-ui,sans-serif!important;letter-spacing:0!important;text-transform:none!important;color:var(--ink)!important;white-space:nowrap}
+html body #view .rxl .rxf button.on{background:var(--ink)!important;color:var(--card)!important;border-color:var(--ink)!important}
+#view .rxl .rxs{font:700 11px var(--bf,system-ui),system-ui,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:var(--mut);margin:16px 2px 8px}
+#view .rxl .rxn{font:13px var(--bf,system-ui),system-ui,sans-serif;color:var(--mut);margin:8px 2px 0}
+html body #view .rxl .rxn button{border:0!important;background:none!important;padding:0!important;margin:0!important;box-shadow:none!important;font:600 13px var(--bf,system-ui),system-ui,sans-serif!important;letter-spacing:0!important;text-transform:none!important;color:var(--ink)!important;text-decoration:underline}
+#view .rxl .rxg{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+#view .rxl .rxwk{display:flex;gap:10px;overflow-x:auto;scrollbar-width:none;padding-bottom:4px}#view .rxl .rxwk::-webkit-scrollbar{display:none}
+#view .rxl .rxwk .rxc{width:148px;flex:none}#view .rxl .rxwk .rxim{height:92px}
+html body #view .rxc{display:block;width:100%;text-align:left;border:0!important;padding:0!important;margin:0!important;background:var(--card)!important;border-radius:18px!important;overflow:hidden;box-shadow:0 4px 14px rgba(80,40,50,.08)!important;color:var(--ink)!important;cursor:pointer;font:inherit!important;letter-spacing:0!important;text-transform:none!important}
+#view .rxim{position:relative;height:122px;display:flex;align-items:center;justify-content:center;font-size:42px;overflow:hidden}
+#view .rxim img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+#view .rxim .rxv{position:absolute;left:8px;bottom:8px;background:rgba(25,15,20,.62);color:#fff;font:600 11px var(--bf,system-ui),system-ui,sans-serif;border-radius:999px;padding:3px 8px;z-index:1}
+#view .rxim .rxd{position:absolute;left:8px;top:8px;background:rgba(255,255,255,.9);color:var(--ink);font:700 11px var(--bf,system-ui),system-ui,sans-serif;border-radius:999px;padding:3px 8px;z-index:1}
+#view .rxim .rxst{position:absolute;right:8px;top:8px;width:26px;height:26px;border-radius:50%;background:rgba(255,255,255,.9);display:flex;align-items:center;justify-content:center;font-size:13px;z-index:1;color:#b07d1f}
+#view .rxc .rxt{display:block;padding:9px 11px 11px;font:600 14px/1.25 var(--bf,system-ui),system-ui,sans-serif}
+#view .rxc .rxt small{display:block;font:400 12px var(--bf,system-ui),system-ui,sans-serif;color:var(--mut);margin-top:3px}
+.rxg0{background:linear-gradient(135deg,#f3c8a8,#d98a5c)}.rxg1{background:linear-gradient(135deg,#f6e3b5,#e2b25f)}.rxg2{background:linear-gradient(135deg,#e9c4c0,#c9837a)}.rxg3{background:linear-gradient(135deg,#d7e3c8,#9fb88a)}.rxg4{background:linear-gradient(135deg,#f0d3b0,#c79a6b)}.rxg5{background:linear-gradient(135deg,#e7d1e6,#b694b8)}
+/* recipe sheet */
+#view .rxo{position:fixed;inset:0;z-index:110;background:var(--bg,#f8f1f3);overflow-y:auto;-webkit-overflow-scrolling:touch}
+#view .rxo .rxh{position:relative;height:300px;display:flex;align-items:center;justify-content:center;font-size:88px;overflow:hidden}
+#view .rxo .rxh img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+html body #view .rxo .rxh .rxb{position:absolute;top:calc(env(safe-area-inset-top,0px) + 12px);width:40px;height:40px;border-radius:50%!important;background:rgba(255,255,255,.9)!important;border:0!important;box-shadow:0 2px 8px rgba(0,0,0,.12)!important;display:flex;align-items:center;justify-content:center;font:600 20px system-ui!important;color:var(--ink)!important;padding:0!important;margin:0!important;z-index:2}
+#view .rxo .rxb.bk{left:14px}#view .rxo .rxb.fv{right:64px;color:#b07d1f!important}#view .rxo .rxb.ed{right:14px;font-size:16px!important}
+html body #view .rxo .rxh .rxpl{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:66px;height:66px;border-radius:50%!important;background:rgba(20,10,15,.55)!important;border:0!important;color:#fff!important;font-size:24px!important;display:flex;align-items:center;justify-content:center;padding:0 0 0 5px!important;margin:0!important;z-index:2;text-decoration:none}
+#view .rxo .rxbd{position:relative;margin-top:-26px;background:var(--bg,#f8f1f3);border-radius:24px 24px 0 0;padding:20px 18px calc(110px + env(safe-area-inset-bottom,0px));min-height:60vh}
+#view .rxo h2{font:700 25px/1.15 var(--hf,Georgia),Georgia,serif;margin:0;color:var(--ink);text-transform:none;letter-spacing:0}
+#view .rxo .rxm{display:flex;gap:6px;flex-wrap:wrap;margin:9px 0 14px}
+#view .rxo .rxm span{font:500 12.5px var(--bf,system-ui),system-ui,sans-serif;color:var(--ink);opacity:.8;background:var(--card);border:1px solid var(--line);border-radius:999px;padding:4px 10px}
+#view .rxo .rxa{display:flex;gap:8px}
+html body #view .rxo .rxa>*{flex:1;text-align:center;border-radius:14px!important;padding:12px 0!important;margin:0!important;font:600 14.5px var(--bf,system-ui),system-ui,sans-serif!important;letter-spacing:0!important;text-transform:none!important;text-decoration:none;box-shadow:none!important}
+html body #view .rxo .rxa .vd{background:color-mix(in srgb,#8d9bcf 18%,var(--card))!important;color:#4a3f78!important;border:0!important}
+html body #view .rxo .rxa .ck{background:var(--a,#c48a8f)!important;color:#fff!important;border:0!important}
+#view .rxo .rxtb{display:flex;margin:16px 0 10px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:4px}
+html body #view .rxo .rxtb button{flex:1;border:0!important;background:none!important;border-radius:10px!important;padding:9px 0!important;margin:0!important;box-shadow:none!important;font:600 14px var(--bf,system-ui),system-ui,sans-serif!important;letter-spacing:0!important;text-transform:none!important;color:var(--mut)!important}
+html body #view .rxo .rxtb button.on{background:var(--ink)!important;color:var(--card)!important}
+#view .rxo .rxsv{display:flex;justify-content:space-between;align-items:center;margin:0 2px 8px;font:13px var(--bf,system-ui),system-ui,sans-serif;color:var(--mut)}
+#view .rxo .rxsv>span{display:flex;align-items:center;gap:8px;white-space:nowrap}
+html body #view .rxo .rxsv .btn{width:28px;height:28px;min-height:0!important;padding:0!important;margin:0!important;border-radius:50%!important;font:600 15px system-ui!important;display:inline-flex;align-items:center;justify-content:center}
+#view .rxo .rxsv b{color:var(--ink);font-weight:600;min-width:16px;text-align:center}
+html body #view .rxo .rxsv .ag{border:0!important;background:none!important;padding:0!important;margin:0!important;box-shadow:none!important;font:600 13.5px var(--bf,system-ui),system-ui,sans-serif!important;letter-spacing:0!important;text-transform:none!important;color:#a8545f!important}
+#view .rxo .rxil{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:2px 14px}
+html body #view .rxo .rxil label{display:flex!important;gap:11px;align-items:center;padding:11px 0!important;margin:0!important;font:15px var(--bf,system-ui),system-ui,sans-serif!important;letter-spacing:0!important;text-transform:none!important;color:var(--ink)!important;cursor:pointer}
+#view .rxo .rxil label+label{border-top:1px solid var(--line)}
+#view .rxo .rxil input{width:19px;height:19px;flex:none;accent-color:var(--a,#c48a8f);margin:0}
+#view .rxo .rxil label.dn span{color:var(--mut);text-decoration:line-through}
+#view .rxo .rxil .ozh{margin-left:auto}
+#view .rxo .rxsl>div{display:flex;gap:12px;padding:11px 2px;font:15px/1.5 var(--bf,system-ui),system-ui,sans-serif;color:var(--ink)}
+#view .rxo .rxsl>div+div{border-top:1px solid var(--line)}
+#view .rxo .rxsl b{width:26px;height:26px;border-radius:50%;background:color-mix(in srgb,#e8a3a8 25%,var(--card));color:#a8545f;font:700 13px system-ui;display:flex;align-items:center;justify-content:center;flex:none}
+#view .rxo .rxsrc{margin:14px 2px 0;font:12.5px var(--bf,system-ui),system-ui,sans-serif;color:var(--mut)}
+#view .rxo .rxsrc a{color:var(--ink)}
+#view .rxo .rxe{font:14px var(--bf,system-ui),system-ui,sans-serif;color:var(--mut);padding:14px 2px}
+html body #view .rxo .rxe button{border:0!important;background:none!important;padding:0!important;margin:0!important;box-shadow:none!important;font:600 14px var(--bf,system-ui),system-ui,sans-serif!important;letter-spacing:0!important;text-transform:none!important;color:var(--ink)!important;text-decoration:underline}
+#view .rxo .rxedit{padding-top:6px}
+html body.rxlock{overflow:hidden!important}
+html body.rxlock #bbar{display:none!important}
+</style>
+<script>
+/* Recipes like ReciMe (Nov 23): photo grid, "on this week" row, filter chips, and a full recipe screen with
+   the photo, Watch video, Ingredients/Steps tabs and checkboxes. Photos and video links come from ReciMe automatically. */
+(function(){if(!V||!V.meals)return;var prev=V.meals;window.RXF=window.RXF||'all';window.RXO=window.RXO||null;window.RXT=window.RXT||'ing';window.RXCK=window.RXCK||{};
+var EMJ=/[\u{1F300}-\u{1FAFF}☀-➿]️?/u;
+function nm(t){return String(t||'').replace(/\s*[\u{1F300}-\u{1FAFF}☀-➿]️?\s*/gu,' ').trim()}
+function em(x){var m=String(x.title||'').match(EMJ);if(m)return m[0];return x.meal==='Snack Or Dessert'?'🍰':x.meal==='Side'?'🥗':x.meal==='Breakfast'?'🍳':'🍽️'}
+function gr(x){var h=0,t=String(x.id||x.title);for(var i=0;i<t.length;i++)h=(h*31+t.charCodeAt(i))|0;return 'rxg'+(Math.abs(h)%6)}
+function tm(x){var m=(+x.prep||0)+(+x.cook||0);if(m)return m<60?m+' min':(Math.floor(m/60)+' hr'+(m%60?' '+(m%60)+' min':''));return x.time||''}
+function pic(x){var u=x.photo||x.img;return u?'<img src="'+esc(u)+'" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">':''}
+var LBL={'Snack Or Dessert':'Desserts'};
+function card(x,day){return '<button type="button" class="rxc" data-rxo="'+esc(x.id)+'"><span class="rxim '+gr(x)+'">'+em(x)+pic(x)+(day?'<span class="rxd">'+esc(day)+'</span>':'')+(x.fav?'<span class="rxst">★</span>':'')+(x.video?'<span class="rxv">▶ Video</span>':'')+'</span><span class="rxt">'+esc(nm(x.title))+(day?'':'<small>'+esc([LBL[x.meal]||x.meal,tm(x)].filter(Boolean).join(' · '))+'</small>')+'</span></button>'}
+function week(){var out=[],seen={},t=today();for(var k=0;k<7;k++){var d=addD(t,k),n=((S.plan[d]||{}).Dinner||'').trim();if(!n)continue;var r=S.recipes.find(function(x){return x.title.toLowerCase()===n.toLowerCase()});if(!r||seen[r.id])continue;seen[r.id]=1;out.push([r,k===0?'Today':new Date(d+'T12:00').toLocaleDateString('en-US',{weekday:'short'})])}return out}
+function lib(){var L=RL(),cats=MT.filter(function(m){return S.recipes.some(function(r){return r.meal===m})});
+ if(RXF==='fav')L=L.filter(function(r){return r.fav});else if(RXF!=='all')L=L.filter(function(r){return r.meal===RXF});
+ L=L.slice().sort(function(a,b){return nm(a.title).localeCompare(nm(b.title))});
+ var sb=SB(),inp=(/<input id="rq"[^>]*>/.exec(sb)||[''])[0].replace(/style="[^"]*"/,'').replace('placeholder="Search Recipes"','placeholder="Search '+S.recipes.length+' recipes"');
+ var menu='<details class="hq-add"><summary class="btn">+ Add</summary><div class="hq-am"><button type="button" data-a="recnew">Add by link or name</button><button type="button" data-say="recipes">Say it all</button></div></details>';
+ var miss=S.recipes.filter(function(r){return r.link&&!r.ingredients}).length;
+ var chips='<div class="rxf"><button type="button" data-rxf="all" class="'+(RXF==='all'?'on':'')+'">All</button><button type="button" data-rxf="fav" class="'+(RXF==='fav'?'on':'')+'">★ Favorites</button>'+cats.map(function(m){return '<button type="button" data-rxf="'+esc(m)+'" class="'+(RXF===m?'on':'')+'">'+esc(LBL[m]||m)+'</button>'}).join('')+'</div>';
+ var W=(!q.trim()&&RXF==='all')?week():[];
+ return '<div class="rxl"><div class="rxtop">'+inp+menu+'</div>'+chips+(miss?'<p class="rxn">'+miss+(miss===1?' recipe needs':' recipes need')+' ingredients · <button type="button" data-a="recall">Get them</button></p>':'')+
+  (W.length?'<div class="rxs">On this week</div><div class="rxwk">'+W.map(function(z){return card(z[0],z[1])}).join('')+'</div>':'')+
+  '<div class="rxs">'+(RXF==='all'?'All recipes':RXF==='fav'?'Favorites':(LBL[RXF]||RXF))+'</div>'+(L.length?'<div class="rxg">'+L.map(function(x){return card(x)}).join('')+'</div>':'<p class="empty">'+(S.recipes.length?'No recipes match.':'No recipes yet. Tap + Add to save your family favorites.')+'</p>')+'</div>'}
+function src(u){return /tiktok/i.test(u)?'TikTok':/instagram/i.test(u)?'Instagram':/youtu/i.test(u)?'YouTube':/facebook|fb\.watch/i.test(u)?'Facebook':'the web'}
+function sheet(x){var vid=x.video,ck=RXCK[x.id]||{},sv=RX_SV(x);
+ var top='<div class="rxh '+gr(x)+'">'+em(x)+pic(x)+'<button type="button" class="rxb bk" data-rxx="1" aria-label="Back">‹</button><button type="button" class="rxb fv" data-a="fav" data-i="'+x.id+'" aria-label="Favorite">'+(x.fav?'★':'☆')+'</button><button type="button" class="rxb ed" data-a="redit" data-i="'+x.id+'" aria-label="Edit recipe">✎</button>'+(vid?'<a class="rxpl" href="'+esc(vid)+'" target="_blank" rel="noopener" aria-label="Watch the video">▶</a>':'')+'</div>';
+ if(redit===x.id)return '<div class="rxo" id="rxo">'+top+'<div class="rxbd rxedit">'+recBody(x)+'</div></div>';
+ var meta=[LBL[x.meal]||x.meal,tm(x),x.servings?'Serves '+x.servings:''].filter(Boolean).map(function(c){return '<span>'+esc(c)+'</span>'}).join('');
+ var acts=(vid?'<a class="vd" href="'+esc(vid)+'" target="_blank" rel="noopener">▶ Watch video</a>':'')+((x.ingredients||x.steps)?'<button type="button" class="btn ck" data-a="cook" data-i="'+x.id+'">Cook mode</button>':'');
+ var ings=(typeof ingText==='function'?ingText(x):(x.ingredients||'')).split('\n').map(function(l){return l.trim()}).filter(Boolean);
+ var stps=typeof ckSteps==='function'?ckSteps(x):String(x.steps||'').split('\n').filter(Boolean);
+ var tabI='<div class="rxsv">'+((+x.servings)?'<span>Servings <button class="btn ghost" data-a="rsv" data-i="'+x.id+'" data-v="-1" aria-label="Fewer servings">−</button><b>'+sv+'</b><button class="btn ghost" data-a="rsv" data-i="'+x.id+'" data-v="1" aria-label="More servings">+</button></span>':'<span></span>')+(ings.length?'<button type="button" class="ag" data-a="recgroc" data-i="'+x.id+'">+ Add to groceries</button>':'')+'</div>'+
+  (ings.length?'<div class="rxil">'+ings.map(function(l,i){var c=!!ck[i];return '<label class="'+(c?'dn':'')+'"><input type="checkbox" data-rxck="'+esc(x.id)+':'+i+'"'+(c?' checked':'')+'><span>'+esc(typeof ingCap==='function'?ingCap(l):l)+'</span></label>'}).join('')+'</div>':'<p class="rxe">No ingredients saved yet.'+(x.link?' <button type="button" data-a="recimp" data-i="'+x.id+'">Get them from the link</button>':'')+'</p>');
+ var tabS=stps.length?'<div class="rxsl">'+stps.map(function(t,i){return '<div><b>'+(i+1)+'</b><span>'+esc(String(t).replace(/^\d+[.)]\s*/,''))+'</span></div>'}).join('')+'</div>':'<p class="rxe">No steps saved yet.</p>';
+ return '<div class="rxo" id="rxo">'+top+'<div class="rxbd"><h2>'+esc(nm(x.title))+'</h2><div class="rxm">'+meta+'</div>'+(acts?'<div class="rxa">'+acts+'</div>':'')+
+  '<div class="rxtb" role="tablist"><button type="button" role="tab" data-rxt="ing" class="'+(RXT==='ing'?'on':'')+'">Ingredients</button><button type="button" role="tab" data-rxt="stp" class="'+(RXT==='stp'?'on':'')+'">Steps'+(stps.length?' · '+stps.length:'')+'</button></div>'+(RXT==='ing'?tabI:tabS)+
+  (vid?'<p class="rxsrc">Saved from '+src(vid)+(x.link&&/recime/i.test(x.link)?' via ReciMe':'')+' · <a href="'+esc(vid)+'" target="_blank" rel="noopener">Watch video</a></p>':(x.link?'<p class="rxsrc"><a href="'+esc(x.link)+'" target="_blank" rel="noopener">Open the original recipe</a></p>':''))+'</div></div>'}
+function RX_SV(x){try{return RSV[x.id]||x.servings}catch(_){return x.servings}}
+V.meals=function(){var h=prev();if(mtab!=='rec'||(typeof radd!=='undefined'&&radd))return h;try{var x=RXO?S.recipes.find(function(r){return String(r.id)===String(RXO)}):null;if(RXO&&!x)RXO=null;
+ var i=h.indexOf('<div class="hq-rbar">');if(i<0)i=h.search(/<h3|<details class="rec"|<p class="empty"/);var j=h.lastIndexOf('</div>');if(i<0||j<i)return h+(x?sheet(x):'');
+ return h.slice(0,i)+lib()+h.slice(j)+(x?sheet(x):'')}catch(e){try{(S.errlog=S.errlog||[]).push('rxlib '+e.message)}catch(_){}return h}};
+var keep=0;var _r=render;render=function(){var o=document.getElementById('rxo');keep=o?o.scrollTop:0;var r=_r.apply(this,arguments);try{var n=document.getElementById('rxo');document.body.classList.toggle('rxlock',!!n);if(n&&keep)n.scrollTop=keep;if(n)n.querySelectorAll('.rxil label span').forEach(function(s){var l=s.closest('label');if(typeof window.__ozHint==='function')window.__ozHint(l)})}catch(_){}return r};
+window.addEventListener('click',function(e){var t=e.target,b;if(tab!=='meals')return;
+ if(b=t.closest('[data-rxo]')){e.preventDefault();e.stopImmediatePropagation();RXO=b.getAttribute('data-rxo');RXT='ing';redit=null;render();var o=document.getElementById('rxo');if(o)o.scrollTop=0;return}
+ if(b=t.closest('[data-rxx]')){e.preventDefault();e.stopImmediatePropagation();RXO=null;redit=null;render();return}
+ if(b=t.closest('[data-rxt]')){e.preventDefault();e.stopImmediatePropagation();RXT=b.getAttribute('data-rxt');render();return}
+ if(b=t.closest('[data-rxf]')){e.preventDefault();e.stopImmediatePropagation();RXF=b.getAttribute('data-rxf');render();return}},true);
+document.addEventListener('change',function(e){var c=e.target;if(!c||!c.getAttribute||!c.getAttribute('data-rxck'))return;var p=c.getAttribute('data-rxck').split(':'),id=p.slice(0,-1).join(':'),i=+p[p.length-1];RXCK[id]=RXCK[id]||{};RXCK[id][i]=c.checked;var l=c.closest('label');if(l)l.classList.toggle('dn',c.checked)},true);
+document.addEventListener('keydown',function(e){if(e.key==='Escape'&&RXO){RXO=null;redit=null;render()}});
+/* anything that used to open a recipe card now opens the recipe screen */
+try{var _wa=WOPEN.add.bind(WOPEN);WOPEN.add=function(k){if(typeof k==='string'&&k.indexOf('r:')===0){RXO=k.slice(2);RXT='ing'}return _wa(k)}}catch(_){}
+/* photos and video links for recipes already saved from ReciMe (once each, in the background) */
+async function meta(r){let tok=SBK;try{if(SBS)tok=await sbTok()}catch(_){}try{const res=await fetch(SBU+'/functions/v1/recipe-import',{method:'POST',headers:{apikey:SBK,Authorization:'Bearer '+tok,'Content-Type':'application/json'},body:JSON.stringify({url:r.link})});const j=await res.json().catch(()=>({}));const x=find('recipes',r.id);if(!x)return false;x.metaAt=Date.now();if(j.image&&!x.img)x.img=j.image;if(j.video&&!x.video)x.video=j.video;return !!(j.image||j.video)}catch(e){return false}}
+var RUN=false;async function fill(){if(RUN||!S.recipes)return;var q2=S.recipes.filter(function(r){return r.link&&/recime\.app/i.test(r.link)&&!r.img&&!r.photo&&(!r.metaAt||Date.now()-r.metaAt>7*864e5)});if(!q2.length)return;RUN=true;var n=0;
+ for(var k=0;k<q2.length;k++){if(await meta(q2[k]))n++;if((k+1)%5===0){save();if(tab==='meals'&&!RXO&&!redit)render()}await new Promise(function(z){setTimeout(z,600)})}
+ save();if(tab==='meals'&&!redit)render();RUN=false}
+setTimeout(fill,6000);setInterval(function(){if(!RUN)fill()},10*60*1000);window.__rxFill=fill;
+})();
+</script>
 <script>/* If the first draw failed because the app opened straight onto a screen whose parts load later, draw again now that everything is loaded. */(function(){window.__booted=1;if(!window.__bootRetry)return;try{render()}catch(e){try{(S.errlog=S.errlog||[]).push({k:'boot2',m:String(e&&e.message||e).slice(0,160),at:new Date().toISOString().slice(0,19),tab:tab});save()}catch(_){}try{tab='today';render()}catch(_){}}})();</script>
 <script>(function(){try{var H='9fd7d2c2499204c2a4998657b236d86c1ab1cc1644b9888f0728c3bee577b195',ent=null,i=TABS.findIndex(function(t){return t[0]==='studies'});if(i>-1)ent=TABS[i];var last='',on=false;
 function apply(ok){on=ok;window.__own=ok;if(ok){try{if(localStorage.getItem('hq.beta')!=='0'){localStorage.setItem('hq.beta','1');if(!window.__isBeta)window.__go()}}catch(e){}}var j=TABS.findIndex(function(t){return t[0]==='studies'});if(ok&&j<0&&ent)TABS.push(ent);if(!ok&&j>-1)TABS.splice(j,1);var k=QA_ALL.indexOf('studies');if(!ok&&k>-1)QA_ALL.splice(k,1);if(ok&&k<0)QA_ALL.push('studies');if(!ok&&tab==='studies')tab='today'}
@@ -8927,5 +9048,5 @@ document.addEventListener('touchend',function(){if(!on)return;on=false;var fire=
  if(fire){if(pend||psafe())go();else if(el){el.textContent='Finish what you are typing first'+(window.__psWhy?' ('+window.__psWhy+')':'');setTimeout(function(){el.style.opacity=0},1800)}}},{passive:true});
 })();
 try{var rs=JSON.parse(sessionStorage.getItem('hq.rs')||'null');if(rs){sessionStorage.removeItem('hq.rs');setTimeout(function(){try{(rs.open||[]).forEach(function(k){WOPEN.add(k)});if(rs.tab&&typeof tab!=='undefined')tab=rs.tab;render();window.scrollTo(0,rs.y||0)}catch(e){}},800)}}catch(e){}
-})()</script><div style="position:fixed;top:env(safe-area-inset-top,0);left:50%;transform:translateX(-50%);z-index:99999;background:#b4532a;color:#fff;font:700 9px system-ui;letter-spacing:.08em;padding:1px 8px;border-radius:0 0 8px 8px;pointer-events:none;opacity:.85">BETA 11/23 9:47am</div></body>
+})()</script><div style="position:fixed;top:env(safe-area-inset-top,0);left:50%;transform:translateX(-50%);z-index:99999;background:#b4532a;color:#fff;font:700 9px system-ui;letter-spacing:.08em;padding:1px 8px;border-radius:0 0 8px 8px;pointer-events:none;opacity:.85">BETA 11/23 10:33am</div></body>
 </html>
