@@ -2387,11 +2387,11 @@ body.home #ttl{display:inline-flex;align-items:center}
 `;document.head.appendChild(css);
  var bar=document.createElement('nav');bar.id='bbar';bar.setAttribute('aria-label','Main');document.body.appendChild(bar);
  var IC={today:'<circle cx="12" cy="12" r="4"/><path d="M12 3v2M12 19v2M3 12h2M19 12h2M5.6 5.6l1.4 1.4M17 17l1.4 1.4M5.6 18.4L7 17M17 7l1.4-1.4"/>'};
- var B=[['today','Today',IC.today],['events','Calendar',ICO.events],['groceries','Kitchen',ICO['g:shop']],['g:fin','Money',ICO['g:fin']],['g:home','House',ICO['g:home']]];
+ var B=[['today','Today',IC.today],['events','Calendar',ICO.events],['kit','Kitchen',ICO['g:shop']],['g:fin','Money',ICO['g:fin']],['g:home','House',ICO['g:home']]];
  window.__bbarFix=function(){try{if(!bar.isConnected)document.body.appendChild(bar)}catch(e){}};
- window.barSec=function(t){if(t==='events'||t==='week')return'events';if(t==='today'||t==='sunday')return'today';if(t==='g:shop')return'groceries';var g=t.startsWith('g:')?t.slice(2):(lay().in[t]||'');return g==='shop'?'groceries':g==='home'?'g:home':g==='fin'?'g:fin':'all'};
+ window.barSec=function(t){if(t==='events'||t==='week')return'events';if(t==='today'||t==='sunday')return'today';if(t==='g:shop'||t==='kit')return'kit';var g=t.startsWith('g:')?t.slice(2):(lay().in[t]||'');return g==='shop'?'kit':g==='home'?'g:home':g==='fin'?'g:fin':'all'};
  function draw(){if(!bar.isConnected)document.body.appendChild(bar);var cur=window.barSec(tab);bar.innerHTML='<div>'+B.map(function(b){return '<button type="button" data-tab="'+b[0]+'" class="'+(b[0]===cur?'on':'')+'" aria-label="'+b[1]+'"'+(b[0]===cur?' aria-current="page"':'')+'><svg viewBox="0 0 24 24" aria-hidden="true">'+b[2]+'</svg>'+b[1]+'</button>'}).join('')+'</div>';
-  var roots=['today','events','week','g:shop','g:home','g:fin','g:family','groceries','meals','inventory','sunday','all'];if(roots.includes(tab)){var n=document.getElementById('nav');n.className='';n.innerHTML=''}
+  var roots=['today','events','week','g:shop','kit','g:home','g:fin','g:family','groceries','meals','inventory','sunday','all'];if(roots.includes(tab)){var n=document.getElementById('nav');n.className='';n.innerHTML=''}
   var t=document.getElementById('ttl');if(tab==='today'&&t){t.innerHTML='<svg class="lg" width="38" height="38" viewBox="0 0 40 40" aria-hidden="true"><defs><linearGradient id="lgg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" style="stop-color:var(--t1)"/><stop offset="1" style="stop-color:var(--t2)"/></linearGradient></defs><rect width="40" height="40" rx="12" fill="url(#lgg)"/><path d="M11 17.5L20 10l9 7.5" stroke="#fff" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/><text x="20" y="31.5" text-anchor="middle" font-family="Playfair Display,Georgia,serif" font-size="14.5" font-weight="700" fill="#fff">HQ</text></svg><span>'+esc(homeName())+'</span>'}}
  var _r=render;render=function(){_r();try{draw()}catch(e){}};
  function seg(on){return '<div class="calseg"><button type="button" data-tab="events" class="'+(on==='events'?'on':'')+'">Month</button><button type="button" data-tab="week" class="'+(on==='week'?'on':'')+'">Next 7 Days</button></div>'}
@@ -9061,6 +9061,51 @@ var RUN=false;async function fill(){if(RUN||!S.recipes)return;var q2=S.recipes.f
 setTimeout(fill,6000);setInterval(function(){if(!RUN)fill()},10*60*1000);window.__rxFill=fill;
 })();
 </script>
+<style id="kxcss">
+#view .hs.kxs{grid-template-columns:1fr}
+#view .kxc{grid-column:1/-1;cursor:pointer;background:linear-gradient(160deg,#fbf1ee,#f6e3de)}
+#view .kxc.kxm{background:linear-gradient(160deg,#f4f1f8,#ebe6f3);border-color:#ddd5ea}
+#view .kxc>.hh b{font-size:24px}
+#view .kxbig{font:600 32px/1.1 var(--hf,'Playfair Display'),Georgia,serif;margin:4px 0 0;color:var(--ink)}
+#view .kxbig small{font:500 14px Figtree,Inter,system-ui,sans-serif;color:var(--mut);margin-left:6px}
+#view .kxwk{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;margin-top:8px}
+#view .kxwk>span{text-align:center;font:700 9.5px Figtree,Inter,system-ui,sans-serif;letter-spacing:.05em;color:var(--mut);min-width:0}
+#view .kxwk>span.t{color:var(--a)}
+#view .kxwk .kpic{display:flex;width:100%;aspect-ratio:1/1;border-radius:9px;margin-top:4px;align-items:center;justify-content:center;font-size:16px;font-style:normal;position:relative;overflow:hidden}
+#view .kxwk .kpic img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+#view .kxwk>span.t .kpic{outline:2px solid var(--a);outline-offset:1.5px}
+#view .kxc .hft{align-items:center}
+#view .kxc .hft span{font:500 12.5px Figtree,Inter,system-ui,sans-serif;color:var(--mut)}
+#view .kxc .hft .kxshop{background:var(--ink);color:#fff!important;border-radius:999px;padding:7px 15px}
+.kbk3{border:0;background:none;padding:0 0 6px;font:600 13px Figtree,Inter,system-ui,sans-serif;color:var(--mut);cursor:pointer}
+html body #view .kwh b small,html body #view .kwh b .kwdl{display:none}
+html body #view .kwh b.kwd3{font:600 15px Figtree,Inter,system-ui,sans-serif!important;letter-spacing:0!important;text-transform:none!important}
+html body #view .kw .kev{display:none!important}
+html body #view .kd>span{word-break:normal!important;overflow-wrap:normal!important;hyphens:none!important;font-size:9.5px!important;letter-spacing:-.3px!important;margin:0 -3px;overflow:visible!important}
+html body #view .kd>.kht{top:15px!important;right:-3px!important;width:auto!important;font-size:11px!important;background:var(--card,#fff);border-radius:50%;padding:2px!important;box-shadow:0 1px 3px rgba(0,0,0,.12)}
+html body #view .kwf{justify-content:flex-end}
+html body #view .kwf i{flex:1 1 auto}
+html body #view .kwf button.f{border:0!important;background:none!important;padding:0!important;font:600 13px Figtree,Inter,system-ui,sans-serif!important;letter-spacing:0!important;text-transform:none!important;color:var(--a)!important;box-shadow:none!important}
+html body #view .kwf .kok{font:600 13px Figtree,Inter,system-ui,sans-serif;color:var(--a)}
+</style>
+<script>/* Kitchen landing page */
+(function(){
+ function e(x){return esc(String(x==null?'':x))}
+ function iso(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}function addDays(x,n){var d=new Date(x+'T12:00');d.setDate(d.getDate()+n);return iso(d)}
+ function sun(){var d=new Date(today()+'T12:00');d.setDate(d.getDate()-d.getDay());return iso(d)}
+ function kitHtml(){var t=today(),G=(S.groceries||[]).filter(function(x){return !x.done}).length,T=effTrip(),wd=WKD[new Date(T+'T12:00').getDay()],has=G>0;
+  var trip=T===t?'Shopping day is today':'Next trip · '+wd,on=S.tripAdded===T;
+  var s=sun(),n=0,days='',P=S.plan||{};for(var k=0;k<7;k++){var d=addDays(s,k),v=((P[d]||{}).Dinner||'').trim();if(v)n++;days+='<span class="'+(d===t?'t':'')+'">'+e(new Date(d+'T12:00').toLocaleDateString('en-US',{weekday:'short'}).toUpperCase())+(window.__kdPic?__kdPic(v,d):'')+'</span>'}
+  var tn=((P[t]||{}).Dinner||'').trim(),R=(S.recipes||[]).length;
+  var c1='<div class="hsc kxc" data-tab="groceries" role="button" tabindex="0"><button type="button" class="hh" data-tab="groceries"><b>Grocery List</b><i>›</i></button><div class="hk">'+e(trip)+'</div><div class="kxbig">'+G+'<small>'+(G===1?'item to buy':'items to buy')+'</small></div><div class="hft"><span>'+(on?'Dinners are on the list ✓':G?'Dinners not added yet':'Your list is empty')+'</span>'+(has?'<button type="button" class="kxshop" data-wm="open" data-st="'+e(S.shopStore||'walmart')+'">Shop</button>':'')+'</div></div>';
+  var c2='<div class="hsc kxc kxm" data-tab="meals" role="button" tabindex="0"><button type="button" class="hh" data-tab="meals"><b>Meals</b><i>›</i></button><div class="hk">This week · '+n+' of 7 picked</div><div class="kxwk">'+days+'</div><div class="hft"><span>Tonight: '+e(tn?(window.__kdNm?__kdNm(tn):tn):'Not picked')+'</span><span>'+R+' recipes ›</span></div></div>';
+  return '<div class="hs kxs">'+c1+c2+'</div>'}
+ var hv=hubView;hubView=function(t){if(t==='kit'){var c='#b5707c';try{var x=TBS().find(function(z){return z[0]==='g:shop'});if(x)c=x[2]}catch(_){}return{title:'Kitchen',color:c,parent:'today',html:kitHtml()}}return hv.apply(this,arguments)};
+ var _r=render;render=function(){if(tab==='g:shop')tab='kit';var x=_r.apply(this,arguments);try{if(tab==='kit'){var n=document.getElementById('nav');if(n){n.className='';n.innerHTML=''}}if(tab==='groceries'||tab==='meals'){var tt=document.getElementById('ttl');if(tt)tt.textContent=tab==='meals'?'Meals':'Grocery List'}}catch(_){}return x};
+ var SEG=/<div class="calseg"><button type="button" data-tab="groceries"[\s\S]*?<\/div>/,BK='<button type="button" class="kbk3" data-tab="kit">‹ Kitchen</button>';
+ ['groceries','meals'].forEach(function(k){var f=V[k];if(!f)return;V[k]=function(){var h=f.apply(this,arguments);try{h=h.replace(SEG,BK);if(k==='meals'){h=h.replace(/<b>Dinners<small>([^<]*)<\/small><\/b>/,'<b class="kwd3">$1</b>').replace(/<i>\d+ of 7 picked( · )?/,'<i>').replace('>Add To Grocery List<','>Add to grocery list<')}}catch(_){}return h}});
+})();
+</script>
 <script>/* If the first draw failed because the app opened straight onto a screen whose parts load later, draw again now that everything is loaded. */(function(){window.__booted=1;if(!window.__bootRetry)return;try{render()}catch(e){try{(S.errlog=S.errlog||[]).push({k:'boot2',m:String(e&&e.message||e).slice(0,160),at:new Date().toISOString().slice(0,19),tab:tab});save()}catch(_){}try{tab='today';render()}catch(_){}}})();</script>
 <script>(function(){try{var H='9fd7d2c2499204c2a4998657b236d86c1ab1cc1644b9888f0728c3bee577b195',ent=null,i=TABS.findIndex(function(t){return t[0]==='studies'});if(i>-1)ent=TABS[i];var last='',on=false;
 function apply(ok){on=ok;window.__own=ok;if(ok){try{if(localStorage.getItem('hq.beta')!=='0'){localStorage.setItem('hq.beta','1');if(!window.__isBeta)window.__go()}}catch(e){}}var j=TABS.findIndex(function(t){return t[0]==='studies'});if(ok&&j<0&&ent)TABS.push(ent);if(!ok&&j>-1)TABS.splice(j,1);var k=QA_ALL.indexOf('studies');if(!ok&&k>-1)QA_ALL.splice(k,1);if(ok&&k<0)QA_ALL.push('studies');if(!ok&&tab==='studies')tab='today'}
@@ -9085,5 +9130,5 @@ document.addEventListener('touchend',function(){if(!on)return;on=false;var fire=
  if(fire){if(pend||psafe())go();else if(el){el.textContent='Finish what you are typing first'+(window.__psWhy?' ('+window.__psWhy+')':'');setTimeout(function(){el.style.opacity=0},1800)}}},{passive:true});
 })();
 try{var rs=JSON.parse(sessionStorage.getItem('hq.rs')||'null');if(rs){sessionStorage.removeItem('hq.rs');setTimeout(function(){try{(rs.open||[]).forEach(function(k){WOPEN.add(k)});if(rs.tab&&typeof tab!=='undefined')tab=rs.tab;render();window.scrollTo(0,rs.y||0)}catch(e){}},800)}}catch(e){}
-})()</script><div style="position:fixed;top:env(safe-area-inset-top,0);left:50%;transform:translateX(-50%);z-index:99999;background:#b4532a;color:#fff;font:700 9px system-ui;letter-spacing:.08em;padding:1px 8px;border-radius:0 0 8px 8px;pointer-events:none;opacity:.85">BETA 11/23 10:47am</div></body>
+})()</script><div style="position:fixed;top:env(safe-area-inset-top,0);left:50%;transform:translateX(-50%);z-index:99999;background:#b4532a;color:#fff;font:700 9px system-ui;letter-spacing:.08em;padding:1px 8px;border-radius:0 0 8px 8px;pointer-events:none;opacity:.85">BETA 11/23 10:59am</div></body>
 </html>
