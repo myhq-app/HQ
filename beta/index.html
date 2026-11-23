@@ -8559,6 +8559,12 @@ html body .gsrc2 .grp{display:inline-flex;align-items:center;gap:4px;border:1px 
 html body #view .gsrc.gsrc3{opacity:1!important}
 html body #view .gsl3.multi{flex-direction:column;align-items:flex-start;gap:1px}
 html body #view .gsl3.multi .gpt{display:block}
+html body #view .gsrc3 .gsum{display:inline-flex!important;align-items:center;gap:0;border:0!important;background:none!important;padding:0!important;margin:0!important;box-shadow:none!important;font:12.5px var(--bf,system-ui),system-ui,sans-serif!important;color:var(--mut)!important;cursor:pointer;min-height:0!important;text-align:left}
+html body #view .gsrc3 .gsum b{font-weight:600;color:var(--ink);opacity:.85}
+html body #view .gsrc3 .gsum,html body #view .gsrc3 .gsum b{white-space:nowrap!important;width:auto!important;max-width:none!important;flex:none!important}
+html body #view .gsrc3 .gsum .gch{display:inline-block;margin-left:5px;font-size:15px;line-height:1;transition:transform .15s}
+html body #view .gsrc3 .gsum.op .gch{transform:rotate(90deg)}
+html body #view .gsrc3 .gsum+.gsl3.multi{margin-top:3px;padding-left:9px;border-left:2px solid var(--line)}
 html body #view .gsrc3 .gtot{font:12.5px var(--bf,system-ui),system-ui,sans-serif;color:var(--ink);opacity:.8;margin-top:1px}
 html body #view .gsrc3 .gtot b{font-weight:600}
 html body #view .gsrc3 .gsl3{opacity:.75}
@@ -8625,6 +8631,7 @@ function buy(total,p){if(!(total>0))return '';/* loosely measured things (pasta,
 function recLine(rname,item){try{var r=(S.recipes||[]).find(function(x){return String(x.title).toLowerCase()===String(rname).toLowerCase()});if(!r)return null;var k=gNorm(item).key;var L=(r.ingredients||'').split('\n');for(var i=0;i<L.length;i++){var sp=ingSplit(L[i].trim());if(sp&&sp.name&&gNorm(sp.name).key===k)return {line:L[i].trim(),sp:sp}}}catch(_){}return null}
 function srcAmt(z,item){var a=amt(z.a);if(a&&!a.u){var rl=recLine(z.r,item);if(rl){var b=amt(rl.sp.amt);if(b&&b.u)a.u=b.u;else if(b&&!b.u&&/stick/i.test(rl.line))a.u='stick'}}return a}
 function fmtA(a,raw){if(!a)return raw||'';var u={cup:a.n>1?'cups':'cup',tbsp:'tbsp',tsp:'tsp',oz:'oz',floz:'fl oz',lb:'lb',stick:a.n>1?'sticks':'stick',pint:a.n>1?'pints':'pint',quart:a.n>1?'quarts':'quart',can:a.n>1?'cans':'can',dozen:'dozen'}[a.u]||'';return nice(a.n).replace(/^0(?=[¼½¾])/,'')+(u?' '+u:'')}
+window.GEXP=window.GEXP||{};window.addEventListener('click',function(e){var b=e.target.closest&&e.target.closest('[data-gexp]');if(!b)return;e.preventDefault();e.stopImmediatePropagation();var id=b.getAttribute('data-gexp');GEXP[id]=!GEXP[id];render()},true);
 window.hqBuy=function(x){var p=prof(x.title),src=x.src||[],need=[],tot=0,ok=!!p;
  src.forEach(function(z){var a=srcAmt(z,x.title);need.push({r:z.r,a:a,raw:z.a});if(!p)return;
   if(p.k==='butter'){var s=a?(a.u==='stick'||!a.u?a.n:a.u==='cup'?a.n*2:a.u==='tbsp'?a.n/8:a.u==='oz'?a.n/4:a.u==='lb'?a.n*4:NaN):NaN;if(s>0)tot+=s;else ok=false}
@@ -8642,7 +8649,7 @@ function shortBuy(B){if(!B.ok||!(B.tot>0)||!B.p)return '';var p=B.p,t=B.tot;
 var _g=gSrc;gSrc=function(x){try{if(!x||!x.src||!x.src.length)return _g(x);var B=hqBuy(x),sb=shortBuy(B);
  var parts=B.need.map(function(n){var a=fmtA(n.a,n.raw),cv='';try{if(B.p&&!B.p.k&&n.a&&n.a.u&&n.a.u!=='oz'&&n.a.u!=='lb'){var v=oz(n.a,B.p);if(v>0)cv=' (about '+ozTxt(v,B.p.fl).replace(/^about /,'')+')'}}catch(_){}return (a?'<span class="gna">'+esc(a+cv)+'</span> ':'')+'<button type="button" class="gsl grl" data-rec="'+esc(n.r)+'" aria-label="See the '+esc(n.r)+' recipe">'+esc(String(n.r).replace(/\s*[\u{1F300}-\u{1FAFF}☀-➿]️?\s*/gu,' ').trim())+'</button>'});
  var tt='';try{if(B.need.length>1&&B.ok&&B.tot>0&&B.p){if(B.p.k==='butter')tt=nice(B.tot)+' '+(B.tot>1?'sticks':'stick');else if(B.p.k==='egg')tt=Math.round(B.tot)+' eggs';else tt='about '+ozTxt(B.tot,B.p.fl)}}catch(_){}
- return '<div class="gsrc gsrc3">'+(sb?'<b class="gq3">'+esc(sb)+'</b>':'')+(parts.length>1?'<div class="gsl3 multi">'+parts.map(function(h){return '<span class="gpt">'+h+'</span>'}).join('')+'</div>':'<div class="gsl3">'+BK+parts.join('')+'</div>')+(tt?'<div class="gtot">Total needed: <b>'+esc(tt)+'</b></div>':'')+'</div>'}catch(e){return _g(x)}};
+ return '<div class="gsrc gsrc3">'+(sb?'<b class="gq3">'+esc(sb)+'</b>':'')+(parts.length>1?(function(){var op=!!(window.GEXP&&GEXP[x.id]);return '<button type="button" class="gsum'+(op?' op':'')+'" data-gexp="'+esc(x.id)+'" aria-expanded="'+op+'">'+(tt?'<b>'+esc(tt)+'</b>&nbsp;needed&nbsp;·&nbsp;':'')+parts.length+' dinners<span class="gch" aria-hidden="true">›</span></button>'+(op?'<div class="gsl3 multi">'+parts.map(function(h){return '<span class="gpt">'+h+'</span>'}).join('')+'</div>':'')})():'<div class="gsl3">'+BK+parts.join('')+'</div>')+'</div>'}catch(e){return _g(x)}};
 var _gOld=function(x){try{if(!x||!x.src||!x.src.length)return _g(x);var B=hqBuy(x),one=B.need.length===1;
  var conv=function(n){if(!B.p||!n.a||B.p.k)return '';var v=oz(n.a,B.p);return v&&n.a.u!=='oz'&&n.a.u!=='lb'?' (about '+ozTxt(v,B.p.fl)+')':''};
  var needTxt=one?'Needs '+fmtA(B.need[0].a,B.need[0].raw)+conv(B.need[0]):'Needs '+B.need.map(function(n){return fmtA(n.a,n.raw)}).filter(Boolean).join(' + ');
@@ -8709,5 +8716,5 @@ document.addEventListener('touchend',function(){if(!on)return;on=false;var fire=
  if(fire){if(pend||psafe())go();else if(el){el.textContent='Finish what you are typing first'+(window.__psWhy?' ('+window.__psWhy+')':'');setTimeout(function(){el.style.opacity=0},1800)}}},{passive:true});
 })();
 try{var rs=JSON.parse(sessionStorage.getItem('hq.rs')||'null');if(rs){sessionStorage.removeItem('hq.rs');setTimeout(function(){try{(rs.open||[]).forEach(function(k){WOPEN.add(k)});if(rs.tab&&typeof tab!=='undefined')tab=rs.tab;render();window.scrollTo(0,rs.y||0)}catch(e){}},800)}}catch(e){}
-})()</script><div style="position:fixed;top:env(safe-area-inset-top,0);left:50%;transform:translateX(-50%);z-index:99999;background:#b4532a;color:#fff;font:700 9px system-ui;letter-spacing:.08em;padding:1px 8px;border-radius:0 0 8px 8px;pointer-events:none;opacity:.85">BETA 11/23 8:15am</div></body>
+})()</script><div style="position:fixed;top:env(safe-area-inset-top,0);left:50%;transform:translateX(-50%);z-index:99999;background:#b4532a;color:#fff;font:700 9px system-ui;letter-spacing:.08em;padding:1px 8px;border-radius:0 0 8px 8px;pointer-events:none;opacity:.85">BETA 11/23 8:20am</div></body>
 </html>
