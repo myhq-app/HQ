@@ -375,7 +375,7 @@ const AG=[[/\b(go to|going to|run to|head to|stop by|drop off|drop-off|pick up (
 [/\b(yard|mow(?:ing)?|lawn|garden|patio|weeds?|gutters?|sprinklers?|porch|deck)\b/i,'Outdoors'],
 [/\b(return|store|mail|gas|appointment)\b/i,'Errands']];
 function areaGuess(t){t=String(t||'');for(var i=0;i<AG.length;i++)if(AG[i][0].test(t))return AG[i][1];return ''}
-const AISLES=['Produce','Dairy & eggs','Meat & fish','Pantry','Frozen','Household','Other'];
+const AISLES=['Produce','Dairy & eggs','Meat & fish','Frozen','Pantry','Household','Other'];
 const REPEAT=['Once','Daily','Weekly','Biweekly','Monthly','Yearly'];
 const PLACES=['Pantry','Fridge & freezer','Bathroom','Laundry','Garage','Closet','Other'];
 const DAYS=['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
@@ -9347,5 +9347,5 @@ document.addEventListener('touchend',function(){if(!on)return;on=false;var fire=
  if(fire){if(pend||psafe())go();else if(el){el.textContent='Finish what you are typing first'+(window.__psWhy?' ('+window.__psWhy+')':'');setTimeout(function(){el.style.opacity=0},1800)}}},{passive:true});
 })();
 try{var rs=JSON.parse(sessionStorage.getItem('hq.rs')||'null');if(rs){sessionStorage.removeItem('hq.rs');setTimeout(function(){try{(rs.open||[]).forEach(function(k){WOPEN.add(k)});if(rs.tab&&typeof tab!=='undefined')tab=rs.tab;render();window.scrollTo(0,rs.y||0)}catch(e){}},800)}}catch(e){}
-})()</script><div style="position:fixed;top:env(safe-area-inset-top,0);left:50%;transform:translateX(-50%);z-index:99999;background:#b4532a;color:#fff;font:700 9px system-ui;letter-spacing:.08em;padding:1px 8px;border-radius:0 0 8px 8px;pointer-events:none;opacity:.85">BETA 11/23 4:30pm</div></body>
+})()</script><div style="position:fixed;top:env(safe-area-inset-top,0);left:50%;transform:translateX(-50%);z-index:99999;background:#b4532a;color:#fff;font:700 9px system-ui;letter-spacing:.08em;padding:1px 8px;border-radius:0 0 8px 8px;pointer-events:none;opacity:.85">BETA 11/23 4:33pm</div></body>
 </html>
