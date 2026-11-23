@@ -7345,7 +7345,32 @@ document.addEventListener('touchend',function(){if(!on)return;on=false;var fire=
  if(fire){if(pend||psafe())go();else if(el){el.textContent='Finish what you are typing first'+(window.__psWhy?' ('+window.__psWhy+')':'');setTimeout(function(){el.style.opacity=0},1800)}}},{passive:true});
 })();
 try{var rs=JSON.parse(sessionStorage.getItem('hq.rs')||'null');if(rs){sessionStorage.removeItem('hq.rs');setTimeout(function(){try{(rs.open||[]).forEach(function(k){WOPEN.add(k)});if(rs.tab&&typeof tab!=='undefined')tab=rs.tab;render();window.scrollTo(0,rs.y||0)}catch(e){}},800)}}catch(e){}
-})()</script><style id="kmncss">
+})()</script><style id="kmnaddcss">
+html body #view .kmnadd input::-webkit-calendar-picker-indicator{display:none!important;opacity:0}
+html body #view .kmnadd{display:flex;gap:8px;margin-top:10px}
+html body #view .kmnadd input{flex:1;min-width:0;height:44px;border:1.5px dashed #dcbcc1;border-radius:12px;background:#fff;padding:0 12px;font:15px var(--bf,Lora),Georgia,serif;color:var(--ink)}
+html body #view .kmnadd input::placeholder{color:#c08a92}
+html body #view .kmnadd input:focus{outline:none;border-style:solid;border-color:var(--a)}
+html body #view .kmnadd button{height:44px;border:0!important;border-radius:12px!important;background:var(--a)!important;color:#fff!important;font:600 14px Figtree,Inter,system-ui,sans-serif!important;letter-spacing:0!important;text-transform:none!important;padding:0 16px!important;cursor:pointer}
+html body #view .kmnor{font:12.5px Figtree,Inter,system-ui,sans-serif;color:var(--mut);margin:6px 2px 0}
+</style>
+<script>/* Type a dish straight into a night's menu */
+(function(){
+ function nm(t){return String(t||'').replace(/\s*\p{Extended_Pictographic}+\s*$/u,'').trim().toLowerCase()}
+ function go(f){
+  var d=f.getAttribute('data-kadd'),i=f.querySelector('input'),v=String(i&&i.value||'').trim();if(!v||!d)return;
+  var R=S.recipes||[],q=nm(v),hit=R.find(function(r){return nm(r.title)===q});if(!hit){var c=R.filter(function(r){return nm(r.title).indexOf(q)>=0});if(c.length===1)hit=c[0]}
+  var t=hit?hit.title:v.replace(/\b\w/g,function(c){return c.toUpperCase()});
+  var p=S.plan[d]=S.plan[d]||{};S.hand=S.hand||{};S.hand[d]=1;var L=[p.Dinner].concat(p.More||[]).filter(Boolean).map(function(x){return String(x).toLowerCase()});
+  if(L.indexOf(t.toLowerCase())<0){var ph=!p.Dinner||/^(leftovers|take ?out|eat out|out)$/i.test(p.Dinner);try{var tg=window.dayTags?dayTags(d):null;if(tg&&tg.hol&&String(p.Dinner||'').toLowerCase().indexOf(String(tg.hol).toLowerCase())===0&&!R.some(function(r){return r.title===p.Dinner}))ph=true}catch(_){}
+   if(ph)p.Dinner=t;else p.More=(p.More||[]).concat(t)}
+  save();render();try{toast('Added '+t)}catch(_){}
+  setTimeout(function(){var n=document.querySelector('#view .kmnadd input');if(n){n.focus({preventScroll:true})}},30)}
+ document.addEventListener('submit',function(e){var f=e.target;if(!f||!f.classList||!f.classList.contains('kmnadd'))return;e.preventDefault();e.stopImmediatePropagation();go(f)},true);
+ document.addEventListener('click',function(e){var b=e.target.closest&&e.target.closest('.kmnadd button');if(!b)return;e.preventDefault();e.stopImmediatePropagation();go(b.closest('.kmnadd'))},true);
+})();
+</script>
+<style id="kmncss">
 html body #view .kd .kpic .kdx{position:absolute;right:3px;bottom:3px;z-index:3;background:var(--a);color:#fff;font:700 9px/1 Figtree,Inter,system-ui,sans-serif;font-style:normal;border-radius:999px;padding:3px 5px;border:1.5px solid #fff}
 html body #view .kmn{background:#fbf3f2;border:1px solid #efdcdc;border-radius:20px;padding:14px 14px 12px;margin:10px 0 4px}
 html body #view .kmn>small{display:block;font:600 10px Figtree,Inter,system-ui,sans-serif;letter-spacing:.16em;color:#a9785a;text-transform:uppercase}
@@ -7400,7 +7425,7 @@ html body #view .kdx2{font-style:normal;font-weight:700;color:var(--a)}
   var q=L.length?'':'<div class="kmnq"><button type="button" data-kset="Leftovers">Leftovers</button><button type="button" data-kset="Take Out">Take Out</button></div>';
   var R=L.map(rec).filter(Boolean),todo=R.filter(function(r){return !onList(r,d)});
   var f=R.length?'<div class="kmnf"><span>'+L.length+(L.length===1?' dish':' dishes')+'</span>'+(todo.length?'<button type="button" class="kmng" data-kgr="'+e(d)+'">'+(R.length>1?'Add all to grocery list':'Add to grocery list')+'</button>':'<span class="kmnok">✓ On your grocery list</span>')+'</div>':'';
-  return '<div class="kmn">'+head+rows+q+'<div class="kmnh">'+(L.length?'+ Add a dish: tap Pick on any recipe below':'Tap Pick on any recipe below')+'</div>'+f+'</div>'}
+  return '<div class="kmn">'+head+rows+q+'<form class="kmnadd" data-kadd="'+e(d)+'"><input type="text" list="kmnrl" enterkeyhint="done" autocomplete="off" placeholder="+ Add a dish (cornbread, rolls…)" aria-label="Add a dish"><button type="submit">Add</button></form><datalist id="kmnrl">'+(S.recipes||[]).map(function(r){return '<option value="'+e(String(r.title).replace(/\s*\p{Extended_Pictographic}+\s*$/u,''))+'">'}).join('')+'</datalist><p class="kmnor">or tap “Pick” on any recipe below</p>'+f+'</div>'}
  var pm=V.meals;V.meals=function(){var h=pm.apply(this,arguments);try{if(typeof mtab!=='undefined'&&mtab!=='rec')return h;
   h=h.replace(/(<button type="button" class="kd[^"]*" data-kd="(\d{4}-\d\d-\d\d)"[^>]*>[\s\S]*?<span>[^<]*)(<\/span>)/g,function(m,a,d,c){var n=(P(d).More||[]).length;return n?a+' <em class="kdx2">+'+n+'</em>'+c:m});
   var d=KP();if(d){h=h.replace(/<div class="kpa">[\s\S]*?<\/div>/,panel(d));var sh=wd(d,{weekday:'short'});
