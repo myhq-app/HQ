@@ -9442,5 +9442,15 @@ document.addEventListener('touchend',function(){if(!on)return;on=false;var fire=
  if(fire){if(pend||psafe())go();else if(el){el.textContent='Finish what you are typing first'+(window.__psWhy?' ('+window.__psWhy+')':'');setTimeout(function(){el.style.opacity=0},1800)}}},{passive:true});
 })();
 try{var rs=JSON.parse(sessionStorage.getItem('hq.rs')||'null');if(rs){sessionStorage.removeItem('hq.rs');setTimeout(function(){try{(rs.open||[]).forEach(function(k){WOPEN.add(k)});if(rs.tab&&typeof tab!=='undefined')tab=rs.tab;render();window.scrollTo(0,rs.y||0)}catch(e){}},800)}}catch(e){}
-})()</script><div style="position:fixed;top:env(safe-area-inset-top,0);left:50%;transform:translateX(-50%);z-index:99999;background:#b4532a;color:#fff;font:700 9px system-ui;letter-spacing:.08em;padding:1px 8px;border-radius:0 0 8px 8px;pointer-events:none;opacity:.85">BETA 11/23 5:06pm</div></body>
+})()</script><div style="position:fixed;top:env(safe-area-inset-top,0);left:50%;transform:translateX(-50%);z-index:99999;background:#b4532a;color:#fff;font:700 9px system-ui;letter-spacing:.08em;padding:1px 8px;border-radius:0 0 8px 8px;pointer-events:none;opacity:.85">BETA 11/23 5:11pm</div><script>/* Keep photos on screen when the page redraws (Nov 23). The phone paints a brand-new photo a moment late, so
+   the colored placeholder flashed. After each redraw, the photo that was already showing is put back in place. */
+(function(){var _r=render;render=function(){var old={};try{document.querySelectorAll('#view img,#rxo img').forEach(function(i){if(i.complete&&i.naturalWidth){var k=i.getAttribute('src');(old[k]=old[k]||[]).push(i)}})}catch(_){}
+ var x=_r.apply(this,arguments);
+ try{document.querySelectorAll('#view img,#rxo img').forEach(function(n){var a=old[n.getAttribute('src')];if(!a||!a.length)return;var o=a.shift();if(o===n||o.isConnected)return;
+  for(var j=o.attributes.length-1;j>=0;j--){var nm=o.attributes[j].name;if(nm!=='src'&&!n.hasAttribute(nm))o.removeAttribute(nm)}
+  for(var k=0;k<n.attributes.length;k++){var at=n.attributes[k];if(at.name!=='src')o.setAttribute(at.name,at.value)}
+  n.replaceWith(o)})}catch(_){}
+ return x}})();
+</script>
+</body>
 </html>
