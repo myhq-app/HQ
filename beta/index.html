@@ -9276,6 +9276,27 @@ html body #view .kx4x{font-style:normal;font:700 10px Figtree,Inter,system-ui,sa
 <style id="re2lkcss">html body .re2det .re2lk{grid-column:1/-1}html body .re2det .re2lk input{width:100%;font-size:14px}</style>
 <style id="rxsrtcss">html body #view .rxsrt{display:flex;justify-content:flex-end;margin:-4px 2px 8px}html body #view .rxsrt button{border:0;background:none;padding:2px 0;font:600 12.5px Figtree,Inter,system-ui,sans-serif;color:var(--mut);cursor:pointer}html body #view .rxsrt span{color:var(--a)}</style>
 <script>document.addEventListener('click',function(e){var b=e.target.closest&&e.target.closest('[data-rxsort]');if(!b)return;e.preventDefault();e.stopImmediatePropagation();S.rxSort=(S.rxSort||'new')==='new'?'az':'new';save();render()},true);</script>
+<style id="rxrecss">html body .rxsrc .rxre{border:0;background:none;padding:0;font:inherit;color:var(--a);text-decoration:underline;cursor:pointer}</style>
+<script>/* Pasting a recipe link reads that page and fills in the ingredients and steps (with Undo) */
+(function(){
+ function R(id){return (S.recipes||[]).find(function(x){return String(x.id)===String(id)})}
+ async function reread(id){var x=R(id);if(!x||!x.link)return;var tok=SBK;try{if(SBS)tok=await sbTok()}catch(_){}
+  toast('Reading the recipe…');
+  try{var res=await fetch(SBU+'/functions/v1/recipe-import',{method:'POST',headers:{apikey:SBK,Authorization:'Bearer '+tok,'Content-Type':'application/json'},body:JSON.stringify({url:x.link})});var j=await res.json().catch(function(){return {}});
+   if(!res.ok||j.error||!(j.ingredients&&j.ingredients.length)){toast((j&&j.error)||'Could not read that page. You can type the recipe in with the pencil.');return}
+   x=R(id);if(!x)return;var old={ingredients:x.ingredients||'',steps:x.steps||'',servings:x.servings||'',time:x.time||''};
+   x.ingredients=j.ingredients.join('\n');if(j.steps&&j.steps.length)x.steps=j.steps.map(function(t,i){return (i+1)+'. '+t}).join('\n');
+   if(j.servings)x.servings=j.servings;if(j.time&&!x.time)x.time=j.time;if(j.image&&!x.img&&!x.photo)x.img=j.image;delete x.impFail;save();render();
+   var msg='Updated with '+j.ingredients.length+' ingredients'+(j.steps&&j.steps.length?' and '+j.steps.length+' steps':'');
+   if(typeof undoToast==='function')undoToast(msg,function(){var y=R(id);if(y){y.ingredients=old.ingredients;y.steps=old.steps;y.servings=old.servings;y.time=old.time;save();render()}});else toast(msg)}
+  catch(e){toast('Could not reach that page right now.')}}
+ window.__rxReread=reread;
+ document.addEventListener('change',function(e){var t=e.target;if(!t||!t.dataset||t.dataset.a!=='fld'||t.dataset.k!=='recipes'||t.dataset.f!=='link')return;var v=String(t.value||'').trim(),id=t.dataset.i;if(!/^https?:\/\//i.test(v)||/recime\.app/i.test(v))return;setTimeout(function(){reread(id)},60)},true);
+ function btn(){var o=document.getElementById('rxo');if(!o||o.querySelector('.rxre'))return;var x=R(o.getAttribute('data-rid'));if(!x||!x.link||/recime\.app/i.test(x.link))return;var p=o.querySelector('.rxsrc');var h='<button type="button" class="rxre" data-rxre="'+String(x.id).replace(/"/g,'')+'">Update from the recipe link</button>';if(p)p.insertAdjacentHTML('beforeend',' · '+h);else{var b=o.querySelector('.rxbd');if(b)b.insertAdjacentHTML('beforeend','<p class="rxsrc">'+h+'</p>')}}
+ var _r=render;render=function(){var x=_r.apply(this,arguments);try{btn()}catch(_){}return x};
+ document.addEventListener('click',function(e){var b=e.target.closest&&e.target.closest('[data-rxre]');if(!b)return;e.preventDefault();e.stopImmediatePropagation();reread(b.getAttribute('data-rxre'))},true);
+})();
+</script>
 <script>/* If the first draw failed because the app opened straight onto a screen whose parts load later, draw again now that everything is loaded. */(function(){window.__booted=1;if(!window.__bootRetry)return;try{render()}catch(e){try{(S.errlog=S.errlog||[]).push({k:'boot2',m:String(e&&e.message||e).slice(0,160),at:new Date().toISOString().slice(0,19),tab:tab});save()}catch(_){}try{tab='today';render()}catch(_){}}})();</script>
 <script>(function(){try{var H='9fd7d2c2499204c2a4998657b236d86c1ab1cc1644b9888f0728c3bee577b195',ent=null,i=TABS.findIndex(function(t){return t[0]==='studies'});if(i>-1)ent=TABS[i];var last='',on=false;
 function apply(ok){on=ok;window.__own=ok;if(ok){try{if(localStorage.getItem('hq.beta')!=='0'){localStorage.setItem('hq.beta','1');if(!window.__isBeta)window.__go()}}catch(e){}}var j=TABS.findIndex(function(t){return t[0]==='studies'});if(ok&&j<0&&ent)TABS.push(ent);if(!ok&&j>-1)TABS.splice(j,1);var k=QA_ALL.indexOf('studies');if(!ok&&k>-1)QA_ALL.splice(k,1);if(ok&&k<0)QA_ALL.push('studies');if(!ok&&tab==='studies')tab='today'}
@@ -9300,5 +9321,5 @@ document.addEventListener('touchend',function(){if(!on)return;on=false;var fire=
  if(fire){if(pend||psafe())go();else if(el){el.textContent='Finish what you are typing first'+(window.__psWhy?' ('+window.__psWhy+')':'');setTimeout(function(){el.style.opacity=0},1800)}}},{passive:true});
 })();
 try{var rs=JSON.parse(sessionStorage.getItem('hq.rs')||'null');if(rs){sessionStorage.removeItem('hq.rs');setTimeout(function(){try{(rs.open||[]).forEach(function(k){WOPEN.add(k)});if(rs.tab&&typeof tab!=='undefined')tab=rs.tab;render();window.scrollTo(0,rs.y||0)}catch(e){}},800)}}catch(e){}
-})()</script><div style="position:fixed;top:env(safe-area-inset-top,0);left:50%;transform:translateX(-50%);z-index:99999;background:#b4532a;color:#fff;font:700 9px system-ui;letter-spacing:.08em;padding:1px 8px;border-radius:0 0 8px 8px;pointer-events:none;opacity:.85">BETA 11/23 4:16pm</div></body>
+})()</script><div style="position:fixed;top:env(safe-area-inset-top,0);left:50%;transform:translateX(-50%);z-index:99999;background:#b4532a;color:#fff;font:700 9px system-ui;letter-spacing:.08em;padding:1px 8px;border-radius:0 0 8px 8px;pointer-events:none;opacity:.85">BETA 11/23 4:21pm</div></body>
 </html>
