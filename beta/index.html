@@ -9442,7 +9442,29 @@ document.addEventListener('touchend',function(){if(!on)return;on=false;var fire=
  if(fire){if(pend||psafe())go();else if(el){el.textContent='Finish what you are typing first'+(window.__psWhy?' ('+window.__psWhy+')':'');setTimeout(function(){el.style.opacity=0},1800)}}},{passive:true});
 })();
 try{var rs=JSON.parse(sessionStorage.getItem('hq.rs')||'null');if(rs){sessionStorage.removeItem('hq.rs');setTimeout(function(){try{(rs.open||[]).forEach(function(k){WOPEN.add(k)});if(rs.tab&&typeof tab!=='undefined')tab=rs.tab;render();window.scrollTo(0,rs.y||0)}catch(e){}},800)}}catch(e){}
-})()</script><div style="position:fixed;top:env(safe-area-inset-top,0);left:50%;transform:translateX(-50%);z-index:99999;background:#b4532a;color:#fff;font:700 9px system-ui;letter-spacing:.08em;padding:1px 8px;border-radius:0 0 8px 8px;pointer-events:none;opacity:.85">BETA 11/23 5:11pm</div><script>/* Keep photos on screen when the page redraws (Nov 23). The phone paints a brand-new photo a moment late, so
+})()</script><div style="position:fixed;top:env(safe-area-inset-top,0);left:50%;transform:translateX(-50%);z-index:99999;background:#b4532a;color:#fff;font:700 9px system-ui;letter-spacing:.08em;padding:1px 8px;border-radius:0 0 8px 8px;pointer-events:none;opacity:.85">BETA 11/23 6:11pm</div><style id="dsbar">
+/* Nov 23: page dots live inside the bottom bar (never over the list); no blur layers on fixed bars (they glitch on iPhone) */
+#bbar{padding-top:15px!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important;transform:translateZ(0)}
+.rdots,.pdots{bottom:calc(61px + env(safe-area-inset-bottom))!important;padding:0!important;background:none!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important;border-radius:0!important;z-index:60!important}
+</style>
+<script>/* Nov 23: one pantry line per ingredient ("Tsps Nutmeg", "Th Brown Sugar", "Dark Brown Sugar" were all separate), and nudge the fixed bar back after the keyboard closes */
+(function(){
+var UNIT=/\b(tsps?|tspn|tbsps?|tbs|tbl|tblsp|teaspoons?|tablespoons?|cups?|oz|ounces?|lbs?|pounds?|pinch(?:es)?|dash(?:es)?|sprigs?|stalks?|handfuls?|splash(?:es)?|to taste|of|a|some|big|large|small|ground|dried|fresh|packed|cans?|cartons?|boxes|box|jar|bottle)\b/g;
+var _pk=pkey;
+pkey=function(l){
+ var t=String(l||'').toLowerCase().replace(/[@#][\w.]+(?:['’]s)?/g,' ').replace(/\([^)]*\)/g,' ').replace(/,.*$/,' ').replace(/[0-9½¼¾⅓⅔⅛\/.\-–]+/g,' ');
+ t=t.replace(/^\s*th\b/,' ').replace(UNIT,' ').replace(/\s+/g,' ').trim();
+ t=t.replace(/\b(dark|light|golden|soft)\s+brown sugar\b/,'brown sugar').replace(/^(white|granulated|white granulated|granulated white|regular)\s+sugar$/,'sugar').replace(/^(freshly )?(black )?pepper$/,'pepper');
+ return t||_pk(l)};
+var _is=ingSplit;ingSplit=function(l){var s=String(l||'').replace(/[@#][\w.]+(?:['’]s)?\s*/g,'').replace(/^(\s*[\d½¼¾⅓⅔⅛\/.\- ]+)\s*(tsps|tspn)\b\.?/i,'$1 tsp').replace(/^(\s*[\d½¼¾⅓⅔⅛\/.\- ]+)\s*(tbsps|tbs|tbl|tblsp|th)\b\.?/i,'$1 tbsp');return _is(s)};
+function merge(){try{var L=S.pchk||[],by={},out=[],ch=false;L.forEach(function(x){var k=pkey(x.key||x.title);if(k!==x.key){x.key=k;x.title=(typeof cap==='function'?cap(k):k);ch=true}
+ if(by[k]){var a=by[k];a.src=(a.src||[]).concat((x.src||[]).filter(function(z){return !(a.src||[]).some(function(y){return y.r===z.r&&(y.d||'')===(z.d||'')})}));ch=true}else{by[k]=x;out.push(x)}});
+ if(ch){S.pchk=out;try{save()}catch(_){}}}catch(_){}}
+var _rr=render;render=function(){if(typeof tab!=='undefined'&&tab==='groceries')merge();return _rr.apply(this,arguments)};
+document.addEventListener('focusout',function(){setTimeout(function(){try{if(!document.activeElement||!/INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName)){var y=window.scrollY;window.scrollTo(0,y+1);window.scrollTo(0,y);var b=document.getElementById('bbar');if(b){b.style.transform='translateZ(0)';void b.offsetHeight}}}catch(_){}},120)},true);
+})();
+</script>
+<script>/* Keep photos on screen when the page redraws (Nov 23). The phone paints a brand-new photo a moment late, so
    the colored placeholder flashed. After each redraw, the photo that was already showing is put back in place. */
 (function(){var _r=render;render=function(){var old={};try{document.querySelectorAll('#view img,#rxo img').forEach(function(i){if(i.complete&&i.naturalWidth){var k=i.getAttribute('src');(old[k]=old[k]||[]).push(i)}})}catch(_){}
  var x=_r.apply(this,arguments);
