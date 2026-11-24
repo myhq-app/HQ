@@ -5794,7 +5794,7 @@ var last=0,cnt=0;setInterval(function(){try{if(window.__kidsPage||/[?&]kids=1/.t
 <script>
 /* Safety net: if the bottom bar ends up drawn below the visible screen (seen on iPhone), pull it back up */
 (function(){function typing(){var a=document.activeElement;return !!a&&(a.tagName==='TEXTAREA'||(a.tagName==='INPUT'&&!/^(checkbox|radio|button|submit|range|color|file)$/i.test(a.type||''))||a.isContentEditable)}
-function fix(){try{var b=document.getElementById('bbar');if(!b)return;var v=window.visualViewport,H=v?v.height+v.offsetTop:innerHeight,kb=v?innerHeight-H:0;b.style.transform='';/* keyboard open: hide the bar instead of floating it in the middle of the screen */var hide=typing()&&kb>120;b.classList.toggle('kbhide',hide);document.body.classList.toggle('kbopen',hide);if(hide)return;var d=b.getBoundingClientRect().bottom-innerHeight;if(d>2&&d<140)b.style.transform='translateY(-'+Math.round(d)+'px)'/* only when truly below the screen; never chase the phone's viewport reading (Nov 23) */}catch(e){}}
+function fix(){try{var b=document.getElementById('bbar');if(!b)return;var v=window.visualViewport,H=v?v.height+v.offsetTop:innerHeight,kb=v?innerHeight-H:0;b.style.transform='';/* keyboard open: hide the bar instead of floating it in the middle of the screen */var hide=typing()&&kb>120;b.classList.toggle('kbhide',hide);document.body.classList.toggle('kbopen',hide);if(hide)return;var d=b.getBoundingClientRect().bottom-innerHeight;0/* only when truly below the screen; never chase the phone's viewport reading (Nov 23) */}catch(e){}}
 document.addEventListener('focusin',function(){setTimeout(fix,60);setTimeout(fix,350)});document.addEventListener('focusout',function(){setTimeout(fix,60);setTimeout(fix,350)});document.addEventListener('focusout',function(){setTimeout(fix,1100)});
 (function(){var st=document.createElement('style');st.textContent='#bbar.kbhide{opacity:0!important;pointer-events:none!important;transform:translateY(120%)!important;transition:opacity .15s}body.kbopen #hqfab{display:none!important}';document.head.appendChild(st)})();
 var q=function(){setTimeout(fix,60)};['resize','scroll','orientationchange','focus','pageshow'].forEach(function(e){window.addEventListener(e,q)});document.addEventListener('visibilitychange',q);if(window.visualViewport){window.visualViewport.addEventListener('resize',q);window.visualViewport.addEventListener('scroll',q)}setInterval(fix,1500);setTimeout(fix,500)})();
@@ -9443,7 +9443,7 @@ document.addEventListener('touchend',function(){if(!on)return;on=false;var fire=
  if(fire){if(pend||psafe())go();else if(el){el.textContent='Finish what you are typing first'+(window.__psWhy?' ('+window.__psWhy+')':'');setTimeout(function(){el.style.opacity=0},1800)}}},{passive:true});
 })();
 try{var rs=JSON.parse(sessionStorage.getItem('hq.rs')||'null');if(rs){sessionStorage.removeItem('hq.rs');setTimeout(function(){try{(rs.open||[]).forEach(function(k){WOPEN.add(k)});if(rs.tab&&typeof tab!=='undefined')tab=rs.tab;render();window.scrollTo(0,rs.y||0)}catch(e){}},800)}}catch(e){}
-})()</script><div style="position:fixed;top:env(safe-area-inset-top,0);left:50%;transform:translateX(-50%);z-index:99999;background:#b4532a;color:#fff;font:700 9px system-ui;letter-spacing:.08em;padding:1px 8px;border-radius:0 0 8px 8px;pointer-events:none;opacity:.85">BETA 11/23 8:41pm</div><style id="shopxcss">
+})()</script><div style="position:fixed;top:env(safe-area-inset-top,0);left:50%;transform:translateX(-50%);z-index:99999;background:#b4532a;color:#fff;font:700 9px system-ui;letter-spacing:.08em;padding:1px 8px;border-radius:0 0 8px 8px;pointer-events:none;opacity:.85">BETA 11/23 10:36pm</div><style id="shopxcss">
 #wmsheet .wmbuy{font-weight:700;font-size:13.5px;color:var(--a);margin-top:1px}
 #wmsheet .wmneed{font-size:12px;color:var(--mut);margin-top:1px;line-height:1.3}
 #wmsheet .wmpg{height:6px;border-radius:3px;background:color-mix(in srgb,var(--a) 14%,transparent);overflow:hidden;margin:0 0 4px}
@@ -9547,6 +9547,36 @@ var f=function(){var h=o.apply(this,arguments);if(typeof h!=='string'||!show())r
 return '<a class="tgcard" href="thanksgiving.html"><span class="tgk">Thursday · dinner at 2:00</span><h2 class="tgh">Thanksgiving Plan</h2><span class="tgs">Prep lists for each day. Tap to check things off ›</span></a>'+h};
 f.__tg=1;V.today=f;try{if(show()&&typeof tab!=='undefined'&&tab==='today'&&typeof render==='function')render()}catch(e){}})();</script>
 <style id="tgcss">.tgcard{display:block;margin:0 0 12px;padding:16px 18px;border-radius:20px;background:linear-gradient(135deg,#f7e4e5,#f5ebe0);border:1px solid #f0d9d6;color:#3b2f2f;text-decoration:none}.tgcard .tgk{display:block;font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#b8666d}.tgcard .tgh{font-size:24px;font-weight:600;margin:4px 0 2px;color:#3b2f2f}.tgcard .tgs{font-size:14px;color:#8c7a75}</style>
+<style id="scrlockcss">
+html,body{height:100%!important;overflow:hidden!important;overscroll-behavior:none!important}
+#hqscr{position:fixed;top:0;left:0;right:0;bottom:0;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;overscroll-behavior-y:contain;background:var(--bg)}
+#hqtop{position:fixed;top:0;left:0;right:0;height:env(safe-area-inset-top,0px);background:var(--bg);z-index:58;pointer-events:none}
+#hqscr nav.hasback{top:env(safe-area-inset-top,0px)!important}
+</style>
+<script>/* Lock the outer page: only #hqscr scrolls, so the bottom bar and top strip can never drift (Nov 23) */
+(function(){var m=document.querySelector('main');if(!m||document.getElementById('hqscr'))return;
+var S=document.createElement('div');S.id='hqscr';m.parentNode.insertBefore(S,m);S.appendChild(m);
+var T=document.createElement('div');T.id='hqtop';document.body.appendChild(T);
+var HB={srchbtn:1,musicbtn:1,morebtn:1,askbtn:1};
+function grab(){for(var k in HB){var e=document.getElementById(k);if(e&&e.parentNode!==S)S.insertBefore(e,m)}}
+grab();new MutationObserver(grab).observe(document.body,{childList:true});
+function to(a,b){if(a&&typeof a==='object')S.scrollTo(a);else S.scrollTo(+a||0,+b||0)}
+window.scrollTo=to;window.scroll=to;window.scrollBy=function(a,b){if(a&&typeof a==='object')S.scrollBy(a);else S.scrollBy(+a||0,+b||0)};
+try{Object.defineProperty(window,'scrollY',{get:function(){return S.scrollTop},configurable:true});Object.defineProperty(window,'pageYOffset',{get:function(){return S.scrollTop},configurable:true})}catch(e){}
+[document.documentElement,document.body].forEach(function(el){try{Object.defineProperty(el,'scrollTop',{get:function(){return S.scrollTop},set:function(v){S.scrollTop=v},configurable:true})}catch(e){}});
+S.addEventListener('scroll',function(){try{window.dispatchEvent(new Event('scroll'))}catch(e){}},{passive:true});
+})();
+/* Clean brand tags and size words out of grocery names */
+(function(){if(typeof gNorm!=='function'||gNorm.__nm)return;var o=gNorm;
+function pre(x){return String(x||'').replace(/[’‘]/g,"'").replace(/@([A-Za-zÀ-ÿ']+?)(USA|US|Official|Brands?|Inc)?\b/g,'$1').replace(/\b(?:medium|small|large|big)?[\s-]*sized\b/gi,' ').replace(/\b\d+(?:\.\d+)?\s*-?\s*(?:inch(?:es)?|in\.|")(?=\s|$)/gi,' ').replace(/\s{2,}/g,' ')}
+function post(g,x){if(!g||!g.name)return g;var m=/\bhot\s+(honey|sauce)\b/i.exec(x);if(m&&!/\bhot\b/i.test(g.name)){var w=m[1].toLowerCase();g.name=g.name.replace(new RegExp('\\b'+w+'\\b','i'),function(z){return 'Hot '+z});if(g.key)g.key=g.key.replace(new RegExp('\\b'+w),'hot '+w)}
+g.name=g.name.replace(/'S\b/g,"'s");if(g.key)g.key=g.key.replace(/'\s/g,"'s ");return g}
+var f=function(x){var y=pre(x);return post(o.apply(this,[y].concat([].slice.call(arguments,1))),y)};f.__nm=1;gNorm=f;
+function fix(t){var s=pre(t).replace(/\b([A-Za-z]{3,}?)usa\b/gi,'$1').replace(/\binch(es)?\b/gi,' ').replace(/\s{2,}/g,' ').replace(/^\s*(?:\d[\d\/.\s]*)?(?:tsps?|tbsps?|cups?|oz|lbs?)\s+/i,'').trim();return s.replace(/\b([a-z])/g,function(c){return c.toUpperCase()}).replace(/'S\b/g,"'s")}
+function run(){try{if(typeof S!=='undefined'&&S&&!S.nmFix1&&Array.isArray(S.groceries)){var ch=0;S.groceries.forEach(function(g){if(g&&g.title&&/@|USA\b|Usa\b|\bSized\b|\bInch\b|[’]|^\s*(tsps?|tbsps?)\s/i.test(g.title)){var n=fix(g.title);if(n&&n!==g.title){g.title=n;ch++}}});S.nmFix1=1;if(ch&&typeof save==='function')save()}}catch(e){}}
+run();if(typeof render==='function'){var R=render;render=function(){run();return R.apply(this,arguments)}}
+})();
+</script>
 <script>/* Keep photos on screen when the page redraws (Nov 23). The phone paints a brand-new photo a moment late, so
    the colored placeholder flashed. After each redraw, the photo that was already showing is put back in place. */
 (function(){var _r=render;render=function(){var old={};try{document.querySelectorAll('#view img,#rxo img').forEach(function(i){if(i.complete&&i.naturalWidth){var k=i.getAttribute('src');(old[k]=old[k]||[]).push(i)}})}catch(_){}
