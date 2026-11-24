@@ -53,7 +53,7 @@ details ul{margin:12px 0 0;padding-left:18px;display:flex;flex-direction:column;
     <ul>
       <li><b>Why this order:</b> the ham holds heat better than anything else on the menu, so it goes first and rests wrapped for about 1¾ hours. The turkey holds worst, so it cooks last. The mac, potatoes and cornbread share the oven with it, so all of them come out fresh at 1:40.</li>
       <li><b>One temperature for everything at the end:</b> the turkey recipe says 350°, so the sides bake at 350° too. The mac takes about 10 minutes longer than your 375° time. Go by how they look.</li>
-      <li><b>Cornbread</b> bakes first thing at 375° (Krusteaz box: 27–29 minutes), waits under foil and warms up wrapped in foil with the rolls at 1:40. Cornbread reheats well as long as it is wrapped so it does not dry out.</li>
+      <li><b>Cornbread</b> bakes Wednesday night at 375° (Krusteaz box: 27–29 minutes), waits wrapped in foil and warms up wrapped in foil with the rolls at 1:40. Cornbread reheats well as long as it is wrapped so it does not dry out.</li>
       <li><b>Space:</b> three pans on two racks at 1:05. Test-fit them Wednesday.</li>
       <li><b>Turkey breast:</b> your video cooked a 4.5 lb breast about 2½ hours. Yours is 48 oz (3 lb), so I used 30 minutes covered plus about 55 minutes uncovered. The thermometer decides: 165° at the thickest part.</li>
       <li><b>Ham</b> assumes 11 lb (8 minutes per pound). Tell me the real weight tomorrow and I will move the times.</li>
@@ -93,6 +93,9 @@ var DAYS=[
     ['Mix and pour the sweet potato pies','Puree with sugars, evaporated milk, melted butter, spices, condensed milk, flour, lemon and orange juice, eggs.'],
     ['Bake pies and cobbler together','Pies 1 hour. Cobbler 45 minutes to 1 hour. Check the cobbler first.'],
     ['Cool the pies on the counter, then into the fridge overnight','Cobbler can stay covered at room temperature.']]},
+   {g:'Oven at 375°: cornbread',items:[
+    ['Mix the cornbread and bake 27–29 minutes','Krusteaz mix, egg, milk, oil. Greased 8×8 or 9×9 pan. Done when a toothpick comes out clean.'],
+    ['Cool it completely, then wrap it tight in foil','Leave it on the counter overnight. It warms up in the foil Thursday at 1:40.']]},
    {g:'Stove',items:[
     ['Make the candy yams all the way through','About 30 minutes covered, then 10 minutes to reduce the syrup. Cool and refrigerate.'],
     ['Peel and cut the 7 Yukon Gold potatoes','Medium pieces. Cover them with cold water in a big bowl or the pot, and put them in the fridge so they do not brown.']]},
@@ -108,16 +111,13 @@ var DAYS=[
    {g:'Morning',items:[
     ['8:00','Smoked turkey leg into a big pot, cover with water or broth','High heat until it boils.'],
     ['8:15','Turn the turkey leg down to a simmer, lid on',''],
-    ['9:00','Ham out of the fridge. Oven to 375°.','The ham sits on the counter about an hour.'],
+    ['9:00','Ham out of the fridge','It sits on the counter about an hour.'],
     ['9:00','Frozen greens into the pot with the turkey leg','Stir, lid on, low. Season as you go.'],
-    ['9:05','Mix the cornbread','Krusteaz mix, egg, milk, oil. Grease the 8×8 or 9×9 pan.'],
-    ['9:15','Cornbread in. Set a timer for 27 minutes.',''],
     ['9:30','Grease a pan, put the frozen Rhodes rolls on it, cover loosely','They rise on the counter until 1:40. Skip if your mom is bringing them.'],
-    ['9:42','Check the cornbread: toothpick comes out clean?','Give it 2 more minutes if not.'],
-    ['9:45','OUT: cornbread. Oven to 275°, door propped open 5 minutes.','Stir the greens.'],
+    ['9:45','Oven to 275°. Stir the greens.',''],
     ['10:00','Ham on the rack, flat side down. Brush with butter and hot honey.','1 cup pineapple juice in the pan, foil over the top.'],
     ['10:15','Ham in. Set a timer for 11:43.','88 minutes for 11 lb. I will fix this when you tell me the weight.'],
-    ['10:30','Stir the greens. Cover the cornbread with foil.','Add water to the greens if it is getting low.'],
+    ['10:30','Stir the greens','Add water if it is getting low.'],
     ['11:00','Set up a ham station by the oven','Sugar blend (3 containers), glaze jar, small saucepan, brush, oven mitts, thermometer, foil, a towel.']]},
    {g:'Ham finish',items:[
     ['11:15','Turkey out of the fridge. Fill the cooler with hot water.',''],
@@ -169,7 +169,7 @@ var DAYS=[
     ['1:57','OUT: rolls. Brush with garlic butter.',''],
     ['2:00','Dinner! Cobbler into the 350° oven, timer 20 minutes.','Warm for dessert. Pie stays cold.']]}]}
 ];
-var ORDER=[['9:15','Cornbread'],['10:15','Ham'],['12:08','Turkey'],['12:22','Mac and cheese'],['1:10','Layered potatoes'],['1:40','Rolls, plus cornbread to warm']];
+var ORDER=[['10:15','Ham'],['12:08','Turkey'],['12:22','Mac and cheese'],['1:10','Layered potatoes'],['1:40','Rolls, plus Wednesday’s cornbread to warm']];
 var KEY='tg26-checks',saved={},open={};
 try{saved=JSON.parse(localStorage.getItem(KEY)||'{}')}catch(e){}
 function persist(){try{localStorage.setItem(KEY,JSON.stringify(saved))}catch(e){}}
