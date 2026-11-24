@@ -45,6 +45,7 @@ details.rx summary::-webkit-details-marker{display:none}
 .ing{display:flex;gap:12px;align-items:center;padding:8px 0;border-bottom:1px solid var(--line);font-size:16px}
 .ing.done span{color:var(--mut);text-decoration:line-through;text-decoration-color:var(--rose)}
 ol{margin:6px 0 0;padding-left:22px;display:flex;flex-direction:column;gap:8px;font-size:15.5px}
+.lk{display:inline-flex;gap:6px;margin-top:6px;flex-wrap:wrap}.lk a{font:700 12.5px var(--bf);color:var(--rose);background:var(--rose-soft);border-radius:999px;padding:5px 11px;text-decoration:none}
 .note{font-size:14px;color:var(--mut);margin:12px 0 0;font-style:italic}
 details.card summary{font:600 18px var(--hf);cursor:pointer;list-style:none}
 details.card summary::after{content:" +";color:var(--tan)}details[open].card summary::after{content:" –"}
@@ -200,6 +201,27 @@ var DAYS=[
   ['2:00','Dinner! Cobbler into the 350° oven, timer 20 minutes.','','Warm for dessert. Pie stays cold.']]}]}
 ];
 var NOTES=['<b>Ham time</b> assumes 11 lb at 8 minutes per pound. Tell me the real weight and every time from 10:15 on gets fixed.','<b>Turkey:</b> your video cooked a 4.5 lb breast about 2½ hours. Yours is 3 lb, so I used about 1½ hours. The thermometer decides: 165°.','<b>Mac</b> bakes at 350° beside the turkey instead of your usual 375°, so give it about an hour and go by a set middle.','<b>Cornbread</b> is from your Krusteaz box: 375° for 27–29 minutes in an 8×8 or 9×9.','<b>Rolls</b> are from the Rhodes directions: 3–5 hours to rise, 350° for 15–20 minutes.','<b>My estimates</b> (not from your recipes): greens and turkey leg amounts, the blackened seasoning amount, the cinnamon in the yams, and the garlic butter.','<b>Food safety:</b> nothing sits out more than 2 hours. Leftovers go in the fridge within 2 hours of dinner.'];
+var LINKS={
+ham:{v:'https://www.tiktok.com/@/video/7708890003270536462',r:'https://recime.app/p/be907628-e598-4205-9df2-4dcca22b650f'},
+tky:{v:'https://www.tiktok.com/@/video/7709928235202612494',r:'https://recime.app/p/504e091e-b05d-4474-8ca4-8a52929b0579'},
+mac:{r:'https://recime.app/p/cd9281e9-7aed-49d5-b6e2-0c1c945714ee'},
+pot:{v:'https://www.tiktok.com/@/video/7569398198809251102',r:'https://dabrionne.substack.com/p/layered-loaded-mashed-potatoes'},
+yam:{v:'https://www.tiktok.com/t/ZP8DCaRr6/',r:'https://recime.app/p/34513496-9d1e-40a5-9cbb-7ef3cf35ab4b'},
+pie:{v:'https://www.tiktok.com/t/ZP8D7bSAD/',r:'https://recime.app/p/44a58a59-2a91-469d-9d69-7232794d3eb8'},
+cob:{v:'https://www.tiktok.com/@/video/7695941800980221198',r:'https://recime.app/p/fef4f2e9-8885-4683-9332-3496e0ae3cdc'}
+};
+function rxFor(t){t=t.toLowerCase();
+if(/\byams?\b/.test(t))return 'yam';
+if(/cobbler/.test(t)&&!/pies/.test(t))return 'cob';
+if(/\bpies?\b|crust|sweet potato/.test(t))return 'pie';
+if(/turkey leg|greens/.test(t))return '';
+if(/potatoes in/.test(t))return 'pot';
+if(/buttered 9×13/.test(t))return 'mac';
+if(/\bham\b|sugar blend|glaze jar|make the glaze|broil|glaze off|pat about|pat on about/.test(t))return 'ham';
+if(/turkey|baste/.test(t))return 'tky';
+if(/\bmac\b|noodle|whisk and stir|sour cream|seasonings and cheese/.test(t))return 'mac';
+if(/potato|bacon|mash|warm the cream/.test(t))return 'pot';
+return ''}
 
 var TABS=[{id:'rx',tab:'Recipes'}].concat(DAYS.map(function(d){return {id:d.id,tab:d.tab}})).concat([{id:'gear',tab:'Gear'}]);
 var KEY='tg26-v2',saved={},open={},rxOpen={};
@@ -208,12 +230,13 @@ function persist(){try{localStorage.setItem(KEY,JSON.stringify(saved))}catch(e){
 var tabs=document.getElementById('tabs'),panel=document.getElementById('panel'),cur='rx';
 function esc(x){return String(x).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
 function title(t){return esc(t).replace(/OUT:\s*/g,'<span class="pill">Out</span>').replace(/IN:\s*/g,'<span class="pill">In</span>')}
+function chips(id,small){var L=LINKS[id];if(!L)return '';return '<div class="lk">'+(L.v?'<a href="'+L.v+'" target="_blank" rel="noopener">▶ Video</a>':'')+(L.r?'<a href="'+L.r+'" target="_blank" rel="noopener">Recipe</a>':'')+'</div>'}
 function cb(k){return '<input type="checkbox" aria-label="Done" data-k="'+k+'"'+(saved[k]?' checked':'')+'>'}
 function drawRx(){
   var h='<div class="card"><h2>Recipes</h2><p class="prog">Tap a recipe. Tick each ingredient once you have it.</p></div>';
   RECIPES.forEach(function(r){
     var n=0,k=0;r.ing.forEach(function(x,i){if(x[0]!=='#'){n++;if(saved['r-'+r.id+'-'+i])k++}});
-    h+='<details class="rx" data-rx="'+r.id+'"'+(rxOpen[r.id]?' open':'')+'><summary><span class="rxn"><b>'+esc(r.name)+'</b><span>'+esc(r.when)+'</span></span><span class="cnt'+(k===n?' all':'')+'">'+(k===n?'All set':k+' of '+n)+'</span></summary><div class="rxb"><p class="sub">Ingredients</p>';
+    h+='<details class="rx" data-rx="'+r.id+'"'+(rxOpen[r.id]?' open':'')+'><summary><span class="rxn"><b>'+esc(r.name)+'</b><span>'+esc(r.when)+'</span></span><span class="cnt'+(k===n?' all':'')+'">'+(k===n?'All set':k+' of '+n)+'</span></summary><div class="rxb">'+chips(r.id)+'<p class="sub">Ingredients</p>';
     r.ing.forEach(function(x,i){if(x[0]==='#'){h+='<p class="sub">'+esc(x.slice(1))+'</p>';return}var key='r-'+r.id+'-'+i;h+='<label class="ing'+(saved[key]?' done':'')+'">'+cb(key)+'<span>'+esc(x)+'</span></label>'});
     h+='<p class="sub">How to make it</p><ol>'+r.steps.map(function(s){return '<li>'+esc(s)+'</li>'}).join('')+'</ol>'+(r.note?'<p class="note">'+esc(r.note)+'</p>':'')+'</div></details>';
   });
@@ -232,7 +255,7 @@ function drawDay(d){
     h+='<p class="group">'+esc(g.g)+'</p>';
     g.items.forEach(function(it,ii){
       var id=d.id+'-'+gi+'-'+ii,dd=it[3];
-      h+='<div class="item'+(saved[id]?' done':'')+'">'+cb(id)+'<div class="body"><div class="tbtn">'+(it[0]?'<span class="tm">'+esc(it[0])+'</span>':'')+title(it[1])+'</div>'+(it[2]?'<div class="amt">'+esc(it[2])+'</div>':'')+(dd?'<div class="d">'+esc(dd)+'</div>':'')+'</div></div>';
+      h+='<div class="item'+(saved[id]?' done':'')+'">'+cb(id)+'<div class="body"><div class="tbtn">'+(it[0]?'<span class="tm">'+esc(it[0])+'</span>':'')+title(it[1])+'</div>'+chips(rxFor(it[1]+' '+it[2]),1)+(it[2]?'<div class="amt">'+esc(it[2])+'</div>':'')+(dd?'<div class="d">'+esc(dd)+'</div>':'')+'</div></div>';
     });
   });
   return h+'</div>';
