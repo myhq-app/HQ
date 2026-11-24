@@ -9442,7 +9442,65 @@ document.addEventListener('touchend',function(){if(!on)return;on=false;var fire=
  if(fire){if(pend||psafe())go();else if(el){el.textContent='Finish what you are typing first'+(window.__psWhy?' ('+window.__psWhy+')':'');setTimeout(function(){el.style.opacity=0},1800)}}},{passive:true});
 })();
 try{var rs=JSON.parse(sessionStorage.getItem('hq.rs')||'null');if(rs){sessionStorage.removeItem('hq.rs');setTimeout(function(){try{(rs.open||[]).forEach(function(k){WOPEN.add(k)});if(rs.tab&&typeof tab!=='undefined')tab=rs.tab;render();window.scrollTo(0,rs.y||0)}catch(e){}},800)}}catch(e){}
-})()</script><div style="position:fixed;top:env(safe-area-inset-top,0);left:50%;transform:translateX(-50%);z-index:99999;background:#b4532a;color:#fff;font:700 9px system-ui;letter-spacing:.08em;padding:1px 8px;border-radius:0 0 8px 8px;pointer-events:none;opacity:.85">BETA 11/23 6:11pm</div><style id="dsbar">
+})()</script><div style="position:fixed;top:env(safe-area-inset-top,0);left:50%;transform:translateX(-50%);z-index:99999;background:#b4532a;color:#fff;font:700 9px system-ui;letter-spacing:.08em;padding:1px 8px;border-radius:0 0 8px 8px;pointer-events:none;opacity:.85">BETA 11/23 6:27pm</div><style id="shopxcss">
+#wmsheet .wmbuy{font-weight:700;font-size:13.5px;color:var(--a);margin-top:1px}
+#wmsheet .wmneed{font-size:12px;color:var(--mut);margin-top:1px;line-height:1.3}
+#wmsheet .wmpg{height:6px;border-radius:3px;background:color-mix(in srgb,var(--a) 14%,transparent);overflow:hidden;margin:0 0 4px}
+#wmsheet .wmpg i{display:block;height:100%;background:var(--a);border-radius:3px}
+#wmsheet .wmrows .wmd .t{cursor:pointer;text-decoration-color:color-mix(in srgb,var(--a) 60%,transparent)}
+#wmsheet .wmfin{margin-top:14px;width:100%}
+.wmop{margin-top:14px;padding-top:6px;border-top:1px dashed var(--line)}
+.wmoh{display:flex;justify-content:space-between;align-items:center;padding:4px 0 2px}
+.wmoh b{font:700 11px Figtree,system-ui,sans-serif;letter-spacing:.16em;text-transform:uppercase;color:var(--mut)}
+.wmo{opacity:.5}.wmo .gname{text-decoration:line-through;text-decoration-color:color-mix(in srgb,var(--a) 60%,transparent)}
+</style>
+<script>/* Nov 23: Shop sheet shows how much to buy; opened items fade and drop to the bottom of the Shop sheet AND your grocery list until you tap Finished Shopping */
+(function(){
+var DAYS=4*864e5;
+window.__opened=function(){var m=S.wmTap||{},cut=S.shopDoneAt||0,now=Date.now(),o={},live={};['walmart','dillons'].forEach(function(k){var a=m[k]||{};Object.keys(a).forEach(function(id){if(a[id]>=cut&&now-a[id]<=DAYS)o[id]=1})});
+ (S.groceries||[]).forEach(function(g){if(!g.done)live[g.id]=1});Object.keys(o).forEach(function(id){if(!live[id])delete o[id]});return o};
+function plain(r){return String(r||'').replace(/\s*[\u{1F300}-\u{1FAFF}☀-➿]️?\s*/gu,' ').replace(/\s+/g,' ').trim()}
+function amt(x){try{if(!x.src||!x.src.length||!window.hqBuy||!window.__hqb)return '';var B=hqBuy(x),sb=__hqb.shortBuy(B),F=__hqb.fmtA;
+ var a=B.need.map(function(n){return F(n.a,n.raw)}).filter(Boolean),rs=[];B.need.forEach(function(n){var p=plain(n.r);if(p&&rs.indexOf(p)<0)rs.push(p)});
+ var rt=rs.length>2?rs.slice(0,2).join(', ')+' +'+(rs.length-2):rs.join(', ');
+ var need=(a.length?'Needs '+a.join(' + ')+' · ':'')+rt;
+ return (sb?'<div class="wmbuy">Buy '+esc(sb)+'</div>':'')+(need?'<div class="wmneed">'+esc(need)+'</div>':'')}catch(_){return ''}}
+var _wd=wmDraw;wmDraw=function(){_wd.apply(this,arguments);try{var o=document.getElementById('wmsheet');if(!o)return;
+ if(WM.v==='fin'){var op=__opened(),it=(S.groceries||[]).filter(function(g){return !g.done&&op[g.id]});
+  o.innerHTML='<div class="wmbk" data-wm="close"></div><div class="wmbox"><div class="sxh"><b>Before You Finish</b><button type="button" class="sxx" data-wm="close" aria-label="Close">✕</button></div>'+(it.length?'<p class="m" style="margin:0 0 8px">These come off your list. Tap Put Back on anything you did not get.</p>'+it.map(function(g){return '<div class="row"><div class="t">'+esc(cap(g.title))+'</div><button type="button" class="btn ghost" data-wm="unop" data-i="'+g.id+'">Put Back</button></div>'}).join('')+'<button type="button" class="btn sxsave wmfin" data-wm="fin2">Done, Clear My List</button>':'<p class="empty">Nothing opened right now.</p>')+'<button type="button" class="lnk sxadd" data-wm="list">‹ Back To Shop</button></div>';return}
+ if(WM.v!=='list')return;
+ var rows=o.querySelectorAll('.wmrows .row');
+ rows.forEach(function(r){var a=r.querySelector('a.wmgo');if(!a)return;var id=a.getAttribute('data-i'),x=(S.groceries||[]).find(function(g){return g.id===id});if(!x)return;
+  var t=r.querySelector('.t'),h=amt(x);if(h){var d=t.querySelector('div');if(d)d.insertAdjacentHTML('beforebegin',h);else t.insertAdjacentHTML('beforeend',h)}
+  if(r.classList.contains('wmd')){a.textContent='Open Again';t.setAttribute('data-wm','unop');t.setAttribute('data-i',id);t.setAttribute('title','Tap to put back on top')}});
+ var n=o.querySelectorAll('.wmrows .row.wmd').length,tot=rows.length;
+ [].forEach.call(o.querySelectorAll('p.m'),function(p){if(/added/.test(p.textContent)&&/✓/.test(p.textContent)){p.textContent=n+' of '+tot+' opened';p.insertAdjacentHTML('beforebegin','<div class="wmpg"><i style="width:'+Math.round(100*n/Math.max(1,tot))+'%"></i></div>')}});
+ if(n){var wr=o.querySelector('.wmrows');if(wr&&!o.querySelector('.wmfin'))wr.insertAdjacentHTML('afterend','<button type="button" class="btn sxsave wmfin" data-wm="fin">Finished Shopping</button>')}
+}catch(_){}};
+var _wc=wmClose;wmClose=function(){var had=!!document.getElementById('wmsheet');_wc();if(had)try{render()}catch(_){}};
+function unop(id){var m=S.wmTap||{};['walmart','dillons'].forEach(function(k){if(m[k])delete m[k][id]});try{if(WM.tapped)delete WM.tapped[id]}catch(_){}save()}
+function finish(){var op=__opened(),snap={done:[],sd:S.shopDone,sa:S.shopDoneAt,tap:JSON.stringify(S.wmTap||{})};
+ (S.groceries||[]).forEach(function(g){if(!g.done&&op[g.id]){g.done=true;snap.done.push(g.id);try{stapleBought(g)}catch(_){}}});
+ S.shopDone=today();S.shopDoneAt=Date.now();S.wmTap={};save();var n=snap.done.length;
+ var o=document.getElementById('wmsheet');if(o)o.remove();render();
+ try{undoToast('Shopping complete · '+n+' item'+(n===1?'':'s')+' checked off',function(){(S.groceries||[]).forEach(function(g){if(snap.done.indexOf(g.id)>=0)g.done=false});S.shopDone=snap.sd||'';S.shopDoneAt=snap.sa||0;S.wmTap=JSON.parse(snap.tap);save();render()})}catch(_){}}
+function openFin(){WM.v='fin';WM.st=S.shopStore||WM.st||'walmart';WM.tapped=wmTapLoad();wmDraw()}
+document.addEventListener('click',function(e){var b=e.target.closest&&e.target.closest('[data-wm="unop"],[data-wm="fin"],[data-wm="fin2"],[data-a="shopfin"]');if(!b)return;
+ var k=b.getAttribute('data-wm');
+ if(b.getAttribute('data-a')==='shopfin'&&!k){if(!Object.keys(__opened()).length)return;e.preventDefault();e.stopImmediatePropagation();openFin();return}
+ e.preventDefault();e.stopImmediatePropagation();
+ if(k==='unop'){unop(b.getAttribute('data-i'));wmDraw();render()}else if(k==='fin')openFin();else if(k==='fin2')finish()},true);
+var _r2=render;render=function(){var x=_r2.apply(this,arguments);try{wmMain()}catch(_){}return x};
+function wmMain(){var v=document.getElementById('view');if(!v)return;var op=__opened();if(!Object.keys(op).length)return;
+ var rows=[].filter.call(v.querySelectorAll('.row'),function(r){var c=r.querySelector('input[data-a="gt"]');return c&&!c.checked&&op[c.getAttribute('data-i')]&&!r.closest('details.gshd')});if(!rows.length)return;
+ var par=rows[0].parentNode,hs=[];rows.forEach(function(r){var p=r.previousElementSibling;if(p&&p.tagName==='H3')hs.push(p)});
+ var box=document.createElement('div');box.className='wmop';box.innerHTML='<div class="wmoh"><b>Opened In Shop ('+rows.length+')</b><button type="button" class="lnk" data-a="shopfin">Finished Shopping</button></div>';
+ rows.forEach(function(r){r.classList.add('wmo');box.appendChild(r)});
+ hs.forEach(function(h){var n=h.nextElementSibling;if(!n||!n.classList.contains('row'))h.remove()});
+ var an=par.querySelector(':scope > details.gshd');if(an)par.insertBefore(box,an);else par.appendChild(box)}
+})();
+</script>
+<style id="dsbar">
 /* Nov 23: page dots live inside the bottom bar (never over the list); no blur layers on fixed bars (they glitch on iPhone) */
 #bbar{padding-top:15px!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important;transform:translateZ(0)}
 .rdots,.pdots{bottom:calc(61px + env(safe-area-inset-bottom))!important;padding:0!important;background:none!important;-webkit-backdrop-filter:none!important;backdrop-filter:none!important;border-radius:0!important;z-index:60!important}
