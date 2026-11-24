@@ -84,7 +84,7 @@ steps:['Poke holes in the sweet potatoes. Roast on parchment at 425° for 1 hour
 {id:'cob',name:'Peach Cobbler',when:'Wed night · warm Thu 2:00',ing:['2 cans (15 oz) peaches in light syrup, undrained','1 box (15.25 oz) yellow cake mix','1 tsp cinnamon','A few dashes of nutmeg','1 tsp vanilla extract','¼ cup brown sugar','1 stick unsalted butter, sliced thin','Vanilla bean ice cream, to serve'],
 steps:['Peaches and their syrup into a 9×13 dish. Halve the slices if you like.','Stir in the cinnamon, nutmeg and vanilla.','Stir 2 tbsp of the cake mix into the peaches.','Dump the rest of the cake mix on top and gently smooth it.','Optional: poke a few pockets and push the mix back in, especially near the edges.','Sprinkle the brown sugar over the top, then lay the butter slices evenly on top.','Bake at 350° for 45 minutes to 1 hour.']},
 {id:'cbr',name:'Krusteaz Honey Cornbread',when:'Wed night · warm Thu 1:40',ing:['1 box (15 oz) Krusteaz Honey Cornbread & Muffin Mix','⅔ cup milk','⅓ cup vegetable oil (or melted butter)','1 egg','Cooking spray for the pan'],
-steps:['Heat the oven to 400°. Lightly grease an 8×8 or 9×9 pan.','Stir the milk, oil, egg and mix until blended.','Spread in the pan. Bake 22–26 minutes, until golden and a toothpick comes out clean.','Cool completely and wrap tightly in foil.']},
+steps:['Heat the oven to 375°. Lightly grease an 8×8 or 9×9 pan.','Stir the milk, oil, egg and mix until blended.','Spread in the pan. Bake 27–29 minutes, until a toothpick in the center comes out clean.','Cool completely and wrap tightly in foil.']},
 {id:'rol',name:'Rhodes Dinner Rolls with Garlic Butter',when:'Thu · rise 9:30, bake 1:40',ing:['1 bag Rhodes frozen dinner rolls (20 rolls fill a 9×13)','Cooking spray and plastic wrap','#Garlic butter','4 tbsp butter','2 cloves garlic, minced','Pinch of dried parsley (optional)'],
 steps:['Spray a 9×13 pan. Arrange 20 frozen rolls evenly.','Cover with sprayed plastic wrap. Rise on the counter 3–5 hours, until doubled. Don’t let them over-rise.','Remove the wrap. Bake at 350° for 15–20 minutes, until golden.','Melt the butter with the garlic and parsley and brush it over the hot rolls.'],note:'The garlic butter amounts are my suggestion.'}
 ];
@@ -132,11 +132,11 @@ var DAYS=[
   ['5:15','Ham on the rack in its roasting pan, back in the fridge','','Foil and pineapple juice are for Thursday.'],
   ['5:20','Set the table and label serving dishes','',''],
   ['5:30','Check the cobbler','','Out when golden and bubbly.'],
-  ['5:45','OUT: pies. Cool on the counter. Oven to 400°.','','']]},
+  ['5:45','OUT: pies. Cool on the counter. Oven to 375°.','','']]},
  {g:'Cornbread',items:[
   ['5:50','Mix the cornbread','1 box Krusteaz · ⅔ cup milk · ⅓ cup oil · 1 egg','Greased 8×8 or 9×9 pan.'],
-  ['6:00','Cornbread in, 22–26 minutes','',''],
-  ['6:25','OUT: cornbread. Cool completely.','','']]},
+  ['6:00','Cornbread in, 27–29 minutes','','Done when a toothpick in the center comes out clean.'],
+  ['6:29','OUT: cornbread. Cool completely.','','']]},
  {g:'Wrap up',items:[
   ['7:00','Wrap the cornbread tightly in foil. Test-fit the pans in the empty oven.','','The turkey pan, mac 9×13 and 2-quart dish share two racks at 1:10 Thursday. The ham pan, roll pan and cornbread share it at 1:40.'],
   ['7:30','Pies into the fridge','','Once they are cool.']]}]},
@@ -202,7 +202,7 @@ var DAYS=[
   ['1:57','OUT: rolls. Brush with garlic butter.','',''],
   ['2:00','Dinner! Cobbler into the 350° oven, timer 20 minutes.','','Warm for dessert. Pie stays cold.']]}]}
 ];
-var NOTES=['<b>Ham time</b> assumes 11 lb at 8 minutes per pound. Tell me the real weight and every time from 10:15 on gets fixed.','<b>Turkey:</b> your video cooked a 4.5 lb breast about 2½ hours. Yours is 3 lb, so I used about 1½ hours. The thermometer decides: 165°.','<b>Mac</b> bakes at 350° beside the turkey instead of your usual 375°, so give it about an hour and go by a set middle.','<b>Cornbread</b> is from the Krusteaz box: 400° for 22–26 minutes in an 8×8 or 9×9.','<b>Rolls</b> are from the Rhodes directions: 3–5 hours to rise, 350° for 15–20 minutes.','<b>My estimates</b> (not from your recipes): greens and turkey leg amounts, the blackened seasoning amount, the cinnamon in the yams, and the garlic butter.','<b>Food safety:</b> nothing sits out more than 2 hours. Leftovers go in the fridge within 2 hours of dinner.'];
+var NOTES=['<b>Ham time</b> assumes 11 lb at 8 minutes per pound. Tell me the real weight and every time from 10:15 on gets fixed.','<b>Turkey:</b> your video cooked a 4.5 lb breast about 2½ hours. Yours is 3 lb, so I used about 1½ hours. The thermometer decides: 165°.','<b>Mac</b> bakes at 350° beside the turkey instead of your usual 375°, so give it about an hour and go by a set middle.','<b>Cornbread</b> is from your Krusteaz box: 375° for 27–29 minutes in an 8×8 or 9×9.','<b>Rolls</b> are from the Rhodes directions: 3–5 hours to rise, 350° for 15–20 minutes.','<b>My estimates</b> (not from your recipes): greens and turkey leg amounts, the blackened seasoning amount, the cinnamon in the yams, and the garlic butter.','<b>Food safety:</b> nothing sits out more than 2 hours. Leftovers go in the fridge within 2 hours of dinner.'];
 
 var TABS=[{id:'rx',tab:'Recipes'}].concat(DAYS.map(function(d){return {id:d.id,tab:d.tab}})).concat([{id:'gear',tab:'Gear'}]);
 var KEY='tg26-v2',saved={},open={},rxOpen={};
