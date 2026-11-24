@@ -9443,7 +9443,7 @@ document.addEventListener('touchend',function(){if(!on)return;on=false;var fire=
  if(fire){if(pend||psafe())go();else if(el){el.textContent='Finish what you are typing first'+(window.__psWhy?' ('+window.__psWhy+')':'');setTimeout(function(){el.style.opacity=0},1800)}}},{passive:true});
 })();
 try{var rs=JSON.parse(sessionStorage.getItem('hq.rs')||'null');if(rs){sessionStorage.removeItem('hq.rs');setTimeout(function(){try{(rs.open||[]).forEach(function(k){WOPEN.add(k)});if(rs.tab&&typeof tab!=='undefined')tab=rs.tab;render();window.scrollTo(0,rs.y||0)}catch(e){}},800)}}catch(e){}
-})()</script><div style="position:fixed;top:env(safe-area-inset-top,0);left:50%;transform:translateX(-50%);z-index:99999;background:#b4532a;color:#fff;font:700 9px system-ui;letter-spacing:.08em;padding:1px 8px;border-radius:0 0 8px 8px;pointer-events:none;opacity:.85">BETA 11/23 7:36pm</div><style id="shopxcss">
+})()</script><div style="position:fixed;top:env(safe-area-inset-top,0);left:50%;transform:translateX(-50%);z-index:99999;background:#b4532a;color:#fff;font:700 9px system-ui;letter-spacing:.08em;padding:1px 8px;border-radius:0 0 8px 8px;pointer-events:none;opacity:.85">BETA 11/23 7:51pm</div><style id="shopxcss">
 #wmsheet .wmbuy{font-weight:700;font-size:13.5px;color:var(--a);margin-top:1px}
 #wmsheet .wmneed{font-size:12px;color:var(--mut);margin-top:1px;line-height:1.3}
 #wmsheet .wmpg{height:6px;border-radius:3px;background:color-mix(in srgb,var(--a) 14%,transparent);overflow:hidden;margin:0 0 4px}
@@ -9501,6 +9501,22 @@ function wmMain(){var v=document.getElementById('view');if(!v)return;var op=__op
  var an=par.querySelector(':scope > details.gshd');if(an)par.insertBefore(box,an);else par.appendChild(box)}
 })();
 </script>
+<style id="zfix">
+/* iPhone zooms the whole page when you tap a box with text under 16px, and the zoom leaves the screen shifted (Nov 23) */
+input:not([type=checkbox]):not([type=radio]):not([type=range]):not([type=color]):not([type=file]):not([type=hidden]):not([type=button]):not([type=submit]),textarea,select{font-size:16px!important}
+</style>
+<script>
+(function(){var mv=document.querySelector('meta[name=viewport]');if(!mv)return;var orig=mv.getAttribute('content');
+function reset(){try{var v=window.visualViewport;if(v&&(v.scale>1.01||Math.abs(v.offsetTop)>1||Math.abs(v.offsetLeft)>1)&&!(document.activeElement&&/INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName))){mv.setAttribute('content',orig+', maximum-scale=1');setTimeout(function(){mv.setAttribute('content',orig)},120)}}catch(_){}}
+document.addEventListener('focusout',function(){setTimeout(reset,250);setTimeout(reset,900)},true);
+})();
+</script>
+<script>/* Nov 23: keep "Fresh" / "Dried" next to herbs and spices on the grocery list and in Check Your Pantry */
+(function(){var HS=/\b(basil|oregano|thyme|rosemary|parsley|cilantro|dill|sage|mint|chives?|tarragon|marjoram|bay leaf|bay leaves|ginger|garlic|turmeric|lavender|lemongrass|peppercorns?|chili|chile|pepper flakes|onion)\b/i;
+var _g3=gNorm;gNorm=function(t){var o=String(t||''),r=_g3(o);try{var c=o.replace(/\([^)]*\)/g,' ').replace(/,.*$/,' ');var m=/\b(fresh|dried)\b/i.exec(c);if(r&&/\b(fresh|dried|dry)\s*(or|and|\/)\s*(fresh|dried|dry)\b/i.test(c)){r={name:r.name.replace(/^Dried /,''),key:r.key.replace(/^dried /,'')}}
+ if(m&&r&&r.key&&!/\b(fresh|dried|dry)\s*(or|and|\/)\s*(fresh|dried|dry)\b/i.test(c)&&HS.test(r.key)&&r.key.indexOf('fresh')<0&&r.key.indexOf('dried')<0){var w=m[1].toLowerCase();r={name:w.charAt(0).toUpperCase()+w.slice(1)+' '+r.name,key:w+' '+r.key}}}catch(_){}return r};
+})();
+</script>
 <style id="dsbar">
 /* Nov 23: page dots live inside the bottom bar (never over the list); no blur layers on fixed bars (they glitch on iPhone) */
 html{overflow-x:visible!important;overflow-y:visible!important}body{overflow-x:clip!important;overflow-y:visible!important}
@@ -9509,7 +9525,7 @@ html{overflow-x:visible!important;overflow-y:visible!important}body{overflow-x:c
 </style>
 <script>/* Nov 23: one pantry line per ingredient ("Tsps Nutmeg", "Th Brown Sugar", "Dark Brown Sugar" were all separate), and nudge the fixed bar back after the keyboard closes */
 (function(){
-var UNIT=/\b(tsps?|tspn|tbsps?|tbs|tbl|tblsp|teaspoons?|tablespoons?|cups?|oz|ounces?|lbs?|pounds?|pinch(?:es)?|dash(?:es)?|sprigs?|stalks?|handfuls?|splash(?:es)?|to taste|of|a|some|big|large|small|ground|dried|fresh|packed|cans?|cartons?|boxes|box|jar|bottle)\b/g;
+var UNIT=/\b(tsps?|tspn|tbsps?|tbs|tbl|tblsp|teaspoons?|tablespoons?|cups?|oz|ounces?|lbs?|pounds?|pinch(?:es)?|dash(?:es)?|sprigs?|stalks?|handfuls?|splash(?:es)?|to taste|of|a|some|big|large|small|ground|packed|cans?|cartons?|boxes|box|jar|bottle)\b/g;
 var _pk=pkey;
 pkey=function(l){
  var t=String(l||'').toLowerCase().replace(/[@#][\w.]+(?:['’]s)?/g,' ').replace(/\([^)]*\)/g,' ').replace(/,.*$/,' ').replace(/[0-9½¼¾⅓⅔⅛\/.\-–]+/g,' ');
