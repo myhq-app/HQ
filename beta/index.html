@@ -9443,7 +9443,7 @@ document.addEventListener('touchend',function(){if(!on)return;on=false;var fire=
  if(fire){if(pend||psafe())go();else if(el){el.textContent='Finish what you are typing first'+(window.__psWhy?' ('+window.__psWhy+')':'');setTimeout(function(){el.style.opacity=0},1800)}}},{passive:true});
 })();
 try{var rs=JSON.parse(sessionStorage.getItem('hq.rs')||'null');if(rs){sessionStorage.removeItem('hq.rs');setTimeout(function(){try{(rs.open||[]).forEach(function(k){WOPEN.add(k)});if(rs.tab&&typeof tab!=='undefined')tab=rs.tab;render();window.scrollTo(0,rs.y||0)}catch(e){}},800)}}catch(e){}
-})()</script><div style="position:fixed;top:env(safe-area-inset-top,0);left:50%;transform:translateX(-50%);z-index:99999;background:#b4532a;color:#fff;font:700 9px system-ui;letter-spacing:.08em;padding:1px 8px;border-radius:0 0 8px 8px;pointer-events:none;opacity:.85">BETA 11/23 7:51pm</div><style id="shopxcss">
+})()</script><div style="position:fixed;top:env(safe-area-inset-top,0);left:50%;transform:translateX(-50%);z-index:99999;background:#b4532a;color:#fff;font:700 9px system-ui;letter-spacing:.08em;padding:1px 8px;border-radius:0 0 8px 8px;pointer-events:none;opacity:.85">BETA 11/23 8:41pm</div><style id="shopxcss">
 #wmsheet .wmbuy{font-weight:700;font-size:13.5px;color:var(--a);margin-top:1px}
 #wmsheet .wmneed{font-size:12px;color:var(--mut);margin-top:1px;line-height:1.3}
 #wmsheet .wmpg{height:6px;border-radius:3px;background:color-mix(in srgb,var(--a) 14%,transparent);overflow:hidden;margin:0 0 4px}
@@ -9540,6 +9540,13 @@ var _rr=render;render=function(){if(typeof tab!=='undefined'&&tab==='groceries')
 document.addEventListener('focusout',function(){setTimeout(function(){try{if(!document.activeElement||!/INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName)){var y=window.scrollY;window.scrollTo(0,y+1);window.scrollTo(0,y);var b=document.getElementById('bbar');if(b){b.style.transform='translateZ(0)';void b.offsetHeight}}}catch(_){}},120)},true);
 })();
 </script>
+<script>/* Thanksgiving card on Today */
+(function(){if(typeof V==='undefined'||!V.today||V.today.__tg)return;var o=V.today;
+function show(){var d=new Date(),k=d.getFullYear()*10000+(d.getMonth()+1)*100+d.getDate();return k>=20261120&&k<=20261127}
+var f=function(){var h=o.apply(this,arguments);if(typeof h!=='string'||!show())return h;
+return '<a class="tgcard" href="thanksgiving.html"><span class="tgk">Thursday · dinner at 2:00</span><h2 class="tgh">Thanksgiving Plan</h2><span class="tgs">Prep lists for each day. Tap to check things off ›</span></a>'+h};
+f.__tg=1;V.today=f;try{if(show()&&typeof tab!=='undefined'&&tab==='today'&&typeof render==='function')render()}catch(e){}})();</script>
+<style id="tgcss">.tgcard{display:block;margin:0 0 12px;padding:16px 18px;border-radius:20px;background:linear-gradient(135deg,#f7e4e5,#f5ebe0);border:1px solid #f0d9d6;color:#3b2f2f;text-decoration:none}.tgcard .tgk{display:block;font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#b8666d}.tgcard .tgh{font-size:24px;font-weight:600;margin:4px 0 2px;color:#3b2f2f}.tgcard .tgs{font-size:14px;color:#8c7a75}</style>
 <script>/* Keep photos on screen when the page redraws (Nov 23). The phone paints a brand-new photo a moment late, so
    the colored placeholder flashed. After each redraw, the photo that was already showing is put back in place. */
 (function(){var _r=render;render=function(){var old={};try{document.querySelectorAll('#view img,#rxo img').forEach(function(i){if(i.complete&&i.naturalWidth){var k=i.getAttribute('src');(old[k]=old[k]||[]).push(i)}})}catch(_){}
