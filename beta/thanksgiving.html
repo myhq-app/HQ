@@ -46,6 +46,8 @@ details.rx summary::-webkit-details-marker{display:none}
 .ing.done span{color:var(--mut);text-decoration:line-through;text-decoration-color:var(--rose)}
 ol{margin:6px 0 0;padding-left:22px;display:flex;flex-direction:column;gap:8px;font-size:15.5px}
 .lk{display:inline-flex;gap:6px;margin-top:6px;flex-wrap:wrap}.lk a{font:700 12.5px var(--bf);color:var(--rose);background:var(--rose-soft);border-radius:999px;padding:5px 11px;text-decoration:none}
+.brk{margin:8px 0;padding:10px 12px;border-radius:12px;background:#eef3ec;color:#4f6b4a;font-size:15px}.brk .tm{color:#4f6b4a}
+.glance{display:flex;flex-direction:column;gap:4px;margin-top:6px}.gl{display:flex;gap:10px;align-items:baseline;padding:7px 10px;border-radius:10px;font-size:14.5px}.gl b{min-width:92px;font-variant-numeric:tabular-nums}.gl.busy{background:var(--rose-soft)}.gl.busy b{color:var(--rose)}.gl.rest{background:#eef3ec;color:#4f6b4a}.gl.eat{background:var(--tan-soft);font-weight:700}
 .note{font-size:14px;color:var(--mut);margin:12px 0 0;font-style:italic}
 details.card summary{font:600 18px var(--hf);cursor:pointer;list-style:none}
 details.card summary::after{content:" +";color:var(--tan)}details[open].card summary::after{content:" –"}
@@ -61,11 +63,11 @@ details.card ul{margin:12px 0 0;padding-left:18px;display:flex;flex-direction:co
 </div>
 <script>
 var RECIPES=[
-{id:'ham',name:'Honeybaked Ham',when:'Thu · bake 10:15, finish 11:43',ing:[
-'#Ham','1 bone-in spiral ham, fully cooked (about 11 lb)','1 cup pineapple juice','4 tbsp butter, melted',"4 tbsp Mike's Hot Honey",
+{id:'ham',name:'Honeybaked Ham',when:'Thu · bake 10:15, finish 11:40',ing:[
+'#Ham','1 bone-in spiral ham, fully cooked (10.65 lb)','1 cup pineapple juice','4 tbsp butter, melted',"4 tbsp Mike's Hot Honey",
 '#Sugar blend (one batch, used in thirds)','1½ cups granulated sugar','3 cups dark brown sugar',"1½ tsp Lawry's seasoned salt",'1½ tsp garlic powder','1 tbsp cinnamon','1½ tsp nutmeg','1½ tsp ground cloves','1½ tsp ground ginger','1½ tsp paprika','1 tsp allspice',
 '#Glaze','1 cup ham drippings (from the pan)','2 tbsp Dijon mustard','1 tbsp apple cider vinegar','1 tbsp soy sauce'],
-steps:['Ham flat side down on a rack in the roasting pan. Brush with the melted butter mixed with the hot honey. Pour the pineapple juice into the pan.','Cover with foil and bake at 275° for 8 minutes per pound (about 1½ hours for 11 lb).','Pat about a third of the sugar blend all over the ham, into the slices. Broil on high, uncovered, 2 minutes.','Pat on about half of what is left. Broil 2 minutes.','Spoon 1 cup of drippings from the pan into a saucepan. Add the rest of the sugar blend, soy sauce, vinegar and Dijon. Boil, then take off the heat.','Brush the glaze over the ham. Broil 2–3 minutes until bubbly and crispy.']},
+steps:['Ham flat side down on a rack (or 3–4 balls of foil) in the roasting pan. Brush with the melted butter mixed with the hot honey. Pour the pineapple juice into the pan.','Cover with foil and bake at 275° for 8 minutes per pound (85 minutes for your 10.65 lb ham).','Pat about a third of the sugar blend all over the ham, into the slices. Broil on high, uncovered, 2 minutes.','Pat on about half of what is left. Broil 2 minutes.','Spoon 1 cup of drippings from the pan into a saucepan. Add the rest of the sugar blend, soy sauce, vinegar and Dijon. Boil, then take off the heat.','Brush the glaze over the ham. Broil 2–3 minutes until bubbly and crispy.']},
 {id:'tky',name:'Roasted Turkey Breast',when:'Thu · in 12:08, out about 1:38',ing:[
 '#Turkey','1 boneless turkey breast, 48 oz (3 lb)','Blackened seasoning, about 1–2 tsp for the top',
 '#Compound butter','1 stick salted butter, softened (½ cup)','Zest of 1 large lemon','Zest of 1 medium orange','1 tsp fresh rosemary, finely diced','1 tsp fresh sage, finely diced','1 tsp garlic paste','½ tsp white pepper','½ tsp paprika',
@@ -76,8 +78,8 @@ steps:['Mix all the compound butter ingredients.','Stir the pan mixture together
 steps:['Butter a 9×13 pan.','Boil the pasta 7 minutes, so it still has a little bite. Drain.','Stir in the butter and sour cream.','Season with paprika, salt and pepper, and stir in the cheese. Save a handful for the top.','Whisk the eggs, milk and cream, and stir them in.','Pour into the pan and top with the saved cheese.','Bake uncovered at 350° about 1 hour, until the middle is set and the top is bubbly.']},
 {id:'pot',name:'Layered Loaded Mashed Potatoes',when:'Wed peel · Thu in 1:10',ing:['7 large Yukon Gold potatoes','5 slices bacon','Salt, to taste','1½ cups heavy cream','1 stick salted butter','¾ of a Boursin Garlic & Herb cheese (3 of 4 pieces)','1 tsp garlic powder','1 tsp onion powder','1½ cups shredded sharp cheddar','1 tbsp dried chives'],
 steps:['Peel and cut the potatoes into medium pieces.','Start them in cold salted water, lid on, medium-high, about 20 minutes until fork-tender.','Air fry the bacon at 380° for 9 minutes, then chop into bits.','Drain the potatoes and let them sit in the pot 3 minutes.','Warm the cream 3 minutes. Melt the butter.','Mash. Stir in the butter, then half the cream, then the rest.','Mix in the Boursin, garlic powder, onion powder and salt.','In a 2-quart dish, layer potatoes, cheddar, bacon and chives, about three times.','Bake at 350° about 30 minutes, until the cheese is melted and bubbly.']},
-{id:'grn',name:'Collard Greens',when:'Thu · 8:00 on the stove',ing:['Collard greens, about 3–4 lb (washed, chopped, frozen Tuesday)','1–2 smoked turkey legs','Water or chicken broth, enough to cover (about 8 cups)','Your seasonings'],
-steps:['Turkey leg in a big pot, covered with water or broth. Boil, then simmer about an hour.','Add the frozen greens. Simmer on low until dinner, stirring now and then. Add water if it gets low.','Season as you go.','Before serving, pull the meat off the turkey leg and stir it back in.'],note:'The greens and turkey leg amounts are my estimate for about 10 plates. You know your pot best.'},
+{id:'grn',name:'Collard Greens',when:'Cooked Wed · reheat Thu 1:00',ing:['Collard greens, about 3–4 lb (washed, chopped, frozen Tuesday)','1–2 smoked turkey legs','Water or chicken broth, enough to cover (about 8 cups)','Your seasonings'],
+steps:['Already cooked Wednesday.','Thursday at 1:00, put the pot on the stove on low. Stir now and then, and add a splash of water if it looks dry.','Taste and finish the seasoning.','Pull any meat off the turkey leg and stir it back in before serving.'],note:'The greens and turkey leg amounts are my estimate for about 10 plates. You know your pot best.'},
 {id:'yam',name:'Southern Candy Yams',when:'Thu · cook 10:30, keep warm',ing:['4 sweet potatoes','1 stick butter','1 cup brown sugar','1 cup white sugar','Juice of 1 orange (or a little orange extract)','Pinch of ground ginger','Cinnamon, about 1 tsp','Pinch of salt','Nutmeg, a pinch'],
 steps:['Peel and slice the sweet potatoes into even slices.','Melt the butter in a pot. Stir in both sugars, the orange juice, ginger, cinnamon, salt and nutmeg.','Add the sweet potatoes, cover and cook about 30 minutes until tender.','Lift the yams out. Simmer the liquid about 10 minutes until it is syrupy.','Put the yams back in, or pour the syrup over them.']},
 {id:'pie',name:'Sweet Potato Pie (2 pies)',when:'Wed night',ing:['4 sweet potatoes','2 Pillsbury 9-inch deep dish pie crusts (1 box)','1 cup brown sugar','1 cup white sugar','1 cup evaporated milk','½ cup (1 stick) Kerrygold unsalted butter, melted','1 tbsp cinnamon','1 tsp nutmeg & allspice','2 tbsp sweetened condensed milk','1 tbsp all-purpose flour','Juice of ½ lemon and ½ orange','3 eggs','Whipped cream, to serve'],
@@ -85,13 +87,11 @@ steps:['Poke holes in the sweet potatoes. Roast on parchment at 425° for 1 hour
 {id:'cob',name:'Peach Cobbler',when:'Wed night · warm Thu 2:00',ing:['2 cans (15 oz) peaches in light syrup, undrained','1 box (15.25 oz) yellow cake mix','1 tsp cinnamon','A few dashes of nutmeg','1 tsp vanilla extract','¼ cup brown sugar','1 stick unsalted butter, sliced thin','Vanilla bean ice cream, to serve'],
 steps:['Peaches and their syrup into a 9×13 dish. Halve the slices if you like.','Stir in the cinnamon, nutmeg and vanilla.','Stir 2 tbsp of the cake mix into the peaches.','Dump the rest of the cake mix on top and gently smooth it.','Optional: poke a few pockets and push the mix back in, especially near the edges.','Sprinkle the brown sugar over the top, then lay the butter slices evenly on top.','Bake at 350° for 45 minutes to 1 hour.']},
 {id:'cbr',name:'Krusteaz Honey Cornbread',when:'Wed night · warm Thu 1:40',ing:['1 box (15 oz) Krusteaz Honey Cornbread & Muffin Mix','⅔ cup milk','⅓ cup vegetable oil (or melted butter)','1 egg','Cooking spray for the pan'],
-steps:['Heat the oven to 375°. Lightly grease an 8×8 or 9×9 pan.','Stir the milk, oil, egg and mix until blended.','Spread in the pan. Bake 27–29 minutes, until a toothpick in the center comes out clean.','Cool completely and wrap tightly in foil.']},
-{id:'rol',name:'Rhodes Dinner Rolls with Garlic Butter',when:'Thu · rise 9:30, bake 1:40',ing:['1 bag Rhodes frozen dinner rolls (20 rolls fill a 9×13)','Cooking spray and plastic wrap','#Garlic butter','4 tbsp butter','2 cloves garlic, minced','Pinch of dried parsley (optional)'],
-steps:['Spray a 9×13 pan. Arrange 20 frozen rolls evenly.','Cover with sprayed plastic wrap. Rise on the counter 3–5 hours, until doubled. Don’t let them over-rise.','Remove the wrap. Bake at 350° for 15–20 minutes, until golden.','Melt the butter with the garlic and parsley and brush it over the hot rolls.'],note:'The garlic butter amounts are my suggestion.'}
+steps:['Heat the oven to 375°. Lightly grease an 8×8 or 9×9 pan.','Stir the milk, oil, egg and mix until blended.','Spread in the pan. Bake 27–29 minutes, until a toothpick in the center comes out clean.','Cool completely and wrap tightly in foil.']}
 ];
 var GEAR=[
 'Meat thermometer','Heavy-duty foil','Plastic wrap','Cooking spray','Parchment paper',
-'3 pans that are 9×13 (mac, rolls, cobbler)','Roasting pan with a rack (ham)','Pan for the turkey','2-quart baking dish (potatoes)','8×8 or 9×9 pan (cornbread)',
+'9×13 foil pan for the mac','Heavy-duty foil roasting pan for the ham, with 3–4 foil balls or a rack','Pan for the turkey (your glass pan if it has an inch of room, or a 9×13 foil pan)','Baking sheets to set foil pans on','2-quart baking dish (potatoes)','8×8 or 9×9 pan (cornbread)',
 'Big pot (greens)','Big pot (potatoes)','Big pot (noodles)','Medium pot (yams)','Small saucepan (ham glaze, then cream)',
 'Blender','Masher or ricer','Air fryer (bacon)','Slow cooker (keep yams warm)',
 'Serving dishes and spoons for 10 dishes','To-go containers for plates','Whipped cream','Vanilla bean ice cream'];
@@ -113,7 +113,16 @@ var DAYS=[
   ['','Ham glaze jar','2 tbsp Dijon · 1 tbsp apple cider vinegar · 1 tbsp soy sauce','The drippings get added Thursday.']]},
  {g:'Turkey butter',items:[
   ['','Make the turkey compound butter','1 stick salted butter (softened) · zest of 1 lemon · zest of 1 orange · 1 tsp rosemary · 1 tsp sage · 1 tsp garlic paste · ½ tsp white pepper · ½ tsp paprika','Finely dice the herbs. Mix, cover and chill.']]}]},
-{id:'wed',tab:'Wed',title:'Wednesday night',sub:'Times assume you start at 3:00. If you start later, shift everything by the same amount.',groups:[
+{id:'wed',tab:'Wed',title:'Wednesday night',sub:'Most of it is done. The Tonight list takes about 20 minutes and makes tomorrow easier.',groups:[
+ {g:'Tonight: quick wins for tomorrow',items:[
+  ['','Pies into the fridge once they are cool','','Cool on the counter about 2 hours first.'],
+  ['','Greens into the fridge once they cool','','Right in their pot if it fits, so tomorrow it goes straight on the stove.'],
+  ['','Wrap the cornbread tightly in foil','','Leave it on the counter.'],
+  ['','Set up the ham station now','Sugar blend · glaze jar · small saucepan · brush · mitts · thermometer · foil · foil roasting pan with 3–4 foil balls','Put it all on the counter by the oven, so tomorrow you just grab it.'],
+  ['','Slice the citrus and quarter the shallots for the turkey','3 orange slices · 3 lemon slices · 3 shallots, quartered · 3 rosemary sprigs','One zip bag in the fridge. Tomorrow at 11:15 you just tip it into the pan.'],
+  ['','Fill the noodle pot with water and set it on the stove','About ⅔ full','Tomorrow you just salt it and turn it on.'],
+  ['','Set the table and label the serving dishes','','A sticky note on each dish with what goes in it.'],
+  ['','Test-fit the pans in the empty oven','','At 12:22 the turkey, the mac 9×13 and the potato dish share two racks. At 1:40 the ham and the cornbread go in together.']]},
  {g:'Sweet potatoes and potatoes',items:[
   ['3:00','Oven to 425°. Poke holes in 4 sweet potatoes, set on parchment','For the pies','Fork holes all over each one so steam can escape. Parchment on a baking sheet catches the sugary drips.'],
   ['3:15','Pie sweet potatoes in, 1 hour','','Middle rack. They\'re done when a knife slides in with no push.'],
@@ -127,44 +136,37 @@ var DAYS=[
   ['4:45','Pour the pies. Pies and cobbler in at 350°.','','Pies 1 hour. Cobbler 45 minutes to 1 hour.']]},
  {g:'While they bake',items:[
   ['5:00','Butter and season the turkey','The turkey butter you made Tuesday · 1–2 tsp blackened seasoning on top','Pat it dry, rub the butter on all sides, season the top. Set it in its roasting pan, cover tightly with foil, and refrigerate. The pan liquid goes in Thursday.'],
-  ['5:20','Set the table and label serving dishes','','A sticky note on each serving dish with what goes in it.'],
   ['5:30','Check the cobbler','','Out when golden and bubbly.'],
   ['5:45','OUT: pies. Cool on the counter. Oven to 375°.','','The middles should be set. A little jiggle is fine.']]},
  {g:'Cornbread',items:[
   ['5:50','Mix the cornbread','1 box Krusteaz · ⅔ cup milk · ⅓ cup oil · 1 egg','Greased 8×8 or 9×9 pan.'],
   ['6:00','Cornbread in, 27–29 minutes','','Done when a toothpick in the center comes out clean.'],
-  ['6:29','OUT: cornbread. Cool completely.','','']]},
- {g:'Wrap up',items:[
-  ['7:00','Wrap the cornbread tightly in foil. Test-fit the pans in the empty oven.','','The turkey pan, mac 9×13 and 2-quart dish share two racks at 1:10 Thursday. The ham pan, roll pan and cornbread share it at 1:40.'],
-  ['7:30','Pies into the fridge','','Once they are cool.']]}]},
-{id:'thu',tab:'Thu',title:'Thursday: dinner at 2:00',sub:'Every step has a time. The nonstop stretch is 11:40 to 1:10, so that is when someone else has the baby.',groups:[
+  ['6:29','OUT: cornbread. Cool completely.','','']]}]},
+{id:'thu',tab:'Thu',title:'Thursday: dinner at 2:00',sub:'Your morning is free until 9:00. Breaks are marked. The nonstop stretch is 11:35 to 12:48, so that is when someone else has the baby.',groups:[
  {g:'Morning',items:[
-  ['8:00','Smoked turkey leg into a big pot, cover with water or broth','About 8 cups','High heat until it boils.'],
-  ['8:15','Turn the turkey leg down to a simmer, lid on','','Medium-low, just small bubbles. Lid on so the liquid doesn\'t cook away.'],
   ['9:00','Ham out of the fridge','','It sits on the counter about an hour.'],
-  ['9:00','Frozen greens into the pot','','Stir, lid on, low. Season as you go.'],
-  ['9:30','Spray a 9×13, arrange 20 frozen rolls, cover with sprayed plastic wrap','','They rise on the counter until 1:40. Skip if your mom is bringing them.'],
-  ['9:45','Oven to 275°. Stir the greens.','','Give the greens a stir from the bottom so nothing sticks.'],
-  ['10:00','Unwrap the ham onto the rack in the roasting pan, flat side down. Brush, juice, foil.','4 tbsp melted butter + 4 tbsp hot honey · 1 cup pineapple juice in the pan',''],
-  ['10:15','Ham in. Set a timer for 11:43.','','88 minutes for 11 lb. I will fix this when you tell me the weight.'],
+  ['9:05','BREAK','40 minutes',''],
+  ['9:45','Oven to 275°','',''],
+  ['10:00','Unwrap the ham onto the foil balls in the roasting pan, flat side down. Brush, juice, foil.','4 tbsp melted butter + 4 tbsp hot honey · 1 cup pineapple juice in the pan',''],
+  ['10:15','Ham in. Set a timer for 11:40.','','85 minutes for your 10.65 lb ham. Foil pan on a baking sheet.'],
   ['10:20','Peel and slice 4 sweet potatoes for the yams','','Even slices so they cook evenly.'],
-  ['10:30','Start the yams. Stir the greens.','1 stick butter · 1 cup brown sugar · 1 cup white sugar · juice of 1 orange · pinch ginger · 1 tsp cinnamon · pinch salt · pinch nutmeg','Melt the butter in a pot, stir in the rest, add the sweet potatoes, cover. 30 minutes.'],
+  ['10:30','Start the yams','1 stick butter · 1 cup brown sugar · 1 cup white sugar · juice of 1 orange · pinch ginger · 1 tsp cinnamon · pinch salt · pinch nutmeg','Melt the butter in a pot, stir in the rest, add the sweet potatoes, cover. 30 minutes.'],
+  ['10:35','BREAK','25 minutes. The yams simmer on their own.',''],
   ['11:00','Lift the yams out. Simmer the syrup 10 minutes.','','Slotted spoon onto a plate. Simmer the liquid uncovered until it\'s thick and syrupy.'],
-  ['11:10','Yams back into the syrup, then into the slow cooker on Warm','','They hold there until dinner.'],
-  ['11:00','Set up a ham station by the oven','','Sugar blend, glaze jar, small saucepan, brush, mitts, thermometer, foil.']]},
+  ['11:10','Yams back into the syrup, then into the slow cooker on Warm','','They hold there until dinner.']]},
  {g:'Ham finish',items:[
-  ['11:15','Turkey out of the fridge. Add the pan liquid.','½ cup stock · ¼ cup white wine · 2 tbsp balsamic glaze · 2 tbsp olive oil · 3 orange slices · 3 lemon slices · 3 shallots, quartered · 3 rosemary sprigs','Lift the foil, pour the liquid around the turkey, tuck in the citrus, shallots and rosemary. Foil back on.'],
-  ['11:30','Stir the greens','','Add hot water if the liquid is getting low.'],
-  ['11:40','Big pot of salted water on for the noodles, lid on','','Fill it about ⅔ full and add a good spoonful of salt. Lid on, high heat.'],
-  ['11:43','OUT: ham. Take the foil off. Oven to broil, high.','','Leave the drippings in the pan. You need 1 cup of them at 11:53.'],
-  ['11:45','Pat about a third of the sugar blend all over the ham','','Get it in between the slices.'],
-  ['11:47','Ham under the broiler, 2 minutes','','Top-middle rack, uncovered. Watch it, sugar can go from golden to burnt fast.'],
-  ['11:49','Out. Pat on about half of what is left.','','Press it on so it sticks.'],
-  ['11:51','Broil 2 minutes','','Watch it the whole time.'],
-  ['11:53','Make the glaze','1 cup drippings from the pan + the rest of the sugar blend + the glaze jar','Spoon the drippings from the bottom of the roasting pan into the saucepan, add the rest, bring to a boil.'],
-  ['11:56','Glaze off the heat. Brush it all over the ham.','','Use all of it, and get it between the slices.'],
-  ['11:57','Broil 2–3 minutes until bubbly','','Pull it as soon as the glaze is bubbling and a little crispy at the edges.'],
-  ['12:00','OUT: ham. Oven to 350°.','','Leave the oven door closed while it switches to 350°.'],
+  ['11:15','Turkey out of the fridge. Add the pan liquid.','½ cup stock · ¼ cup white wine · 2 tbsp balsamic glaze · 2 tbsp olive oil · the citrus and shallot bag · 3 rosemary sprigs','Lift the foil. If the blackened seasoning isn\'t on yet, sprinkle 1–2 tsp over the top. Pour the liquid around the turkey, tuck in the citrus, shallots and rosemary. Foil back on.'],
+  ['11:20','BREAK','15 minutes. Last one before the busy stretch.',''],
+  ['11:35','Salt the noodle pot and turn it on high, lid on','','A good spoonful of salt.'],
+  ['11:40','OUT: ham. Take the foil off. Oven to broil, high.','','Leave the drippings in the pan. You need 1 cup of them at 11:50.'],
+  ['11:42','Pat about a third of the sugar blend all over the ham','','Get it in between the slices.'],
+  ['11:44','Ham under the broiler, 2 minutes','','Top-middle rack, uncovered. Watch it, sugar can go from golden to burnt fast.'],
+  ['11:46','Out. Pat on about half of what is left.','','Press it on so it sticks.'],
+  ['11:48','Broil 2 minutes','','Watch it the whole time.'],
+  ['11:50','Make the glaze','1 cup drippings from the pan + the rest of the sugar blend + the glaze jar','Spoon the drippings from the bottom of the roasting pan into the saucepan, add the rest, bring to a boil.'],
+  ['11:53','Glaze off the heat. Brush it all over the ham.','','Use all of it, and get it between the slices.'],
+  ['11:54','Broil 2–3 minutes until bubbly','','Pull it as soon as the glaze is bubbling and a little crispy at the edges.'],
+  ['11:57','OUT: ham. Oven to 350°.','','Leave the oven door closed while it switches to 350°.'],
   ['12:00','Potatoes: drain, fresh cold salted water, lid on, medium-high','','About 20 minutes once boiling.'],
   ['12:03','Noodles into the boiling water. Timer: 7 minutes.','3½ cups elbows','Stir once so they don\'t stick together.'],
   ['12:05','Cover the ham tightly with foil, right in its pan','','Back of the stove. It reheats at 1:40.'],
@@ -185,22 +187,23 @@ var DAYS=[
   ['12:40','Mix into the potatoes','Butter, then half the cream, then the rest · 3 pieces Boursin · 1 tsp garlic powder · 1 tsp onion powder · salt',''],
   ['12:41','Bacon out, chop it','','Small bits, about the size of a pea.'],
   ['12:45','Layer the potatoes in the 2-quart dish','1½ cups sharp cheddar · bacon · 1 tbsp chives','Three layers. Set aside.'],
+  ['12:48','BREAK','20 minutes. Everything is in the oven.',''],
+  ['1:00','Greens pot on the stove, low','','Lid on. Stir now and then, splash of water if it looks dry.'],
   ['1:08','Baste the turkey','','Spoon the pan liquid over the top.'],
   ['1:10','Potatoes in, about 30 minutes. Balsamic glaze on the turkey.','','Drizzle about 1 tbsp balsamic glaze over the top of the turkey.'],
   ['1:20','Check the mac: middle set?','','Another 10–15 minutes if not.'],
-  ['1:25','Check the turkey temperature','','You are waiting for 165°.']]},
+  ['1:25','Check the turkey temperature','','Thermometer in the thickest part, not touching the pan. You are waiting for 165°.'],
+  ['1:27','BREAK','10 minutes before everything comes out.','']]},
  {g:'Land it',items:[
   ['1:38','OUT: turkey, mac, potatoes','','Second balsamic drizzle on the turkey, tent it with foil. Tent the mac and potatoes.'],
-  ['1:40','IN: ham (foil on), rolls (timer 17 minutes), foil-wrapped cornbread','','Ham on the low rack, rolls and cornbread on the middle rack.'],
-  ['1:42','Melt the garlic butter','4 tbsp butter · 2 cloves garlic · pinch parsley',''],
-  ['1:45','Greens into a serving bowl','','Pull the meat off the turkey leg and stir it back in.'],
+  ['1:40','IN: ham (foil on) and the foil-wrapped cornbread','','Ham on the low rack, cornbread on the middle rack.'],
+  ['1:45','Greens into a serving bowl','','Taste first and finish the seasoning.'],
   ['1:52','OUT: cornbread','','Unwrap and cut into squares.'],
   ['1:53','Carve the turkey','','Slice across the grain, about ¼ inch thick. Spoon some pan juice over the slices.'],
   ['1:55','OUT: ham. Check it reads 140° or hotter, then slice.','','Spoon the pan juices over it.'],
-  ['1:57','OUT: rolls. Brush with garlic butter.','','Brush every top while they\'re hot.'],
-  ['2:00','Dinner! Cobbler into the 350° oven, timer 20 minutes.','','Warm for dessert. Pie stays cold.']]}]}
+  ['2:00','Dinner! Cobbler into the 350° oven, timer 20 minutes.','','Your mom’s rolls go out with everything else. Pie stays cold.']]}]}
 ];
-var NOTES=['<b>Ham time</b> assumes 11 lb at 8 minutes per pound. Tell me the real weight and every time from 10:15 on gets fixed.','<b>Turkey:</b> your video cooked a 4.5 lb breast about 2½ hours. Yours is 3 lb, so I used about 1½ hours. The thermometer decides: 165°.','<b>Mac</b> bakes at 350° beside the turkey instead of your usual 375°, so give it about an hour and go by a set middle.','<b>Cornbread</b> is from your Krusteaz box: 375° for 27–29 minutes in an 8×8 or 9×9.','<b>Rolls</b> are from the Rhodes directions: 3–5 hours to rise, 350° for 15–20 minutes.','<b>My estimates</b> (not from your recipes): greens and turkey leg amounts, the blackened seasoning amount, the cinnamon in the yams, and the garlic butter.','<b>Food safety:</b> nothing sits out more than 2 hours. Leftovers go in the fridge within 2 hours of dinner.'];
+var NOTES=['<b>Ham:</b> 10.65 lb at 8 minutes per pound is 85 minutes, so it comes out at 11:40.','<b>Turkey:</b> your video cooked a 4.5 lb breast about 2½ hours. Yours is 3 lb, so I used about 1½ hours. The thermometer decides: 165°.','<b>Mac</b> bakes at 350° beside the turkey instead of your usual 375°, so give it about an hour and go by a set middle.','<b>Cornbread</b> is from your Krusteaz box: 375° for 27–29 minutes in an 8×8 or 9×9.','<b>Rolls:</b> your mom is bringing them.','<b>My estimates</b> (not from your recipes): the blackened seasoning amount and the cinnamon in the yams.','<b>Food safety:</b> nothing sits out more than 2 hours. Leftovers go in the fridge within 2 hours of dinner.'];
 var LINKS={
 ham:{v:'https://www.tiktok.com/@/video/7708890003270536462',r:'https://recime.app/p/be907628-e598-4205-9df2-4dcca22b650f'},
 tky:{v:'https://www.tiktok.com/@/video/7709928235202612494',r:'https://recime.app/p/504e091e-b05d-4474-8ca4-8a52929b0579'},
@@ -223,15 +226,20 @@ if(/\bmac\b|noodle|whisk and stir|sour cream|seasonings and cheese/.test(t))retu
 if(/potato|bacon|mash|warm the cream/.test(t))return 'pot';
 return ''}
 
+var PRE=['Turkey breast in the fridge if it is frozen','Ham in the fridge if it is frozen','Wash, stem and chop the collard greens','Shred cheese for the mac and cheese','Shred sharp cheddar for the potatoes','Mix the ham sugar blend in one container','Ham glaze jar','Make the turkey compound butter',
+'Oven to 425°. Poke holes in 4 sweet potatoes, set on parchment','Pie sweet potatoes in, 1 hour','Peel and cut 7 Yukon Gold potatoes','OUT: sweet potatoes. Oven to 350°.','Poke the 2 crusts with a fork. Pre-bake 10 minutes.','Peel the sweet potatoes and blend the filling','OUT: crusts. Make the cobbler.','Pour the pies. Pies and cobbler in at 350°.','Butter and season the turkey','Check the cobbler','OUT: pies. Cool on the counter. Oven to 375°.','Mix the cornbread','Cornbread in, 27–29 minutes','OUT: cornbread. Cool completely.'];
+var DAYPLAN=[['Until 9:00','','rest','Free morning'],['9:00','9:05','busy','Ham out of the fridge'],['9:05','9:45','rest','Break'],['9:45','10:35','busy','Ham in, start the yams'],['10:35','11:00','rest','Break'],['11:00','11:20','busy','Finish yams, turkey pan liquid'],['11:20','11:35','rest','Break'],['11:35','12:48','busy','Nonstop: ham glaze, mac, potatoes'],['12:48','1:08','rest','Break (greens on at 1:00)'],['1:08','1:27','busy','Baste, check mac and turkey'],['1:27','1:38','rest','Break'],['1:38','2:00','busy','Everything out, carve, slice'],['2:00','','eat','Dinner']];
+
 var TABS=[{id:'rx',tab:'Recipes'}].concat(DAYS.map(function(d){return {id:d.id,tab:d.tab}})).concat([{id:'gear',tab:'Gear'}]);
-var KEY='tg26-v2',saved={},open={},rxOpen={};
+var KEY='tg26-v3',saved={},open={},rxOpen={};
 try{saved=JSON.parse(localStorage.getItem(KEY)||'{}')}catch(e){}
 function persist(){try{localStorage.setItem(KEY,JSON.stringify(saved))}catch(e){}}
 var tabs=document.getElementById('tabs'),panel=document.getElementById('panel'),cur='rx';
 function esc(x){return String(x).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
 function title(t){return esc(t).replace(/OUT:\s*/g,'<span class="pill">Out</span>').replace(/IN:\s*/g,'<span class="pill">In</span>')}
 function chips(id,small){var L=LINKS[id];if(!L)return '';return '<div class="lk">'+(L.v?'<a href="'+L.v+'" target="_blank" rel="noopener">▶ Video</a>':'')+(L.r?'<a href="'+L.r+'" target="_blank" rel="noopener">Recipe</a>':'')+'</div>'}
-function cb(k){return '<input type="checkbox" aria-label="Done" data-k="'+k+'"'+(saved[k]?' checked':'')+'>'}
+function isOn(k,t){return saved[k]===1||(saved[k]!==0&&t!==undefined&&PRE.indexOf(t)>=0)}
+function cb(k,on){if(on===undefined)on=saved[k]===1;return '<input type="checkbox" aria-label="Done" data-k="'+k+'"'+(on?' checked':'')+'>'}
 function drawRx(){
   var h='<div class="card"><h2>Recipes</h2><p class="prog">Tap a recipe. Tick each ingredient once you have it.</p></div>';
   RECIPES.forEach(function(r){
@@ -248,16 +256,23 @@ function drawGear(){
   GEAR.forEach(function(g,i){var key='g-'+i;h+='<label class="ing'+(saved[key]?' done':'')+'">'+cb(key)+'<span>'+esc(g)+'</span></label>'});
   return h+'</div>';
 }
+function itemHTML(it,id,on){var dd=it[3];return '<div class="item'+(on?' done':'')+'">'+cb(id,on)+'<div class="body"><div class="tbtn">'+(it[0]?'<span class="tm">'+esc(it[0])+'</span>':'')+title(it[1])+'</div>'+chips(rxFor(it[1]+' '+it[2]),1)+(it[2]?'<div class="amt">'+esc(it[2])+'</div>':'')+(dd?'<div class="d">'+esc(dd)+'</div>':'')+'</div></div>'}
 function drawDay(d){
-  var n=0,k=0;d.groups.forEach(function(g,gi){g.items.forEach(function(it,ii){n++;if(saved[d.id+'-'+gi+'-'+ii])k++})});
+  var n=0,k=0,done=[];d.groups.forEach(function(g,gi){g.items.forEach(function(it,ii){if(it[1]==='BREAK')return;n++;if(isOn(d.id+'-'+gi+'-'+ii,it[1]))k++})});
   var h='<div class="card"><h2>'+esc(d.title)+'</h2><p class="prog">'+k+' of '+n+' done · '+esc(d.sub)+'</p>';
+  if(d.id==='thu')h+='<p class="group">Your day at a glance</p><div class="glance">'+DAYPLAN.map(function(x){return '<div class="gl '+x[2]+'"><b>'+esc(x[0])+(x[1]?'–'+esc(x[1]):'')+'</b><span>'+esc(x[3])+'</span></div>'}).join('')+'</div>';
   d.groups.forEach(function(g,gi){
-    h+='<p class="group">'+esc(g.g)+'</p>';
+    var body='';
     g.items.forEach(function(it,ii){
-      var id=d.id+'-'+gi+'-'+ii,dd=it[3];
-      h+='<div class="item'+(saved[id]?' done':'')+'">'+cb(id)+'<div class="body"><div class="tbtn">'+(it[0]?'<span class="tm">'+esc(it[0])+'</span>':'')+title(it[1])+'</div>'+chips(rxFor(it[1]+' '+it[2]),1)+(it[2]?'<div class="amt">'+esc(it[2])+'</div>':'')+(dd?'<div class="d">'+esc(dd)+'</div>':'')+'</div></div>';
+      var id=d.id+'-'+gi+'-'+ii;
+      if(it[1]==='BREAK'){body+='<div class="brk"><span class="tm">'+esc(it[0])+'</span><b>Break</b> · '+esc(it[2])+'</div>';return}
+      var on=isOn(id,it[1]);if(on){done.push([it,id]);return}
+      body+=itemHTML(it,id,false);
     });
+    if(body.replace(/<div class="brk">.*?<\/div>/g,'').length)h+='<p class="group">'+esc(g.g)+'</p>'+body;
+    else if(body)h+=body;
   });
+  if(done.length)h+='<p class="group">Done ('+done.length+')</p>'+done.map(function(x){return itemHTML(x[0],x[1],true)}).join('');
   return h+'</div>';
 }
 function draw(){
@@ -270,7 +285,7 @@ document.getElementById('notes').innerHTML=NOTES.map(function(n){return '<li>'+n
 tabs.addEventListener('click',function(e){var b=e.target.closest('[data-id]');if(!b)return;cur=b.dataset.id;draw();scrollTo(0,0);try{history.replaceState(null,'','#'+cur)}catch(_){}});
 panel.addEventListener('click',function(e){var b=e.target.closest('[data-o]');if(!b||b.disabled)return;var k=b.dataset.o;open[k]=!open[k];draw()});
 panel.addEventListener('toggle',function(e){var d=e.target;if(d.dataset&&d.dataset.rx)rxOpen[d.dataset.rx]=d.open},true);
-panel.addEventListener('change',function(e){var k=e.target.dataset.k;if(!k)return;if(e.target.checked)saved[k]=1;else delete saved[k];persist();draw()});
+panel.addEventListener('change',function(e){var k=e.target.dataset.k;if(!k)return;saved[k]=e.target.checked?1:0;persist();var y=scrollY;draw();scrollTo(0,y)});
 var hv=(location.hash||'').slice(1);if(TABS.some(function(x){return x.id===hv}))cur=hv;
 else{var t=new Date(),dd=t.getFullYear()*10000+(t.getMonth()+1)*100+t.getDate();cur=dd===20261125?'wed':dd===20261126?'thu':dd===20261124?'tue':'rx'}
 draw();
