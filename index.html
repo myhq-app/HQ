@@ -3637,8 +3637,10 @@ async function sync(){
   for(const kind of Object.keys(KM)){
    if(kind==='grocery'&&!f.gro)continue;
    const arr=S[KM[kind]];
+   const seen=new Set();
    for(const x of arr.slice()){
     if(x.ext)continue;
+    if(x.sid&&x.sh){if(seen.has(x.sid)){arr.splice(arr.indexOf(x),1);ch=1;continue}seen.add(x.sid)}
     if(x.fsh){if(x.fsh==='on')x.sh=1;delete x.fsh}
     if(kind==='grocery'&&!x.sh&&!x.sid)x.sh=1;
     if(x.sid&&!x.sh){if(rm[x.sid])dels.add(x.sid);delete x.sid;delete x.shH;ch=1;continue}
